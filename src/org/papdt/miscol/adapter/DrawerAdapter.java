@@ -31,7 +31,7 @@ public class DrawerAdapter extends BaseAdapter {
 
 	@Override
 	public long getItemId(int position) {
-		// TODO ×Ô¶¯Éú³ÉµÄ·½·¨´æ¸ù
+		// TODO è‡ªåŠ¨ç”Ÿæˆçš„æ–¹æ³•å­˜æ ¹
 		return 0;
 	}
 
