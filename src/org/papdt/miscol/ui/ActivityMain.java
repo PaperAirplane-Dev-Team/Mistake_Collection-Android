@@ -1,11 +1,7 @@
 package org.papdt.miscol.ui;
 
 import org.papdt.miscol.R;
-import org.papdt.miscol.R.drawable;
-import org.papdt.miscol.R.id;
-import org.papdt.miscol.R.layout;
-import org.papdt.miscol.R.menu;
-import org.papdt.miscol.R.string;
+import org.papdt.miscol.adapter.DrawerAdapter;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -20,23 +16,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class ActivityMain extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-
+    private String[] mDrawerItemNames;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private String[] mDrawerItemNames={"Hello, World"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mDrawerItemNames=getResources().getStringArray(R.array.drawer_items);
         mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
         mDrawerList = (ListView) findViewById(R.id.lv_drawer);
@@ -44,8 +38,8 @@ public class ActivityMain extends Activity {
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mDrawerItemNames));
+        
+        mDrawerList.setAdapter(new DrawerAdapter(getApplicationContext(), mDrawerItemNames));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
@@ -90,6 +84,11 @@ public class ActivityMain extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+		if (drawerOpen) {
+			setTitle(R.string.drawer_notice);
+		} else {
+			setTitle(R.string.title_activity_activity_main);
+		}
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -115,7 +114,6 @@ public class ActivityMain extends Activity {
     private void selectItem(int position) {
         // update the main content by replacing fragments
         Fragment fragment = new Fragment();
-
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.fl_content, fragment).commit();
 

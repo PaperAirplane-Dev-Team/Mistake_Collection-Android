@@ -6,5 +6,6 @@
     <string name="action_settings">设置</string>
     <string name="drawer_open">打开导航面板</string>
     <string name="drawer_close">关闭导航面板</string>
+    <string name="drawer_notice">想做什么？</string>
 
 </resources>
