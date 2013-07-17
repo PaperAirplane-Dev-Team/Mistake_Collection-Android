@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class DrawerAdapter extends BaseAdapter {
@@ -44,15 +45,20 @@ public class DrawerAdapter extends BaseAdapter {
 			holder = new ViewHolder();
 			holder.tvDrawerText = (TextView) convertView
 					.findViewById(R.id.tv_drawer_text);
+			holder.ivDrawerIcon = (ImageView) convertView
+					.findViewById(R.id.iv_drawer);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.tvDrawerText.setText(mDrawerItemNames[position]);
+		holder.ivDrawerIcon.setImageDrawable(mContext.getResources()
+				.getDrawable(R.drawable.ic_drawer));
 		return convertView;
 	}
 
 	private static class ViewHolder {
 		TextView tvDrawerText;
+		ImageView ivDrawerIcon;
 	}
 }

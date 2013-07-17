@@ -13,5 +13,6 @@
         <item>Feature 3</item>
         <item>And more</item>
     </string-array>
+    <string name="drawer_icon_desc">An decoration icon</string>
 
 </resources>
