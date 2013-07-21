@@ -1,12 +1,6 @@
 package org.papdt.miscol.ui;
 
 import org.papdt.miscol.R;
-import org.papdt.miscol.R.drawable;
-import org.papdt.miscol.R.id;
-import org.papdt.miscol.R.layout;
-import org.papdt.miscol.R.menu;
-import org.papdt.miscol.R.string;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -30,7 +24,7 @@ public class ActivityMain extends Activity {
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private String[] mDrawerItemNames={"Hello, World"};
+    private String[] mDrawerItemNames={"The misfits","The rebels","The troublemakers"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

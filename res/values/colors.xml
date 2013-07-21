@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Action bar background color -->
+    <color name="action_bar_color">#cfea8b</color>
+
+    <!-- Welcome Fragment -->
+    <color name="welcome_background">#eeeeee</color>
+
+    <!-- 抽屉的颜色 -->
+    <color name="drawer_background">#FFFFFF</color>
+    <color name="drawer_selector">#d6d6d6</color>
+    <color name="drawer_divider">#d6d6d6</color>
+    <!-- Drawer Item -->
+    <color name="drawer_item_text">#000000</color>
+    <color name="drawer_item_background">#FFFFFF</color>
+
+</resources>
