@@ -27,4 +27,5 @@
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:textColor="@color/drawer_item_text" />
 
+
 </LinearLayout>
