@@ -2,6 +2,9 @@ package org.papdt.miscol.ui;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.ui.adapter.DrawerAdapter;
+import org.papdt.miscol.ui.adapter.DrawerAdapter.IDrawerNames;
+import org.papdt.miscol.ui.fragment.FargmentMain;
+import org.papdt.miscol.utils.MyLogger;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,33 +15,144 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
-public class ActivityMain extends Activity {
+/**
+ * App的主Activity <br />
+ * 初始化抽屉和首页
+ */
+public class ActivityMain extends Activity implements IDrawerNames {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
-	private LinearLayout mLlDrawer;
+	private RelativeLayout mRlDrawer;
 	private ActionBarDrawerToggle mDrawerToggle;
-
+	private Fragment mFragments[];
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
-	private String[] mDrawerItemNames = { "The misfits", "The rebels",
-			"The troublemakers" };
+	private String[] mDrawerItemNames;
+	private FragmentManager fragmentManager;
+	private final static String TAG = "ActivityMain";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		mDrawerItemNames = getResources().getStringArray(R.array.drawer_items);
+		fragmentManager = getFragmentManager();
+		mFragments = new Fragment[mDrawerItemNames.length];
+		initializeDrawer();
+		if (savedInstanceState == null) {
+			selectItem(MAIN);
+			//默认打开FragmentMain
+		}
+		MyLogger.d(TAG, TAG + "已完成初始化");
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		/*MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.activity_main, menu);*/
+		//在不同的Fragment中分开处理
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	/* Called whenever we call invalidateOptionsMenu() */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// If the nav drawer is open, hide action items related to the content
+		// view
+		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mRlDrawer);
+		if (drawerOpen)
+			setTitle(R.string.drawer_title);
+		else
+			setTitle(R.string.title_activity_main);
+		return super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// The action bar home/up action should open or close the drawer.
+		// ActionBarDrawerToggle will take care of this.
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
+			return true;
+		}
+		// Handle action buttons
+		return super.onOptionsItemSelected(item);
+	}
+
+	/* The click listener for ListView in the navigation drawer */
+	private class DrawerItemClickListener implements
+			ListView.OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			selectItem(position);
+		}
+	}
+
+	private void selectItem(int position) {
+		// update the main content by replacing mFragments
+		if (mFragments[position] == null) {
+			MyLogger.d(TAG, "创建新的 Fragment:" + position);
+			switch (position) {
+			case MAIN:
+				mFragments[position] = new FargmentMain();
+				break;
+			default:
+				mFragments[position] = new Fragment();
+				// TODO 初始化各Fragment
+				break;
+			}
+		} else {
+			MyLogger.d(TAG, "已存在Fragment:" + position);
+		}
+		fragmentManager.beginTransaction()
+				.replace(R.id.fl_content, mFragments[position]).commit();
+
+		// update selected item and title, then close the drawer
+		mDrawerList.setItemChecked(position, true);
+		mDrawerLayout.closeDrawer(mRlDrawer);
+	}
+
+	@Override
+	public void setTitle(CharSequence title) {
+		mTitle = title;
+		getActionBar().setTitle(mTitle);
+	}
+
+	/**
+	 * When using the ActionBarDrawerToggle, you must call it during
+	 * onPostCreate() and onConfigurationChanged()...
+	 */
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		mDrawerToggle.syncState();
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		// Pass any configuration change to the drawer toggls
+		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
+
+	/**
+	 * 初始化NavigationDrawer <br />
+	 * 向ListView中填充程序导航模块
+	 */
+	private void initializeDrawer() {
 
 		mTitle = mDrawerTitle = getTitle();
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
 		mDrawerList = (ListView) findViewById(R.id.lv_drawer);
-		mLlDrawer = (LinearLayout)findViewById(R.id.ll_drawer);
+		mRlDrawer = (RelativeLayout) findViewById(R.id.rl_drawer);
 
 		// set a custom shadow that overlays the main content when the drawer
 		// opens
@@ -73,85 +187,6 @@ public class ActivityMain extends Activity {
 			}
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-		if (savedInstanceState == null) {
-			selectItem(0);
-		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.activity_main, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	/* Called whenever we call invalidateOptionsMenu() */
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mLlDrawer);
-		return super.onPrepareOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// The action bar home/up action should open or close the drawer.
-		// ActionBarDrawerToggle will take care of this.
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
-			return true;
-		}
-		// Handle action buttons
-		return super.onOptionsItemSelected(item);
-	}
-
-	/* The click listener for ListView in the navigation drawer */
-	private class DrawerItemClickListener implements
-			ListView.OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			selectItem(position);
-		}
-	}
-
-	private void selectItem(int position) {
-		// update the main content by replacing fragments
-		Fragment fragment = new Fragment();
-
-		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction().replace(R.id.fl_content, fragment)
-				.commit();
-
-		// update selected item and title, then close the drawer
-		mDrawerList.setItemChecked(position, true);
-		mDrawerLayout.closeDrawer(mLlDrawer);
-	}
-
-	@Override
-	public void setTitle(CharSequence title) {
-		mTitle = title;
-		getActionBar().setTitle(mTitle);
-	}
-
-	/**
-	 * When using the ActionBarDrawerToggle, you must call it during
-	 * onPostCreate() and onConfigurationChanged()...
-	 */
-
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		// Sync the toggle state after onRestoreInstanceState has occurred.
-		mDrawerToggle.syncState();
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		// Pass any configuration change to the drawer toggls
-		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
 }
