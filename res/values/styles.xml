@@ -29,7 +29,7 @@
         <item name="android:background">@color/drawer_background</item>
         <item name="android:choiceMode">singleChoice</item>
         <item name="android:divider">@color/drawer_divider</item>
-        <item name="android:dividerHeight">0dp</item>
+        <item name="android:dividerHeight">1dp</item>
         <item name="android:listSelector">@color/drawer_selector</item>
     </style>
 

@@ -53,6 +53,8 @@ public class DrawerAdapter extends BaseAdapter {
 			holder.tvText = (TextView) convertView
 					.findViewById(android.R.id.text1);
 			convertView.setTag(holder);
+		} else{
+			holder = (ViewHolder)convertView.getTag();
 		}
 		holder.tvText.setText(mDatas[position]);
 		

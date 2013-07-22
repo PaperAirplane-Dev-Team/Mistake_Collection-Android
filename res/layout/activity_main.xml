@@ -40,11 +40,31 @@
          with the content view.
     -->
 
-    <ListView
-        android:id="@+id/lv_drawer"
-        style="@style/drawerStyle"
+    <LinearLayout
+        android:id="@+id/ll_drawer"
         android:layout_width="195dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start" />
+        android:layout_gravity="start"
+        android:background="@color/drawer_background"
+        android:orientation="horizontal" >
+
+        <!-- Drawer 项目列表 -->
+
+        <ListView
+            android:id="@+id/lv_drawer"
+            style="@style/drawerStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <!-- 版权信息 -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingBottom="11dp"
+            android:text="@string/copy_right"
+            android:textColor="@color/drawer_selector"
+            android:textSize="12sp" />
+    </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>

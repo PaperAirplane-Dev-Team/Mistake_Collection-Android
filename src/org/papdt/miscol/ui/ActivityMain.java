@@ -16,13 +16,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
-public class ActivityMain extends Activity implements OnItemClickListener{
+public class ActivityMain extends Activity {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
+	private LinearLayout mLlDrawer;
 	private ActionBarDrawerToggle mDrawerToggle;
 
 	private CharSequence mDrawerTitle;
@@ -38,6 +38,7 @@ public class ActivityMain extends Activity implements OnItemClickListener{
 		mTitle = mDrawerTitle = getTitle();
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
 		mDrawerList = (ListView) findViewById(R.id.lv_drawer);
+		mLlDrawer = (LinearLayout)findViewById(R.id.ll_drawer);
 
 		// set a custom shadow that overlays the main content when the drawer
 		// opens
@@ -45,7 +46,7 @@ public class ActivityMain extends Activity implements OnItemClickListener{
 				GravityCompat.START);
 		// set up the drawer's list view with items and click listener
 		mDrawerList.setAdapter(new DrawerAdapter(mDrawerItemNames, this));
-		mDrawerList.setOnItemClickListener(this);
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 		// enable ActionBar app icon to behave as action to toggle nav drawer
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -90,7 +91,7 @@ public class ActivityMain extends Activity implements OnItemClickListener{
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// If the nav drawer is open, hide action items related to the content
 		// view
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mLlDrawer);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -105,7 +106,7 @@ public class ActivityMain extends Activity implements OnItemClickListener{
 		return super.onOptionsItemSelected(item);
 	}
 
-	/* The click listner for ListView in the navigation drawer */
+	/* The click listener for ListView in the navigation drawer */
 	private class DrawerItemClickListener implements
 			ListView.OnItemClickListener {
 		@Override
@@ -125,7 +126,7 @@ public class ActivityMain extends Activity implements OnItemClickListener{
 
 		// update selected item and title, then close the drawer
 		mDrawerList.setItemChecked(position, true);
-		mDrawerLayout.closeDrawer(mDrawerList);
+		mDrawerLayout.closeDrawer(mLlDrawer);
 	}
 
 	@Override
@@ -151,12 +152,6 @@ public class ActivityMain extends Activity implements OnItemClickListener{
 		super.onConfigurationChanged(newConfig);
 		// Pass any configuration change to the drawer toggls
 		mDrawerToggle.onConfigurationChanged(newConfig);
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

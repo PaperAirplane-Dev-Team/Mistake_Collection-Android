@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">What\'s wrong?</string>
-    <string name="title_activity_activity_main">What\'s wrong?</string>
-    <string name="action_settings">Settings</string>
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
-
+    <string name="app_name">哪错了？</string>
+    <string name="title_activity_activity_main">哪错了？</string>
+    <string name="action_settings">设置</string>
+    <string name="drawer_open">打开导航面板</string>
+    <string name="drawer_close">关闭导航面板</string>
+<!-- 版权信息 -->
+	<string name="copy_right">哪错了？\n版本:Rolling Stone pre-ɑ\n2013 PaperAirplane Dev Team</string>
 </resources>

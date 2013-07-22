@@ -21,8 +21,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/drawer_item_text_background"
-        android:drawableLeft="@color/welcome_background"
-        android:drawablePadding="9dp"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:paddingRight="16dp"
