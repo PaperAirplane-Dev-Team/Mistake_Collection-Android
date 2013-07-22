@@ -43,7 +43,7 @@
     <ListView
         android:id="@+id/lv_drawer"
         style="@style/drawerStyle"
-        android:layout_width="240dp"
+        android:layout_width="195dp"
         android:layout_height="match_parent"
         android:layout_gravity="start" />
 

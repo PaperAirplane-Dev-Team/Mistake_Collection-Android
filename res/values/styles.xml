@@ -32,4 +32,5 @@
         <item name="android:dividerHeight">0dp</item>
         <item name="android:listSelector">@color/drawer_selector</item>
     </style>
+
 </resources>
