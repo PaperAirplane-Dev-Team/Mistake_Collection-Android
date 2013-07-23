@@ -1,0 +1,3 @@
+[submodule "libs/cardsui"]
+	path = libs/cardsui
+	url = https://bitbucket.org/nadavfima/cardsui-for-android.git

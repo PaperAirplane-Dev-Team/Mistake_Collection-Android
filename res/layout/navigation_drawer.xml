@@ -1,28 +1,29 @@
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/rl_drawer"
-        android:layout_width="195dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/drawer_background" >
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_drawer"
+    android:layout_width="195dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="@color/drawer_background" >
 
-        <!-- Drawer 项目列表 -->
+    <!-- Drawer 项目列表 -->
 
-        <ListView
-            android:id="@+id/lv_drawer"
-            style="@style/drawerStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <!-- 版权信息 -->
+    <ListView
+        android:id="@+id/lv_drawer"
+        style="@style/drawerStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <!-- 版权信息 -->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_centerHorizontal="true"
-            android:paddingBottom="11dp"
-            android:layout_alignBottom="@id/lv_drawer"
-            android:text="@string/copy_right"
-            android:textColor="@color/drawer_selector"
-            android:textSize="12sp" />
-    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/lv_drawer"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:paddingBottom="11dp"
+        android:text="@string/copy_right"
+        android:textColor="@color/drawer_selector"
+        android:textSize="12sp" />
+
+</RelativeLayout>
