@@ -1,3 +1,3 @@
-[submodule "libs/cardsui"]
-	path = libs/cardsui
-	url = https://bitbucket.org/nadavfima/cardsui-for-android.git
+[submodule "libs/CardsUILib"]
+	path = libs/CardsUILib
+	url = git@github.com:PaperAirplane-Dev-Team/CardsUILib.git
