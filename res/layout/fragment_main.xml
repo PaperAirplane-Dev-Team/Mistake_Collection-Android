@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/fragment_background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-    <com.fima.cardsui.views.CardUI
-        android:id="@+id/view_cardui"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:layout_height="match_parent" >
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_fragment_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <com.fima.cardsui.views.CardUI
+            android:id="@+id/view_cardui"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+	<ImageView 
+	    android:id = "@+id/iv_hint"
+	    android:paddingLeft="0dp"
+	    android:paddingTop="210dp"
+	    android:layout_height="270dp"
+	    android:layout_width="212dp"
+	    android:contentDescription="@null"
+	    android:scaleType="fitStart"
+	    android:src = "@drawable/hint"
+	    />
+</FrameLayout>
