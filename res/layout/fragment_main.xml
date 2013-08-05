@@ -46,4 +46,15 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-</FrameLayout>
+	<ImageView 
+	    android:id = "@+id/iv_hint"
+	    android:paddingLeft="0dp"
+	    android:paddingTop="210dp"
+	    android:layout_height="270dp"
+	    android:layout_width="212dp"
+	    android:contentDescription="@null"
+	    android:scaleType="fitStart"
+	    android:src = "@drawable/hint"
+	    android:visibility="gone"
+	    />
+=</FrameLayout>

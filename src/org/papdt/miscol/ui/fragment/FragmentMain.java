@@ -20,15 +20,23 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class FargmentMain extends Fragment {
+public class FragmentMain extends Fragment {
 
 	private CardUI mCardUI;
 	private FrameLayout mCardsLayout;
 	private Activity mActivity;
 	private final static String TAG = "FragmentMain";
+	private static FragmentMain self;
 
-	public FargmentMain() {
+	@Deprecated
+	public FragmentMain() {
 		MyLogger.d(TAG, TAG + "被初始化");
+	}
+
+	public static FragmentMain getInstance() {
+		if (self == null)
+			self = new FragmentMain();
+		return self;
 	}
 
 	@Override
