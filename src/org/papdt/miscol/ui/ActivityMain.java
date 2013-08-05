@@ -222,11 +222,5 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	}
 
 }
-tionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
-			}
-		};
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
-	}
 
-}
+
