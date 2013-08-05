@@ -31,22 +31,21 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:contentDescription="@null"
-            android:src="@drawable/hint"
-            android:scaleType="fitStart" />
+            android:scaleType="fitStart"
+            android:src="@drawable/hint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:gravity="fill_vertical"
             android:paddingBottom="11dp"
-            android:text="@string/hint_text"
-            android:textColor="@color/hint_text"
             android:shadowColor="@color/hint_shadow"
-            android:shadowRadius="1"
             android:shadowDx="1"
             android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="@string/hint_text"
+            android:textColor="@color/hint_text"
             android:textSize="20sp" />
     </LinearLayout>
-
 
 </FrameLayout>

@@ -16,7 +16,7 @@ public class DrawerAdapter extends BaseAdapter {
 	private Context mCtx;
 	public interface IDrawerNames{
 		int MAIN=0; //要不以后这么样,常量不要那么多,用接口
-		int SECOND=1;
+		int ALL_QUESTIONS=1;
 		int THIRD=2;
 	}
 

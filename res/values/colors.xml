@@ -17,4 +17,8 @@
 	<!-- hint -->
 	<color name="hint_text">#8fd400</color>
 	<color name="hint_shadow">#f0c2e27f</color>
+	<!-- 华丽的分割线 -->
+	<color name="divider">#c6c6c6</color>
+	<!-- 添加题目 -->
+	<color name="add">#6c6f70</color>
 </resources>

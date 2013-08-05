@@ -4,6 +4,7 @@ import org.papdt.miscol.R;
 import org.papdt.miscol.ui.adapter.DrawerAdapter;
 import org.papdt.miscol.ui.adapter.DrawerAdapter.IDrawerNames;
 import org.papdt.miscol.ui.fragment.FragmentMain;
+import org.papdt.miscol.ui.fragment.FragmentQuestions;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.app.Activity;
@@ -104,6 +105,8 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			case MAIN:
 				mFragments[position] = FragmentMain.getInstance();
 				break;
+			case ALL_QUESTIONS:
+				mFragments[position] = FragmentQuestions.getInstance();
 			default:
 				mFragments[position] = new Fragment();
 				// TODO 初始化各Fragment
@@ -191,6 +194,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 				getActionBar().setTitle(mTitle);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
+				((FragmentMain) mFragments[MAIN]).showHint();
 			}
 
 			public void onDrawerOpened(View drawerView) {

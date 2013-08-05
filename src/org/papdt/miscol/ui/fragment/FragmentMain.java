@@ -2,10 +2,7 @@ package org.papdt.miscol.ui.fragment;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.ui.MistakeCard;
-import org.papdt.miscol.utils.Constants;
 import org.papdt.miscol.utils.MyLogger;
-import org.papdt.miscol.utils.SharedPreferencesOperator;
-
 import com.fima.cardsui.objects.Card.OnCardSwiped;
 import com.fima.cardsui.views.CardUI;
 
@@ -27,7 +24,7 @@ public class FragmentMain extends Fragment {
 
 	private CardUI mCardUI;
 	private FrameLayout mCardsLayout;
-	private LinearLayout mWelcomeLayout;
+	private LinearLayout mHintLayout;
 	private Activity mActivity;
 	private final static String TAG = "FragmentMain";
 	private static FragmentMain mInstance;
@@ -54,15 +51,9 @@ public class FragmentMain extends Fragment {
 		mActivity = getActivity();
 		mCardsLayout = (FrameLayout) inflater.inflate(R.layout.fragment_main,
 				null);
+		showHint();
 		// 添加介绍卡片
 		mCardUI = (CardUI) mCardsLayout.findViewById(R.id.view_cardui);
-		if (!(Boolean) SharedPreferencesOperator.read(getActivity(),
-				Constants.Preferences.FileNames.GENERAL,
-				Constants.Preferences.Keys.HAS_EVER_STARTED, false))
-			firstOpenHint();
-		else {
-			MyLogger.d(TAG, "不是首次启动");
-		}
 		mCardUI.setSwipeable(true);
 		MistakeCard cardWelcome = new MistakeCard(
 				mActivity.getString(R.string.welcome),
@@ -101,26 +92,26 @@ public class FragmentMain extends Fragment {
 		inflater.inflate(R.menu.fragment_main, menu);
 		super.onPrepareOptionsMenu(menu);
 	}
-
-	private void firstOpenHint() {
-		// 处理第一次打开的提示等事务
-		MyLogger.d(TAG, "这是第一次启动");
-		// 启动滑动提示的动画
-		mWelcomeLayout = (LinearLayout) mCardsLayout.findViewById(R.id.ll_hint);
-		mWelcomeLayout.setVisibility(View.VISIBLE);
-		ImageView ivHint = (ImageView) mWelcomeLayout
+	/**
+	 * 显示滑动提示
+	 */
+	public void showHint() {
+		mHintLayout = (LinearLayout) mCardsLayout.findViewById(R.id.ll_hint);
+		ImageView ivHint = (ImageView) mHintLayout
 				.findViewById(R.id.iv_hint);
 		AnimationDrawable hintAnimation = (AnimationDrawable) ivHint
 				.getDrawable();
 		hintAnimation.start();
-		SharedPreferencesOperator.write(getActivity(),
-				Constants.Preferences.FileNames.GENERAL,
-				Constants.Preferences.Keys.HAS_EVER_STARTED, (Boolean) true);
-	}
+		mHintLayout = (LinearLayout) mCardsLayout.findViewById(R.id.ll_hint);
+		mHintLayout.setVisibility(View.VISIBLE);
 
+	}
+/**
+ * 关闭滑动提示
+ */
 	public void hideHint() {
-		if (mWelcomeLayout != null) {
-			mWelcomeLayout.setVisibility(View.GONE);
+		if (mHintLayout != null) {
+			mHintLayout.setVisibility(View.GONE);
 		}
 	}
 
