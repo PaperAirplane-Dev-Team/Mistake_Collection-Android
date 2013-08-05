@@ -21,4 +21,5 @@
 	<!-- 欢迎界面 -->
 	<string name="welcome">欢迎使用</string>
 	<string name="welcome_content">欢迎使用哪错了。\n哪错了能帮助您在Android手机和平板电脑上管理您的错题、难题；\n同时能帮助您进行错题测验。</string>
+	<string name="hint_text">从最左拖动拉出菜单</string>
 </resources>

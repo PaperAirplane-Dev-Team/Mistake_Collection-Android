@@ -9,6 +9,7 @@ import com.fima.cardsui.views.CardUI;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class FargmentMain extends Fragment {
@@ -40,6 +42,12 @@ public class FargmentMain extends Fragment {
 		mActivity = getActivity();
 		mCardsLayout = (FrameLayout) inflater.inflate(R.layout.fragment_main,
 				null);
+		// 启动滑动提示的动画
+		ImageView ivHint = (ImageView) mCardsLayout.findViewById(R.id.iv_hint);
+		AnimationDrawable hintAnimation = (AnimationDrawable) ivHint
+				.getDrawable();
+		hintAnimation.start();
+		// 添加介绍卡片
 		mCardUI = (CardUI) mCardsLayout.findViewById(R.id.view_cardui);
 		mCardUI.setSwipeable(true);
 		MistakeCard cardWelcome = new MistakeCard(
@@ -67,7 +75,6 @@ public class FargmentMain extends Fragment {
 			}
 		});
 		mCardUI.addCard(cardHello);
-
 		mCardUI.refresh();
 		MyLogger.d(TAG, "Card已添加");
 		return mCardsLayout;

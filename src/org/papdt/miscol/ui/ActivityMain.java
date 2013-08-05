@@ -9,17 +9,14 @@ import org.papdt.miscol.utils.MyLogger;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -39,9 +36,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	private String[] mDrawerItemNames;
 	private FragmentManager fragmentManager;
 	private final static String TAG = "ActivityMain";
-	
-	private boolean hasDrawerOpened;
-	
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -187,6 +182,14 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			public void onDrawerOpened(View drawerView) {
 				getActionBar().setTitle(mDrawerTitle);
 				invalidateOptionsMenu(); // creates call to
+											// onPrepareOptionsMenu()
+			}
+		};
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+	}
+
+}
+tionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
 			}
 		};

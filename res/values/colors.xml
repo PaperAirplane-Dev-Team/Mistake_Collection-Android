@@ -14,5 +14,7 @@
     <color name="drawer_item_text">#505050</color>
     <color name="drawer_item_background">#FFFFFF</color>
     <color name="drawer_item_text_background">#00FFFFFF</color>
-
+	<!-- hint -->
+	<color name="hint_text">#8fd400</color>
+	<color name="hint_shadow">#f0c2e27f</color>
 </resources>
