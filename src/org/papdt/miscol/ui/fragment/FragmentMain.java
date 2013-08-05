@@ -48,6 +48,7 @@ public class FragmentMain extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		MyLogger.d(TAG, "onCreateView()的调用");
 		mActivity = getActivity();
 		mCardsLayout = (FrameLayout) inflater.inflate(R.layout.fragment_main,
 				null);

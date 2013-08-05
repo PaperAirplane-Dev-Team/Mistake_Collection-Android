@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 临时 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fragment_background"
-    android:orientation="vertical" >
+    android:background="@color/fragment_background" >
 
     <View
         android:id="@+id/view_cardui"
         android:layout_width="match_parent"
-        android:layout_height="420dp" />
+        android:layout_height="match_parent" />
 
     <!-- 添加键 -->
+    <!-- 你没看警告说可以用<TextView/> and a compound drawable代替么……虽说不好控制 -->
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
+        android:layout_alignBottom="@id/view_cardui"
         android:gravity="center_horizontal|center_vertical"
         android:orientation="vertical" >
 
@@ -24,24 +25,39 @@
             android:layout_height="1dp"
             android:background="@color/divider" />
 
+        <!--
         <LinearLayout
+            style="@android:style/Holo.ButtonBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_horizontal|center_vertical"
             android:orientation="horizontal" >
-		<ImageView 
-		    android:layout_width="30dp"
-		    android:layout_height="30dp" 
-		    android:src="@drawable/add"
-		    />
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/add"
+                android:contentDescription="@null" />
+
             <TextView
+                style="@android:style/Widget.ActionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="@string/add"
                 android:textColor="@color/add"
-                android:textSize="20sp" />
+                android:textSize="25sp" />
         </LinearLayout>
+        -->
+
+        <Button
+            style="@android:style/Widget.ActionButton"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/add"
+            android:textColor="@color/add"
+            android:textSize="25sp" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

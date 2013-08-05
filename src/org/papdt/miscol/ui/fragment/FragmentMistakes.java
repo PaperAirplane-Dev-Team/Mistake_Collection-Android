@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 public class FragmentMistakes extends Fragment {
 	private static FragmentMistakes sInstance;
-	private final static String TAG = "FragmentQuestions";
-	
+	private final static String TAG = "FragmentMistakes";
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -21,20 +21,21 @@ public class FragmentMistakes extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-//		XXX 我的View哪去了……
-		return inflater.inflate(R.layout.fragment_mistakes, container,false);
+		// XXX 我的View哪去了……
+		return inflater.inflate(R.layout.fragment_mistakes, null);
 	}
-	
+
 	@Deprecated
 	public FragmentMistakes() {
 		MyLogger.d(TAG, TAG + "被初始化");
 	}
-	
-	public static FragmentMistakes getInstance(){
-		if(sInstance == null){
+
+
+	public static FragmentMistakes getInstance() {
+		if (sInstance == null) {
 			sInstance = new FragmentMistakes();
 		}
 		return sInstance;
 	}
-	
+
 }

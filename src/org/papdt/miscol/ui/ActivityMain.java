@@ -53,7 +53,6 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			selectItem(MAIN);
 			// 默认打开FragmentMain
 		}
-
 		MyLogger.d(TAG, TAG + "已完成初始化");
 	}
 
@@ -107,6 +106,8 @@ public class ActivityMain extends Activity implements IDrawerNames {
 				break;
 			case ALL_QUESTIONS:
 				mFragments[position] = FragmentMistakes.getInstance();
+				break;
+				// TODO FUCK YOU!!!!!!
 			default:
 				mFragments[position] = new Fragment();
 				// TODO 初始化各Fragment
@@ -123,14 +124,18 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	}
 
 	private void replaceToFragment(Fragment fragment, boolean hasInitialized) {
-		if (!hasInitialized)
+		if (!hasInitialized) {
 			mTransaction.add(R.id.fl_content, fragment);
+		}
 		mTransaction.attach(fragment).show(fragment).commit();
+		mFragmentManager.popBackStack();
+		mFragmentManager.executePendingTransactions();
 	}
 
 	private void hideFragment(Fragment fragment) {
-		if (fragment != null)
+		if (fragment != null) {
 			mTransaction.hide(fragment);
+		}
 	}
 
 	@Override
