@@ -4,7 +4,7 @@ import org.papdt.miscol.R;
 import org.papdt.miscol.ui.adapter.DrawerAdapter;
 import org.papdt.miscol.ui.adapter.DrawerAdapter.IDrawerNames;
 import org.papdt.miscol.ui.fragment.FragmentMain;
-import org.papdt.miscol.ui.fragment.FragmentQuestions;
+import org.papdt.miscol.ui.fragment.FragmentMistakes;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.app.Activity;
@@ -106,7 +106,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 				mFragments[position] = FragmentMain.getInstance();
 				break;
 			case ALL_QUESTIONS:
-				mFragments[position] = FragmentQuestions.getInstance();
+				mFragments[position] = FragmentMistakes.getInstance();
 			default:
 				mFragments[position] = new Fragment();
 				// TODO 初始化各Fragment

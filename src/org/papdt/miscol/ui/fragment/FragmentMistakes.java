@@ -9,10 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class FragmentQuestions extends Fragment {
-	private static FragmentQuestions INSTANCE;
+public class FragmentMistakes extends Fragment {
+	private static FragmentMistakes sInstance;
 	private final static String TAG = "FragmentQuestions";
-//	XXX 我的View哪去了……
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -22,20 +21,20 @@ public class FragmentQuestions extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.fragment_cards, null);
-		return v;
+//		XXX 我的View哪去了……
+		return inflater.inflate(R.layout.fragment_mistakes, container,false);
 	}
 	
 	@Deprecated
-	public FragmentQuestions() {
+	public FragmentMistakes() {
 		MyLogger.d(TAG, TAG + "被初始化");
 	}
 	
-	public static FragmentQuestions getInstance(){
-		if(INSTANCE == null){
-			INSTANCE = new FragmentQuestions();
+	public static FragmentMistakes getInstance(){
+		if(sInstance == null){
+			sInstance = new FragmentMistakes();
 		}
-		return INSTANCE;
+		return sInstance;
 	}
 	
 }

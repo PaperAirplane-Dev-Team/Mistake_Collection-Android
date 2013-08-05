@@ -27,7 +27,7 @@ public class FragmentMain extends Fragment {
 	private LinearLayout mHintLayout;
 	private Activity mActivity;
 	private final static String TAG = "FragmentMain";
-	private static FragmentMain mInstance;
+	private static FragmentMain sInstance;
 
 	@Deprecated
 	public FragmentMain() {
@@ -35,9 +35,9 @@ public class FragmentMain extends Fragment {
 	}
 
 	public static FragmentMain getInstance() {
-		if (mInstance == null)
-			mInstance = new FragmentMain();
-		return mInstance;
+		if (sInstance == null)
+			sInstance = new FragmentMain();
+		return sInstance;
 	}
 
 	@Override
@@ -69,17 +69,6 @@ public class FragmentMain extends Fragment {
 			}
 		});
 		mCardUI.addCard(cardWelcome);
-		MistakeCard cardHello = new MistakeCard("Hello, World",
-				"Swipe to remove this card.");
-		cardHello.setOnCardSwipedListener(new OnCardSwiped() {
-			@Override
-			public void onCardSwiped() {
-				Toast.makeText(getActivity(), "I'm being swiped!",
-						Toast.LENGTH_SHORT).show();
-				// XXX 不知道为什么没有用于移除Card的相关方法
-			}
-		});
-		mCardUI.addCard(cardHello);
 		mCardUI.refresh();
 		MyLogger.d(TAG, "Card已添加");
 		return mCardsLayout;
@@ -102,7 +91,6 @@ public class FragmentMain extends Fragment {
 		AnimationDrawable hintAnimation = (AnimationDrawable) ivHint
 				.getDrawable();
 		hintAnimation.start();
-		mHintLayout = (LinearLayout) mCardsLayout.findViewById(R.id.ll_hint);
 		mHintLayout.setVisibility(View.VISIBLE);
 
 	}
