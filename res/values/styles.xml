@@ -4,7 +4,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -13,8 +13,25 @@
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+
+    <style name="AppTheme" parent="@android:style/Theme.Holo.Light">
+		<item name="android:actionBarStyle">@style/MyActionBar</item>
+    </style>
+    
+    <!-- ActionBar theme -->
+    
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@color/action_bar_color</item>
+        <item name="android:backgroundStacked">@color/action_bar_color</item>
+        <item name="android:backgroundSplit">@color/action_bar_color</item>
+    </style>
+    <style name="drawerStyle" parent="android:Widget.Holo.Light.ListView">
+        <item name="android:background">@color/drawer_background</item>
+        <item name="android:choiceMode">singleChoice</item>
+        <item name="android:divider">@color/drawer_divider</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:listSelector">@color/drawer_selector</item>
     </style>
 
 </resources>
+

@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">What\'s wrong?</string>
-    <string name="title_activity_activity_main">What\'s wrong?</string>
-    <string name="action_settings">Settings</string>
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    <string name="app_name">哪错了？</string>
+    <string name="title_activity_main">哪错了？</string>
+    <string name="menu_settings">设置</string>
+    <string name="menu_exit">退出</string>
+    <string name="action_search">搜索</string>
+    <string name="drawer_open">打开导航面板</string>
+    <string name="drawer_close">关闭导航面板</string>
+    <string name="drawer_title">想做什么？</string>
 
+    <string-array name="drawer_items">
+        <item>首页</item>
+        <item>We</item>
+        <item>see</item>
+        <item>genius</item>
+    </string-array>
+    <!-- 版权信息 -->
+    <string name="copy_right">哪错了？\n版本:Rolling Stone pre-ɑ\n2013 PaperAirplane Dev Team</string>
+	<!-- 欢迎界面 -->
+	<string name="welcome">欢迎使用</string>
+	<string name="welcome_content">欢迎使用哪错了。\n哪错了能帮助您在Android手机和平板电脑上管理您的错题、难题；\n同时能帮助您进行错题测验。</string>
+	<string name="hint_text">从最左拖动拉出菜单</string>
 </resources>
