@@ -1,0 +1,3 @@
+[submodule "libs/CardsUILib"]
+	path = libs/CardsUILib
+	url = git@github.com:PaperAirplane-Dev-Team/CardsUILib.git

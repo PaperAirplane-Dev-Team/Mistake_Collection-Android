@@ -10,9 +10,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 public class DrawerAdapter extends BaseAdapter {
 	private String[] mDatas;
 	private Context mCtx;
+	public interface IDrawerNames{
+		int MAIN=0; //要不以后这么样,常量不要那么多,用接口
+		int SECOND=1;
+		int THIRD=2;
+	}
 
 	public DrawerAdapter(String[] datas, Context ctx) {
 		mDatas = datas;
@@ -57,7 +63,9 @@ public class DrawerAdapter extends BaseAdapter {
 			holder = (ViewHolder)convertView.getTag();
 		}
 		holder.tvText.setText(mDatas[position]);
-		
+		switch(position){
+			//TODO 根据IDrawerName的项目分配图标
+		}
 		return convertView;
 	}
 
