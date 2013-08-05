@@ -24,5 +24,6 @@
 	    android:contentDescription="@null"
 	    android:scaleType="fitStart"
 	    android:src = "@drawable/hint"
+	    android:visibility="gone"
 	    />
 </FrameLayout>

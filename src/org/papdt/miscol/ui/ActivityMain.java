@@ -3,23 +3,24 @@ package org.papdt.miscol.ui;
 import org.papdt.miscol.R;
 import org.papdt.miscol.ui.adapter.DrawerAdapter;
 import org.papdt.miscol.ui.adapter.DrawerAdapter.IDrawerNames;
-import org.papdt.miscol.ui.fragment.FargmentMain;
+import org.papdt.miscol.ui.fragment.FragmentMain;
 import org.papdt.miscol.utils.MyLogger;
+import org.papdt.miscol.utils.SharedPreferencesOperator;
+import org.papdt.miscol.utils.Constants;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -33,47 +34,48 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	private ListView mDrawerList;
 	private RelativeLayout mRlDrawer;
 	private ActionBarDrawerToggle mDrawerToggle;
-	private Fragment mFragments[];
+	private Fragment[] mFragments;
+	private FragmentTransaction mTransaction;
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
 	private String[] mDrawerItemNames;
 	private FragmentManager fragmentManager;
+	private Context mApplicationContext;
 	private final static String TAG = "ActivityMain";
-	
-	private boolean hasDrawerOpened;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		mApplicationContext = getApplicationContext();
 		mDrawerItemNames = getResources().getStringArray(R.array.drawer_items);
 		fragmentManager = getFragmentManager();
 		mFragments = new Fragment[mDrawerItemNames.length];
 		initializeDrawer();
 		if (savedInstanceState == null) {
 			selectItem(MAIN);
-			//默认打开FragmentMain
+			// 默认打开FragmentMain
+		}
+		if (!(Boolean) SharedPreferencesOperator.read(mApplicationContext,
+				Constants.Preferences.FileNames.GENERAL,
+				Constants.Preferences.Keys.HAS_EVER_STARTED, true))
+			firstOpenHint();
+		else {
+			MyLogger.d(TAG, "不是首次启动");
 		}
 		MyLogger.d(TAG, TAG + "已完成初始化");
 	}
 
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		//在不同的Fragment中分开处理
+		// 在不同的Fragment中分开处理
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mRlDrawer);
-		if (drawerOpen)
-			setTitle(R.string.drawer_title);
-		else
-			setTitle(R.string.title_activity_main);
+
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -100,11 +102,17 @@ public class ActivityMain extends Activity implements IDrawerNames {
 
 	private void selectItem(int position) {
 		// update the main content by replacing mFragments
+		boolean initialized;
+		mTransaction = fragmentManager.beginTransaction();
+		for (Fragment fragment : mFragments) {
+			hideFragment(fragment);
+		}
 		if (mFragments[position] == null) {
 			MyLogger.d(TAG, "创建新的 Fragment:" + position);
+			initialized = false;
 			switch (position) {
 			case MAIN:
-				mFragments[position] = new FargmentMain();
+				mFragments[position] = FragmentMain.getInstance();
 				break;
 			default:
 				mFragments[position] = new Fragment();
@@ -113,13 +121,23 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			}
 		} else {
 			MyLogger.d(TAG, "已存在Fragment:" + position);
+			initialized = true;
 		}
-		fragmentManager.beginTransaction()
-				.replace(R.id.fl_content, mFragments[position]).commit();
-
+		replaceToFragment(mFragments[position], initialized);
 		// update selected item and title, then close the drawer
 		mDrawerList.setItemChecked(position, true);
 		mDrawerLayout.closeDrawer(mRlDrawer);
+	}
+
+	private void replaceToFragment(Fragment fragment, boolean hasInitialized) {
+		if (!hasInitialized)
+			mTransaction.add(R.id.fl_content, fragment);
+		mTransaction.attach(fragment).show(fragment).commit();
+	}
+
+	private void hideFragment(Fragment fragment) {
+		if (fragment != null)
+			mTransaction.hide(fragment);
 	}
 
 	@Override
@@ -153,7 +171,8 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	 */
 	private void initializeDrawer() {
 
-		mTitle = mDrawerTitle = getTitle();
+		mTitle = getTitle();
+		mDrawerTitle = getString(R.string.drawer_title);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
 		mDrawerList = (ListView) findViewById(R.id.lv_drawer);
 		mRlDrawer = (RelativeLayout) findViewById(R.id.rl_drawer);
@@ -191,6 +210,14 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			}
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
+	}
+
+	private void firstOpenHint() {
+		// 处理第一次打开的提示等事务
+		MyLogger.d(TAG, "这是第一次启动");
+		SharedPreferencesOperator.write(mApplicationContext,
+				Constants.Preferences.FileNames.GENERAL,
+				Constants.Preferences.Keys.HAS_EVER_STARTED, (Boolean) true);
 	}
 
 }
