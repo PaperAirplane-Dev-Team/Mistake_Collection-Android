@@ -17,12 +17,14 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="bottom"
         android:orientation="horizontal"
         android:paddingLeft="0dp"
-        android:paddingTop="210dp" >
+        android:paddingTop="210dp"
+        android:visibility="gone" >
 
         <ImageView
             android:id="@+id/iv_hint"
@@ -46,15 +48,5 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-	<ImageView 
-	    android:id = "@+id/iv_hint"
-	    android:paddingLeft="0dp"
-	    android:paddingTop="210dp"
-	    android:layout_height="270dp"
-	    android:layout_width="212dp"
-	    android:contentDescription="@null"
-	    android:scaleType="fitStart"
-	    android:src = "@drawable/hint"
-	    android:visibility="gone"
-	    />
-=</FrameLayout>
+
+</FrameLayout>

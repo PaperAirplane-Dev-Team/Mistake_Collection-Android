@@ -5,15 +5,12 @@ import org.papdt.miscol.ui.adapter.DrawerAdapter;
 import org.papdt.miscol.ui.adapter.DrawerAdapter.IDrawerNames;
 import org.papdt.miscol.ui.fragment.FragmentMain;
 import org.papdt.miscol.utils.MyLogger;
-import org.papdt.miscol.utils.SharedPreferencesOperator;
-import org.papdt.miscol.utils.Constants;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -40,30 +37,22 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
 	private String[] mDrawerItemNames;
-	private FragmentManager fragmentManager;
-	private Context mApplicationContext;
+	private FragmentManager mFragmentManager;
 	private final static String TAG = "ActivityMain";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		mApplicationContext = getApplicationContext();
 		mDrawerItemNames = getResources().getStringArray(R.array.drawer_items);
-		fragmentManager = getFragmentManager();
+		mFragmentManager = getFragmentManager();
 		mFragments = new Fragment[mDrawerItemNames.length];
 		initializeDrawer();
 		if (savedInstanceState == null) {
 			selectItem(MAIN);
 			// 默认打开FragmentMain
 		}
-		if (!(Boolean) SharedPreferencesOperator.read(mApplicationContext,
-				Constants.Preferences.FileNames.GENERAL,
-				Constants.Preferences.Keys.HAS_EVER_STARTED, true))
-			firstOpenHint();
-		else {
-			MyLogger.d(TAG, "不是首次启动");
-		}
+
 		MyLogger.d(TAG, TAG + "已完成初始化");
 	}
 
@@ -104,7 +93,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	private void selectItem(int position) {
 		// update the main content by replacing mFragments
 		boolean initialized;
-		mTransaction = fragmentManager.beginTransaction();
+		mTransaction = mFragmentManager.beginTransaction();
 		for (Fragment fragment : mFragments) {
 			hideFragment(fragment);
 		}
@@ -208,19 +197,11 @@ public class ActivityMain extends Activity implements IDrawerNames {
 				getActionBar().setTitle(mDrawerTitle);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
+				((FragmentMain) mFragments[MAIN]).hideHint();
+
 			}
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
 
-	private void firstOpenHint() {
-		// 处理第一次打开的提示等事务
-		MyLogger.d(TAG, "这是第一次启动");
-		SharedPreferencesOperator.write(mApplicationContext,
-				Constants.Preferences.FileNames.GENERAL,
-				Constants.Preferences.Keys.HAS_EVER_STARTED, (Boolean) true);
-	}
-
 }
-
-
