@@ -1,23 +1,24 @@
 package org.papdt.miscol.bean;
 
-public class Mistake {
+public class Mistake implements Cloneable{
 
 	private String addTime;
+	private String lastModifyTime;
 	private String title;
-	private int typeId;
-	private int typeName;
+	private int typeId = -1;
+	private String typeName;
 	private String questionText;
-	private int questionPhotoId;
+	private int questionPhotoId = -1;
 	private String questionPhotoPath;
 	private String answerText;
-	private int answerPhotoId;
+	private int answerPhotoId = -1;
 	private String answerPhotoPath;
 	private String lastReviewTime;
-	private int reviewTimes;
-	private int reviewCorrectTimes;
-	private int subjectId;
+	private int reviewTimes = -1;
+	private int reviewCorrectTimes = -1;
+	private int subjectId = -1;
 	private String subjectName;
-	private int gradeId;
+	private int gradeId=-1;
 	private String gradeName;
 	private int[] tagIds;
 	private String[] tagNames;
@@ -35,7 +36,7 @@ public class Mistake {
 		return typeId;
 	}
 
-	public int getTypeName() {
+	public String getTypeName() {
 		return typeName;
 	}
 
@@ -98,6 +99,10 @@ public class Mistake {
 	public String[] getTagNames() {
 		return tagNames;
 	}
+	
+	public String getLastModifyTime() {
+		return lastModifyTime;
+	}
 
 	public boolean isStarred() {
 		return isStarred;
@@ -115,7 +120,7 @@ public class Mistake {
 		this.typeId = typeId;
 	}
 
-	public void setTypeName(int typeName) {
+	public void setTypeName(String typeName) {
 		this.typeName = typeName;
 	}
 
@@ -181,5 +186,9 @@ public class Mistake {
 
 	public void setStarred(boolean isStarred) {
 		this.isStarred = isStarred;
+	}
+
+	public void setLastModifyTime(String lastModifyTime) {
+		this.lastModifyTime = lastModifyTime;
 	}
 }
