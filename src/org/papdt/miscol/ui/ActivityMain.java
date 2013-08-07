@@ -58,9 +58,11 @@ public class ActivityMain extends Activity implements IDrawerNames {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		MyLogger.d(TAG, "onCreateOptionsMenu");
 		// 在不同的Fragment中分开处理
 		return super.onCreateOptionsMenu(menu);
 	}
+
 
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
@@ -107,7 +109,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			case ALL_QUESTIONS:
 				mFragments[position] = FragmentMistakes.getInstance();
 				break;
-				// TODO FUCK YOU!!!!!!
+			// TODO FUCK YOU!!!!!!
 			default:
 				mFragments[position] = new Fragment();
 				// TODO 初始化各Fragment

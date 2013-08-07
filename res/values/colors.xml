@@ -21,4 +21,7 @@
 	<color name="divider">#c6c6c6</color>
 	<!-- 添加题目 -->
 	<color name="add">#6c6f70</color>
+	<!-- Button -->
+	<color name="btn_bg">#00000000</color>
+	<color name="btn_bg_pressed">#7BCBEF</color>
 </resources>

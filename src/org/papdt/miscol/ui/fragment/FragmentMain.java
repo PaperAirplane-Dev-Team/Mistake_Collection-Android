@@ -42,6 +42,7 @@ public class FragmentMain extends Fragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		this.setHasOptionsMenu(true);// 在Fragment里要用Menu的话要写这一句的
 		super.onCreate(savedInstanceState);
 	}
 
@@ -62,7 +63,6 @@ public class FragmentMain extends Fragment {
 		cardWelcome.setOnCardSwipedListener(new OnCardSwiped() {
 			@Override
 			public void onCardSwiped() {
-				// XXX 不工作
 				Toast.makeText(getActivity(), "I'm being swiped!",
 						Toast.LENGTH_SHORT).show();
 				MyLogger.d(TAG, "being swiped");
@@ -77,27 +77,30 @@ public class FragmentMain extends Fragment {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		// FIXME 不工作
+		menu.clear();//还不能忘了加这句
 		MenuInflater inflater = getActivity().getMenuInflater();
 		inflater.inflate(R.menu.fragment_main, menu);
+		MyLogger.d(TAG, "onPrepareOptionsMenu menu.size()-->"+menu.size());
+
 		super.onPrepareOptionsMenu(menu);
 	}
+
 	/**
 	 * 显示滑动提示
 	 */
 	public void showHint() {
 		mHintLayout = (LinearLayout) mCardsLayout.findViewById(R.id.ll_hint);
-		ImageView ivHint = (ImageView) mHintLayout
-				.findViewById(R.id.iv_hint);
+		ImageView ivHint = (ImageView) mHintLayout.findViewById(R.id.iv_hint);
 		AnimationDrawable hintAnimation = (AnimationDrawable) ivHint
 				.getDrawable();
 		hintAnimation.start();
 		mHintLayout.setVisibility(View.VISIBLE);
 
 	}
-/**
- * 关闭滑动提示
- */
+
+	/**
+	 * 关闭滑动提示
+	 */
 	public void hideHint() {
 		if (mHintLayout != null) {
 			mHintLayout.setVisibility(View.GONE);
