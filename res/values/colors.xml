@@ -1,7 +1,10 @@
 <resources>
 
-    <!-- Action bar background color -->
+    <!-- Action bar -->
     <color name="action_bar_color">#cfea8b</color>
+    <color name="actionbar_text">#8FD400</color>
+    <color name="actionbar_tab">#C1E770</color>
+    <color name="actionbar_tab_bg">#FFFFFF</color>
 
     <!-- Fragment -->
     <color name="fragment_background">#eeeeee</color>

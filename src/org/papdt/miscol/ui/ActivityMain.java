@@ -7,6 +7,8 @@ import org.papdt.miscol.ui.fragment.FragmentMain;
 import org.papdt.miscol.ui.fragment.FragmentMistakes;
 import org.papdt.miscol.utils.MyLogger;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -39,6 +41,8 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	private CharSequence mTitle;
 	private String[] mDrawerItemNames;
 	private FragmentManager mFragmentManager;
+	private MistakesTabListener mTabListener;
+
 	private final static String TAG = "ActivityMain";
 
 	@Override
@@ -58,11 +62,9 @@ public class ActivityMain extends Activity implements IDrawerNames {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MyLogger.d(TAG, "onCreateOptionsMenu");
 		// 在不同的Fragment中分开处理
 		return super.onCreateOptionsMenu(menu);
 	}
-
 
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
@@ -106,10 +108,9 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			case MAIN:
 				mFragments[position] = FragmentMain.getInstance();
 				break;
-			case ALL_QUESTIONS:
+			case MISTAKES:
 				mFragments[position] = FragmentMistakes.getInstance();
 				break;
-			// TODO FUCK YOU!!!!!!
 			default:
 				mFragments[position] = new Fragment();
 				// TODO 初始化各Fragment
@@ -136,7 +137,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 
 	private void hideFragment(Fragment fragment) {
 		if (fragment != null) {
-			mTransaction.hide(fragment);
+			mTransaction.detach(fragment);
 		}
 	}
 
@@ -213,6 +214,29 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			}
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
+	}
+
+	public void initializeTabs() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		if (mTabListener == null) {
+			mTabListener = new MistakesTabListener(
+					(FragmentMistakes) mFragments[MISTAKES]);
+		}
+		Tab tagTab = actionBar.newTab().setText(R.string.tag)
+				.setTag(MistakesTabListener.TAGS).setTabListener(mTabListener);
+		Tab gradeTab = actionBar.newTab().setText(R.string.subject_or_grade)
+				.setTag(MistakesTabListener.SUBJECTS)
+				.setTabListener(mTabListener);
+		actionBar.addTab(tagTab);
+		actionBar.addTab(gradeTab);
+
+	}
+
+	public void removeTabs() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		actionBar.removeAllTabs();
 	}
 
 }

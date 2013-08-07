@@ -49,7 +49,6 @@ public class FragmentMain extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		MyLogger.d(TAG, "onCreateView()的调用");
 		mActivity = getActivity();
 		mCardsLayout = (FrameLayout) inflater.inflate(R.layout.fragment_main,
 				null);
@@ -80,8 +79,6 @@ public class FragmentMain extends Fragment {
 		menu.clear();//还不能忘了加这句
 		MenuInflater inflater = getActivity().getMenuInflater();
 		inflater.inflate(R.menu.fragment_main, menu);
-		MyLogger.d(TAG, "onPrepareOptionsMenu menu.size()-->"+menu.size());
-
 		super.onPrepareOptionsMenu(menu);
 	}
 
