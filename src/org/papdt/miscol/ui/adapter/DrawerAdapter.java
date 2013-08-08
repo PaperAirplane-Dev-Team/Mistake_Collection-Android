@@ -10,14 +10,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 public class DrawerAdapter extends BaseAdapter {
 	private String[] mDatas;
 	private Context mCtx;
-	public interface IDrawerNames{
-		int MAIN=0; //要不以后这么样,常量不要那么多,用接口
-		int MISTAKES=1;
-		int THIRD=2;
+
+	public interface IDrawerNames {
+		int MAIN = 0; // 要不以后这么样,常量不要那么多,用接口
+		int MISTAKES = 1;
+		int THIRD = 2;
+		String[] TAGS = { "Welcome", "Mistakes", "Third", "Forth", "Fifth" };
 	}
 
 	public DrawerAdapter(String[] datas, Context ctx) {
@@ -59,12 +60,12 @@ public class DrawerAdapter extends BaseAdapter {
 			holder.tvText = (TextView) convertView
 					.findViewById(android.R.id.text1);
 			convertView.setTag(holder);
-		} else{
-			holder = (ViewHolder)convertView.getTag();
+		} else {
+			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.tvText.setText(mDatas[position]);
-		switch(position){
-			//TODO 根据IDrawerName的项目分配图标
+		switch (position) {
+		// TODO 根据IDrawerName的项目分配图标
 		}
 		return convertView;
 	}

@@ -2,10 +2,8 @@ package org.papdt.miscol.ui.fragment;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.utils.MyLogger;
-import org.papdt.miscol.ui.ActivityMain;
-import org.papdt.miscol.ui.MistakeCard;
+import org.papdt.miscol.ui.CategoryCard;
 
-import com.fima.cardsui.objects.CardStack;
 import com.fima.cardsui.views.CardUI;
 
 import android.app.Fragment;
@@ -18,6 +16,8 @@ import android.view.ViewGroup;
 
 public class FragmentMistakes extends Fragment {
 	private static FragmentMistakes sInstance;
+	private CardUI mCardUI;
+	private CategoryCard[] mCategories;
 	private final static String TAG = "FragmentMistakes";
 
 	@Override
@@ -26,30 +26,16 @@ public class FragmentMistakes extends Fragment {
 		super.onCreate(savedInstanceState);
 	}
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		((ActivityMain) getActivity()).initializeTabs();
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_mistakes, null);
-		CardUI cardsUI = (CardUI) v.findViewById(R.id.view_cardui);
-		CardStack s = new CardStack();
-		s.add(new MistakeCard("Hello World","This is a demo card."));
-		s.add(new MistakeCard("Hello World","This is a demo card again."));
-		cardsUI.addStack(s);
-		cardsUI.refresh();
+		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
 		return v;
 	}
 
-	@Override
-	public void onPause() {
-		super.onPause();
-		((ActivityMain) getActivity()).removeTabs();
-	}
+
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
@@ -65,11 +51,29 @@ public class FragmentMistakes extends Fragment {
 	}
 
 	public void fillContentAsTagIndex() {
-
+		mCategories = new CategoryCard[3];
+		mCategories[0] = new CategoryCard("#第一次月考", 3);
+		mCategories[1] = new CategoryCard("#语文测验", 4);
+		mCategories[2] = new CategoryCard("#数学第三次周测", 2);
+		fillContentsToView();
 	}
 
 	public void fillContentAsSubjectIndex() {
+		mCategories = new CategoryCard[3];
+		mCategories[0] = new CategoryCard("初二", 3, 2);
+		mCategories[1] = new CategoryCard("初三", 10, 2);
+		mCategories[2] = new CategoryCard("高一", 8, 3);
+		fillContentsToView();
+	}
 
+	private void fillContentsToView() {
+		mCardUI.clearCards();
+		if (mCategories != null) {
+			for (CategoryCard cs : mCategories) {
+				mCardUI.addCard(cs);
+			}
+		}
+		mCardUI.refresh();
 	}
 
 	public static FragmentMistakes getInstance() {

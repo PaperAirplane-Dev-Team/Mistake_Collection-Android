@@ -11,8 +11,6 @@ import android.app.Fragment;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -42,7 +40,6 @@ public class FragmentMain extends Fragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		this.setHasOptionsMenu(true);// 在Fragment里要用Menu的话要写这一句的
 		super.onCreate(savedInstanceState);
 	}
 
@@ -72,14 +69,6 @@ public class FragmentMain extends Fragment {
 		mCardUI.refresh();
 		MyLogger.d(TAG, "Card已添加");
 		return mCardsLayout;
-	}
-
-	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		menu.clear();//还不能忘了加这句
-		MenuInflater inflater = getActivity().getMenuInflater();
-		inflater.inflate(R.menu.fragment_main, menu);
-		super.onPrepareOptionsMenu(menu);
 	}
 
 	/**
