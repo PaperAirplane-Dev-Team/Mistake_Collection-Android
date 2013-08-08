@@ -14,7 +14,7 @@
         android:layout_marginLeft="23dp"
         android:layout_marginRight="9dp"
         android:contentDescription="@null"
-        android:src="@color/welcome_background" />
+        android:src="@color/fragment_background" />
 
     <TextView
         android:id="@android:id/text1"

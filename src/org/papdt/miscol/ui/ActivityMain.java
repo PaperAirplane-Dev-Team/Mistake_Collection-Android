@@ -3,12 +3,17 @@ package org.papdt.miscol.ui;
 import org.papdt.miscol.R;
 import org.papdt.miscol.ui.adapter.DrawerAdapter;
 import org.papdt.miscol.ui.adapter.DrawerAdapter.IDrawerNames;
-import org.papdt.miscol.ui.fragment.FargmentMain;
+import org.papdt.miscol.ui.fragment.FragmentMain;
+import org.papdt.miscol.ui.fragment.FragmentMistakes;
 import org.papdt.miscol.utils.MyLogger;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+
+import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -30,11 +35,14 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	private ListView mDrawerList;
 	private RelativeLayout mRlDrawer;
 	private ActionBarDrawerToggle mDrawerToggle;
-	private Fragment mFragments[];
+	private Fragment[] mFragments;
+	private FragmentTransaction mTransaction;
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
 	private String[] mDrawerItemNames;
-	private FragmentManager fragmentManager;
+	private FragmentManager mFragmentManager;
+	private MistakesTabListener mTabListener;
+
 	private final static String TAG = "ActivityMain";
 
 	@Override
@@ -42,34 +50,26 @@ public class ActivityMain extends Activity implements IDrawerNames {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		mDrawerItemNames = getResources().getStringArray(R.array.drawer_items);
-		fragmentManager = getFragmentManager();
+		mFragmentManager = getFragmentManager();
 		mFragments = new Fragment[mDrawerItemNames.length];
 		initializeDrawer();
 		if (savedInstanceState == null) {
 			selectItem(MAIN);
-			//默认打开FragmentMain
+			// 默认打开FragmentMain
 		}
 		MyLogger.d(TAG, TAG + "已完成初始化");
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		/*MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.activity_main, menu);*/
-		//在不同的Fragment中分开处理
+		// 在不同的Fragment中分开处理
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mRlDrawer);
-		if (drawerOpen)
-			setTitle(R.string.drawer_title);
-		else
-			setTitle(R.string.title_activity_main);
+
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -96,11 +96,20 @@ public class ActivityMain extends Activity implements IDrawerNames {
 
 	private void selectItem(int position) {
 		// update the main content by replacing mFragments
+		boolean initialized;
+		mTransaction = mFragmentManager.beginTransaction();
+		for (Fragment fragment : mFragments) {
+			hideFragment(fragment);
+		}
 		if (mFragments[position] == null) {
 			MyLogger.d(TAG, "创建新的 Fragment:" + position);
+			initialized = false;
 			switch (position) {
 			case MAIN:
-				mFragments[position] = new FargmentMain();
+				mFragments[position] = FragmentMain.getInstance();
+				break;
+			case MISTAKES:
+				mFragments[position] = FragmentMistakes.getInstance();
 				break;
 			default:
 				mFragments[position] = new Fragment();
@@ -109,13 +118,34 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			}
 		} else {
 			MyLogger.d(TAG, "已存在Fragment:" + position);
+			initialized = true;
 		}
-		fragmentManager.beginTransaction()
-				.replace(R.id.fl_content, mFragments[position]).commit();
-
+		replaceToFragment(mFragments[position], initialized,TAGS[position]);
 		// update selected item and title, then close the drawer
 		mDrawerList.setItemChecked(position, true);
 		mDrawerLayout.closeDrawer(mRlDrawer);
+	}
+
+	private void replaceToFragment(Fragment fragment, boolean hasInitialized,String tag) {
+		if (!hasInitialized) {
+			mTransaction.add(R.id.fl_content, fragment,tag);
+		}
+		mTransaction.attach(fragment).show(fragment).commit();
+		mFragmentManager.popBackStack();
+		mFragmentManager.executePendingTransactions();
+		if(fragment.getTag().equals(TAGS[MISTAKES])){
+			initializeTabs();
+		}
+	}
+
+	private void hideFragment(Fragment fragment) {
+		if (fragment != null) {
+			mTransaction.hide(fragment);
+			if(fragment.getTag().equals(TAGS[MISTAKES])){
+				removeTabs();
+			}
+		}
+
 	}
 
 	@Override
@@ -149,7 +179,8 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	 */
 	private void initializeDrawer() {
 
-		mTitle = mDrawerTitle = getTitle();
+		mTitle = getTitle();
+		mDrawerTitle = getString(R.string.drawer_title);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_main);
 		mDrawerList = (ListView) findViewById(R.id.lv_drawer);
 		mRlDrawer = (RelativeLayout) findViewById(R.id.rl_drawer);
@@ -178,15 +209,41 @@ public class ActivityMain extends Activity implements IDrawerNames {
 				getActionBar().setTitle(mTitle);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
+				((FragmentMain) mFragments[MAIN]).showHint();
 			}
 
 			public void onDrawerOpened(View drawerView) {
 				getActionBar().setTitle(mDrawerTitle);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
+				((FragmentMain) mFragments[MAIN]).hideHint();
+
 			}
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
+	}
+
+	private void initializeTabs() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		if (mTabListener == null) {
+			mTabListener = new MistakesTabListener(
+					(FragmentMistakes) mFragments[MISTAKES]);
+		}
+		Tab tagTab = actionBar.newTab().setText(R.string.tag)
+				.setTag(MistakesTabListener.TAGS).setTabListener(mTabListener);
+		Tab gradeTab = actionBar.newTab().setText(R.string.subject_or_grade)
+				.setTag(MistakesTabListener.SUBJECTS)
+				.setTabListener(mTabListener);
+		actionBar.addTab(tagTab);
+		actionBar.addTab(gradeTab);
+
+	}
+
+	private void removeTabs() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		actionBar.removeAllTabs();
 	}
 
 }

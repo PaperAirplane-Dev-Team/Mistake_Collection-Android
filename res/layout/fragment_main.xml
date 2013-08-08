@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-    <com.fima.cardsui.views.CardUI
-        android:id="@+id/view_cardui"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:background="@color/fragment_background" >
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_fragment_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <com.fima.cardsui.views.CardUI
+            android:id="@+id/view_cardui"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingLeft="0dp"
+        android:paddingTop="210dp"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/iv_hint"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="@null"
+            android:scaleType="fitStart"
+            android:src="@drawable/hint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:gravity="fill_vertical"
+            android:paddingBottom="11dp"
+            android:shadowColor="@color/hint_shadow"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:text="@string/hint_text"
+            android:textColor="@color/hint_text"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/fragment_background" >
+
+    <com.fima.cardsui.views.CardUI
+        android:id="@+id/view_cardui"
+        android:layout_width="match_parent"
+        android:layout_height="370dp" />
+
+    <!-- 添加键 -->
+
+    <LinearLayout
+        style="@android:style/Widget.ActionButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/customized_button_background"
+        android:clickable="true"
+        android:orientation="vertical" >
+
+        <View
+            android:paddingTop="1dp"
+            android:layout_width="300dp"
+            android:layout_height="1dp"
+            android:background="@color/divider" />
+
+        <Button
+            style="@android:style/Widget.ActionButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/add_normal"
+            android:clickable="false"
+            android:gravity="center"
+            android:textColor="@color/add"
+            android:textSize="25sp" />
+    </LinearLayout>
+
+</LinearLayout>
