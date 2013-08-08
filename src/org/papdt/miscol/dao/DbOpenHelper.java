@@ -24,7 +24,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
 	@Deprecated
 	private DbOpenHelper(Context context, DatabaseErrorHandler errorHandler) {
-		super(context, Databases.FIle_NAME, null, Databases.VERSION,
+		super(context, Databases.FILE_NAME, null, Databases.VERSION,
 				errorHandler);
 	}
 

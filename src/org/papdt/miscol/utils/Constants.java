@@ -28,7 +28,7 @@ public class Constants {
 		/** 数据库版本 */
 		public static final int VERSION = 1;
 		/** 数据库文件名 */
-		public static final String FIle_NAME = "mistakes.db";
+		public static final String FILE_NAME = "mistakes.db";
 
 		/** 保存错题详细信息的主表 */
 		public static final class Mistakes {

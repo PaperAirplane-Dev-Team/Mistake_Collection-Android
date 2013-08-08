@@ -1,7 +1,7 @@
 package org.papdt.miscol.bean;
 
 public class Mistake implements Cloneable {
-
+	
 	private int id = -1;
 	private String addTime;
 	private String lastModifyTime = "NO";

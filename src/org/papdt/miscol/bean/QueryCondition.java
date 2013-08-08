@@ -21,7 +21,7 @@ public class QueryCondition {
 	}
 
 
-	public Integer[] getTagNames() {
+	public Integer[] getTagIds() {
 		return tagIds;
 	}
 
@@ -29,8 +29,8 @@ public class QueryCondition {
 		this.title = title;
 	}
 
-	public void setTagNames(Integer[] tagNames) {
-		this.tagIds = tagNames;
+	public void setTagIds(Integer[] tagIds) {
+		this.tagIds = tagIds;
 	}
 
 	public String[] getAddTime() {

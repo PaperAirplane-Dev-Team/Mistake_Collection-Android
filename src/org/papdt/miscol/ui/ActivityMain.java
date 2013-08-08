@@ -4,7 +4,7 @@ import org.papdt.miscol.R;
 import org.papdt.miscol.ui.adapter.DrawerAdapter;
 import org.papdt.miscol.ui.adapter.DrawerAdapter.IDrawerNames;
 import org.papdt.miscol.ui.fragment.FragmentMain;
-import org.papdt.miscol.ui.fragment.FragmentMistakes;
+import org.papdt.miscol.ui.fragment.FragmentCategories;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.app.ActionBar;
@@ -109,7 +109,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 				mFragments[position] = FragmentMain.getInstance();
 				break;
 			case MISTAKES:
-				mFragments[position] = FragmentMistakes.getInstance();
+				mFragments[position] = FragmentCategories.getInstance();
 				break;
 			default:
 				mFragments[position] = new Fragment();
@@ -228,7 +228,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		if (mTabListener == null) {
 			mTabListener = new MistakesTabListener(
-					(FragmentMistakes) mFragments[MISTAKES]);
+					(FragmentCategories) mFragments[MISTAKES]);
 		}
 		Tab tagTab = actionBar.newTab().setText(R.string.tag)
 				.setTag(MistakesTabListener.TAGS).setTabListener(mTabListener);

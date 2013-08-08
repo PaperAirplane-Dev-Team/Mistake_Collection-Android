@@ -1,6 +1,8 @@
 package org.papdt.miscol.ui.fragment;
 
+import java.util.ArrayList;
 import org.papdt.miscol.R;
+import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.utils.MyLogger;
 import org.papdt.miscol.ui.CategoryCard;
 
@@ -16,19 +18,21 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
-public class FragmentMistakes extends Fragment {
-	private static FragmentMistakes sInstance;
+public class FragmentCategories extends Fragment {
+	private static FragmentCategories sInstance;
 	private CardUI mCardUI;
 	private SearchView mSearchView;
 	private CategoryCard[] mCategories;
+	private DatabaseHelper mDbHelper;
+
 	private final static String TAG = "FragmentMistakes";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		this.setHasOptionsMenu(true);
+		this.mDbHelper = DatabaseHelper.getInstance(getActivity());
 		super.onCreate(savedInstanceState);
 	}
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,14 +41,15 @@ public class FragmentMistakes extends Fragment {
 		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
 		return v;
 	}
-	
+
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.clear();// 还不能忘了加这句
 		MenuInflater inflater = getActivity().getMenuInflater();
 		inflater.inflate(R.menu.fragment_main, menu);
-		mSearchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-		mSearchView.setOnQueryTextListener(new OnQueryTextListener(){
+		mSearchView = (SearchView) menu.findItem(R.id.menu_search)
+				.getActionView();
+		mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
 
 			@Override
 			public boolean onQueryTextChange(String arg0) {
@@ -58,21 +63,26 @@ public class FragmentMistakes extends Fragment {
 				MyLogger.i(TAG, "用户搜索关键词: " + arg0);
 				return false;
 			}
-			
+
 		});
 		super.onPrepareOptionsMenu(menu);
 	}
-	
+
 	@Deprecated
-	public FragmentMistakes() {
+	public FragmentCategories() {
 		MyLogger.d(TAG, TAG + "被初始化");
 	}
 
 	public void fillContentAsTagIndex() {
-		mCategories = new CategoryCard[3];
-		mCategories[0] = new CategoryCard("#第一次月考", 3);
-		mCategories[1] = new CategoryCard("#语文测验", 4);
-		mCategories[2] = new CategoryCard("#数学第三次周测", 2);
+		ArrayList<CategoryCard> allTags = mDbHelper.getAllTags();
+		if (!allTags.isEmpty()) {
+			mCategories = (CategoryCard[]) allTags.toArray();
+		} else {
+			mCategories = new CategoryCard[3];
+			mCategories[0] = new CategoryCard("#第一次月考", 3);
+			mCategories[1] = new CategoryCard("#语文测验", 4);
+			mCategories[2] = new CategoryCard("#数学第三次周测", 2);
+		}
 		fillContentsToView();
 	}
 
@@ -94,9 +104,9 @@ public class FragmentMistakes extends Fragment {
 		mCardUI.refresh();
 	}
 
-	public static FragmentMistakes getInstance() {
+	public static FragmentCategories getInstance() {
 		if (sInstance == null) {
-			sInstance = new FragmentMistakes();
+			sInstance = new FragmentCategories();
 		}
 		return sInstance;
 	}

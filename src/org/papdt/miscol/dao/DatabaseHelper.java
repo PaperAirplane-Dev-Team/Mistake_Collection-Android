@@ -1,10 +1,12 @@
 package org.papdt.miscol.dao;
 
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.bean.MistakeOperationException;
 import org.papdt.miscol.bean.QueryCondition;
+import org.papdt.miscol.ui.CategoryCard;
 import org.papdt.miscol.utils.Constants.Databases;
 import org.papdt.miscol.utils.Constants.Databases.Files;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
@@ -12,6 +14,7 @@ import org.papdt.miscol.utils.Constants.Databases.IDbWithIdAndName;
 import org.papdt.miscol.utils.Constants.Databases.Mistakes;
 import org.papdt.miscol.utils.Constants.Databases.Subjects;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
+import org.papdt.miscol.utils.Constants;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.content.ContentValues;
@@ -36,17 +39,48 @@ public class DatabaseHelper {
 		mDatabase = mDbOpenHelper.getWritableDatabase();
 	}
 
-	public static DatabaseHelper getInstance(Context context,
-			DatabaseErrorHandler handler) {
+	public static DatabaseHelper getInstance(Context context) {
 		if (sInstance == null) {
-			sInstance = new DatabaseHelper(context, handler);
+			sInstance = new DatabaseHelper(context, new DatabaseErrorHandler() {
+				@Override
+				public void onCorruption(SQLiteDatabase dbObj) {
+					MyLogger.e(TAG, "onCorruption");
+				}
+
+			});
 		}
 		return sInstance;
 	}
 
 	/**
+	 * 获取全部Tag的CategoryCard ArrayList
+	 * @return 
+	 */
+	
+	public ArrayList<CategoryCard> getAllTags() {
+		SparseArray<String> tagArray = getIdToNameMap(Constants.Databases.Tags.TABLE_NAME);
+		ArrayList<CategoryCard> tags = new ArrayList<CategoryCard>();
+		if (tagArray != null) {
+			int size = tagArray.size();
+			for (int i = 0; i < size; i++) {
+				String tag = tagArray.get(i);
+				if (tag != null) {
+					QueryCondition c = new QueryCondition();
+					c.setTagIds(new Integer[] { DataItemProcessor
+							.convertItemIntoId(tag, mDatabase,
+									Constants.Databases.Tags.TABLE_NAME) });
+					tags.add(new CategoryCard(tag,this.queryMistakesByCondition(c).length));
+				}
+			}
+		}
+		return tags;
+	}
+
+	/**
 	 * 返回表中所有id-name的映射
-	 * @param tableName 查询的表名
+	 * 
+	 * @param tableName
+	 *            查询的表名
 	 * @return 映射数组
 	 */
 	public SparseArray<String> getIdToNameMap(String tableName) {
@@ -56,10 +90,11 @@ public class DatabaseHelper {
 						+ tableName, null);
 		if (cursor.getCount() == 0)
 			return null;
-		SparseArray<String> array=new SparseArray<String>();
-		while(cursor.moveToNext()){
+		SparseArray<String> array = new SparseArray<String>();
+		while (cursor.moveToNext()) {
 			array.put(cursor.getInt(0), cursor.getString(1));
 		}
+		cursor.close();
 		return array;
 	}
 
@@ -199,7 +234,7 @@ public class DatabaseHelper {
 				Mistakes.KEY_INT_SUBJECT_ID, true);
 		insertMultipleChoiceClause(sb, condition.getGradeIds(),
 				Mistakes.KEY_INT_GRADE_ID, true);
-		insertMultipleChoiceClause(sb, condition.getTagNames(),
+		insertMultipleChoiceClause(sb, condition.getTagIds(),
 				Mistakes.KEY_STRING_TAG_IDS, false);
 		if (condition.isStarred()) {
 			if (hasPrevious) {

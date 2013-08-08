@@ -60,7 +60,7 @@ public class DataItemProcessor {
 		return sb.toString();
 	}
 
-	private static int convertItemIntoId(String itemName, SQLiteDatabase db,
+	public static int convertItemIntoId(String itemName, SQLiteDatabase db,
 			String tableName) {
 		return convertItemIntoId(itemName, db, tableName,
 				IDbWithIdAndName.KEY_STRING_NAME);

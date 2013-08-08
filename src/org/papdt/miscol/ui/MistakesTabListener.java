@@ -1,6 +1,6 @@
 package org.papdt.miscol.ui;
 
-import org.papdt.miscol.ui.fragment.FragmentMistakes;
+import org.papdt.miscol.ui.fragment.FragmentCategories;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.app.ActionBar.Tab;
@@ -13,9 +13,9 @@ public class MistakesTabListener implements ActionBar.TabListener {
 
 	private final String TAG = "MistakesTabListener";
 
-	private FragmentMistakes mFragment;
+	private FragmentCategories mFragment;
 
-	public MistakesTabListener(FragmentMistakes fragment) {
+	public MistakesTabListener(FragmentCategories fragment) {
 		mFragment = fragment;
 	}
 
