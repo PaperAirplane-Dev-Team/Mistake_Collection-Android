@@ -8,7 +8,8 @@
     <com.fima.cardsui.views.CardUI
         android:id="@+id/view_cardui"
         android:layout_width="match_parent"
-        android:layout_height="370dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <!-- 添加键 -->
 
@@ -16,6 +17,7 @@
         style="@android:style/Widget.ActionButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/customized_button_background"
         android:clickable="true"
         android:orientation="vertical" >
