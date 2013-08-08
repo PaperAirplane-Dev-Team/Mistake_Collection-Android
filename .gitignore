@@ -19,7 +19,6 @@ local.properties
 .classpath
 .project
 .settings/
-.settings\
 
 #Windows Bitmap Cache
 Thumbs.db
