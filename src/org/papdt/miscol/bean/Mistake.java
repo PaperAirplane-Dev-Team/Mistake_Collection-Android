@@ -1,9 +1,10 @@
 package org.papdt.miscol.bean;
 
-public class Mistake implements Cloneable{
+public class Mistake implements Cloneable {
 
+	private int id = -1;
 	private String addTime;
-	private String lastModifyTime;
+	private String lastModifyTime = "NO";
 	private String title;
 	private int typeId = -1;
 	private String typeName;
@@ -13,12 +14,13 @@ public class Mistake implements Cloneable{
 	private String answerText;
 	private int answerPhotoId = -1;
 	private String answerPhotoPath;
-	private String lastReviewTime;
+	private String lastReviewTime = "NO";
 	private int reviewTimes = -1;
 	private int reviewCorrectTimes = -1;
+	private double correctRate = -1.0d;
 	private int subjectId = -1;
 	private String subjectName;
-	private int gradeId=-1;
+	private int gradeId = -1;
 	private String gradeName;
 	private int[] tagIds;
 	private String[] tagNames;
@@ -99,7 +101,7 @@ public class Mistake implements Cloneable{
 	public String[] getTagNames() {
 		return tagNames;
 	}
-	
+
 	public String getLastModifyTime() {
 		return lastModifyTime;
 	}
@@ -190,5 +192,21 @@ public class Mistake implements Cloneable{
 
 	public void setLastModifyTime(String lastModifyTime) {
 		this.lastModifyTime = lastModifyTime;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public double getCorrectRate() {
+		return correctRate;
+	}
+
+	public void setCorrectRate(double correctRate) {
+		this.correctRate = correctRate;
 	}
 }

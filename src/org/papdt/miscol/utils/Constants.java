@@ -21,6 +21,8 @@ public class Constants {
 			public static final String KEY_INT_ID = "_id";
 			/** 科目名称 */
 			public static final String KEY_STRING_NAME = "name";
+			/** 维护一个计数，以供清理不用的项目 */
+			public static final String KEY_INT_ITEM_COUNT = "item_count";
 		}
 
 		/** 数据库版本 */
@@ -40,8 +42,8 @@ public class Constants {
 			public static final String KEY_DATETIME_LAST_MODIFY_TIME = "last_modify_time";
 			/** 标题 */
 			public static final String KEY_STRING_TITLE = "title";
-			/** 题目类型 */
-			public static final String KEY_INT_TYPE = "type";
+			/** 题目类型编号 */
+			public static final String KEY_INT_TYPE_ID = "type_id";
 			/** 问题文本 */
 			public static final String KEY_STRING_QUESTION_TEXT = "question_text";
 			/** 问题图片 */
@@ -56,6 +58,8 @@ public class Constants {
 			public static final String KEY_INT_REVIEW_TIMES = "review_times";
 			/** 复习正确次数(如果有) */
 			public static final String KEY_INT_REVIEW_CORRECT_TIMES = "review_correct_times";
+			/** 正确率(如果有) */
+			public static final String KEY_REAL_CORRECT_RATE = "correct_rate";
 			/** 科目 */
 			public static final String KEY_INT_SUBJECT_ID = "subject_id";
 			/** 年级 */
@@ -79,7 +83,7 @@ public class Constants {
 		}
 
 		/** 标签信息 */
-		public static final class Tags implements IDbWithIdAndName{
+		public static final class Tags implements IDbWithIdAndName {
 			/** 数据表名 */
 			public static final String TABLE_NAME = "tags";
 		}
@@ -116,7 +120,7 @@ public class Constants {
 					+ Mistakes.KEY_DATETIME_ADD_TIME + " DATETIME NOT NULL"
 					+ ", " + Mistakes.KEY_DATETIME_LAST_MODIFY_TIME
 					+ " DATETIME" + ", " + Mistakes.KEY_STRING_TITLE
-					+ " TEXT NOT NULL" + ", " + Mistakes.KEY_INT_TYPE
+					+ " TEXT NOT NULL" + ", " + Mistakes.KEY_INT_TYPE_ID
 					+ " INTEGER NOT NULL" + ", "
 					+ Mistakes.KEY_STRING_QUESTION_TEXT + " TEXT NOT NULL"
 					+ ", " + Mistakes.KEY_INT_QUESTION_PHOTO_ID + " INTEGER"
@@ -125,7 +129,8 @@ public class Constants {
 					+ ", " + Mistakes.KEY_DATETIME_LAST_REVIEW_TIME
 					+ " DATETIME" + ", " + Mistakes.KEY_INT_REVIEW_TIMES
 					+ " INTEGER" + ", " + Mistakes.KEY_INT_REVIEW_CORRECT_TIMES
-					+ " INTEGER" + ", " + Mistakes.KEY_INT_SUBJECT_ID
+					+ " INTEGER" + ", " + Mistakes.KEY_REAL_CORRECT_RATE
+					+ " REAL" + ", " + Mistakes.KEY_INT_SUBJECT_ID
 					+ " INTEGER NOT NULL" + ", " + Mistakes.KEY_INT_GRADE_ID
 					+ " INTEGER NOT NULL" + ", " + Mistakes.KEY_STRING_TAG_IDS
 					+ " TEXT" + ", " + Mistakes.KEY_INT_IS_ISTARRED
@@ -134,20 +139,24 @@ public class Constants {
 			public static final String SUBJECTS = Subjects.TABLE_NAME + "("
 					+ Subjects.KEY_INT_ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
-					+ Subjects.KEY_STRING_NAME + " TEXT NOT NULL" + ")";
+					+ Subjects.KEY_STRING_NAME + " TEXT NOT NULL"
+					+ Subjects.KEY_INT_ITEM_COUNT + " INTEGER NOT NULL" + ")";
 
 			public static final String GRADES = Grades.TABLE_NAME + "("
 					+ Grades.KEY_INT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT"
-					+ ", " + Grades.KEY_STRING_NAME + " TEXT NOT NULL" + ")";
+					+ ", " + Grades.KEY_STRING_NAME + " TEXT NOT NULL"
+					+ Subjects.KEY_INT_ITEM_COUNT + " INTEGER NOT NULL" + ")";
 
 			public static final String TAGS = Tags.TABLE_NAME + "("
 					+ Tags.KEY_INT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT"
-					+ ", " + Tags.KEY_STRING_NAME + " TEXT NOT NULL" + ")";
+					+ ", " + Tags.KEY_STRING_NAME + " TEXT NOT NULL"
+					+ Subjects.KEY_INT_ITEM_COUNT + " INTEGER NOT NULL" + ")";
 
 			public static final String QUESTION_TYPE = QuestionType.TABLE_NAME
 					+ "(" + QuestionType.KEY_INT_ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
-					+ QuestionType.KEY_STRING_NAME + " TEXT NOT NULL" + ")";
+					+ QuestionType.KEY_STRING_NAME + " TEXT NOT NULL"
+					+ Subjects.KEY_INT_ITEM_COUNT + " INTEGER NOT NULL" + ")";
 
 			public static final String FILES = Files.TABLE_NAME + "("
 					+ Files.KEY_INT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT"
