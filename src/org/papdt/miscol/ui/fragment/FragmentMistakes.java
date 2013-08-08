@@ -13,10 +13,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
 
 public class FragmentMistakes extends Fragment {
 	private static FragmentMistakes sInstance;
 	private CardUI mCardUI;
+	private SearchView mSearchView;
 	private CategoryCard[] mCategories;
 	private final static String TAG = "FragmentMistakes";
 
@@ -34,17 +37,32 @@ public class FragmentMistakes extends Fragment {
 		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
 		return v;
 	}
-
-
-
+	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.clear();// 还不能忘了加这句
 		MenuInflater inflater = getActivity().getMenuInflater();
 		inflater.inflate(R.menu.fragment_main, menu);
+		mSearchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+		mSearchView.setOnQueryTextListener(new OnQueryTextListener(){
+
+			@Override
+			public boolean onQueryTextChange(String arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean onQueryTextSubmit(String arg0) {
+				// TODO 完善搜索功能
+				MyLogger.i(TAG, "用户搜索关键词: " + arg0);
+				return false;
+			}
+			
+		});
 		super.onPrepareOptionsMenu(menu);
 	}
-
+	
 	@Deprecated
 	public FragmentMistakes() {
 		MyLogger.d(TAG, TAG + "被初始化");
