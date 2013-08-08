@@ -20,6 +20,7 @@ import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.SparseArray;
 
 public class DatabaseHelper {
 
@@ -44,10 +45,32 @@ public class DatabaseHelper {
 	}
 
 	/**
+	 * 返回表中所有id-name的映射
+	 * @param tableName 查询的表名
+	 * @return 映射数组
+	 */
+	public SparseArray<String> getIdToNameMap(String tableName) {
+		Cursor cursor = mDatabase
+				.rawQuery("SELECT " + IDbWithIdAndName.KEY_INT_ID + ","
+						+ IDbWithIdAndName.KEY_STRING_NAME + " FROM "
+						+ tableName, null);
+		if (cursor.getCount() == 0)
+			return null;
+		SparseArray<String> array=new SparseArray<String>();
+		while(cursor.moveToNext()){
+			array.put(cursor.getInt(0), cursor.getString(1));
+		}
+		return array;
+	}
+
+	/**
 	 * 插入错题
-	 * @param mistake 要插入的错题
+	 * 
+	 * @param mistake
+	 *            要插入的错题
 	 * @return 是否成功
-	 * @throws MistakeOperationException 操作失败
+	 * @throws MistakeOperationException
+	 *             操作失败
 	 */
 	public boolean insertMistake(Mistake mistake)
 			throws MistakeOperationException {
@@ -71,7 +94,9 @@ public class DatabaseHelper {
 
 	/**
 	 * 按照给出的条件从数据库中搜索错题
-	 * @param condition 查询条件(至少有一项)
+	 * 
+	 * @param condition
+	 *            查询条件(至少有一项)
 	 * @return 返回的符合条件的错题(可能为null)
 	 */
 	public Mistake[] queryMistakesByCondition(QueryCondition condition) {
@@ -91,16 +116,19 @@ public class DatabaseHelper {
 
 	/**
 	 * 更新一道错题
-	 * @param mistake 修改后的错题
+	 * 
+	 * @param mistake
+	 *            修改后的错题
 	 * @return 是否成功
-	 * @throws MistakeOperationException 操作失败
+	 * @throws MistakeOperationException
+	 *             操作失败
 	 */
 	public boolean updateMistake(Mistake mistake)
 			throws MistakeOperationException {
 		if (mistake.getId() == -1) {
 			throw new MistakeOperationException(mistake, "试图在数据库内更改未保存的错题");
 		}
-		//TODO 如果有照片修改那么删掉源文件并修改path,在Fragment中完成
+		// TODO 如果有照片修改那么删掉源文件并修改path,在Fragment中完成
 		DataItemProcessor.processMistake(mistake, mDatabase);
 		ContentValues values = generateContentValues(mistake, false);
 		mDatabase.beginTransaction();
@@ -113,9 +141,12 @@ public class DatabaseHelper {
 
 	/**
 	 * 从数据库中删除错题
-	 * @param mistake 要删除的错题
+	 * 
+	 * @param mistake
+	 *            要删除的错题
 	 * @return 是否成功
-	 * @throws MistakeOperationException 操作失败
+	 * @throws MistakeOperationException
+	 *             操作失败
 	 */
 	public boolean deleteMistake(Mistake mistake)
 			throws MistakeOperationException {
