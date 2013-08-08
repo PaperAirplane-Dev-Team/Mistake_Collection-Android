@@ -17,14 +17,17 @@
     <color name="drawer_item_text">#505050</color>
     <color name="drawer_item_background">#FFFFFF</color>
     <color name="drawer_item_text_background">#00FFFFFF</color>
-	<!-- hint -->
-	<color name="hint_text">#8fd400</color>
-	<color name="hint_shadow">#f0c2e27f</color>
-	<!-- 华丽的分割线 -->
-	<color name="divider">#c6c6c6</color>
-	<!-- 添加题目 -->
-	<color name="add">#6c6f70</color>
-	<!-- Button -->
-	<color name="btn_bg">#00000000</color>
-	<color name="btn_bg_pressed">#7BCBEF</color>
+    <!-- hint -->
+    <color name="hint_text">#8fd400</color>
+    <color name="hint_shadow">#f0c2e27f</color>
+    <!-- 华丽的分割线 -->
+    <color name="divider">#c6c6c6</color>
+    <!-- 添加题目 -->
+    <color name="add">#6c6f70</color>
+    <!-- Button -->
+    <color name="btn_bg">#00000000</color>
+    <color name="btn_bg_pressed">#7BCBEF</color>
+    <!-- 卡片 -->
+    <color name="card_description">#A2A5A4</color>
+
 </resources>

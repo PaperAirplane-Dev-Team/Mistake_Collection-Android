@@ -120,25 +120,32 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			MyLogger.d(TAG, "已存在Fragment:" + position);
 			initialized = true;
 		}
-		replaceToFragment(mFragments[position], initialized);
+		replaceToFragment(mFragments[position], initialized,TAGS[position]);
 		// update selected item and title, then close the drawer
 		mDrawerList.setItemChecked(position, true);
 		mDrawerLayout.closeDrawer(mRlDrawer);
 	}
 
-	private void replaceToFragment(Fragment fragment, boolean hasInitialized) {
+	private void replaceToFragment(Fragment fragment, boolean hasInitialized,String tag) {
 		if (!hasInitialized) {
-			mTransaction.add(R.id.fl_content, fragment);
+			mTransaction.add(R.id.fl_content, fragment,tag);
 		}
 		mTransaction.attach(fragment).show(fragment).commit();
 		mFragmentManager.popBackStack();
 		mFragmentManager.executePendingTransactions();
+		if(fragment.getTag().equals(TAGS[MISTAKES])){
+			initializeTabs();
+		}
 	}
 
 	private void hideFragment(Fragment fragment) {
 		if (fragment != null) {
-			mTransaction.detach(fragment);
+			mTransaction.hide(fragment);
+			if(fragment.getTag().equals(TAGS[MISTAKES])){
+				removeTabs();
+			}
 		}
+
 	}
 
 	@Override
@@ -216,7 +223,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
 
-	public void initializeTabs() {
+	private void initializeTabs() {
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		if (mTabListener == null) {
@@ -233,7 +240,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 
 	}
 
-	public void removeTabs() {
+	private void removeTabs() {
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actionBar.removeAllTabs();

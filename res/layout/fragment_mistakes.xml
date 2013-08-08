@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 临时 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/fragment_background" >
 
     <com.fima.cardsui.views.CardUI
         android:id="@+id/view_cardui"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="370dp" />
 
     <!-- 添加键 -->
 
@@ -16,7 +16,6 @@
         style="@android:style/Widget.ActionButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignBottom="@id/view_cardui"
         android:background="@drawable/customized_button_background"
         android:clickable="true"
         android:orientation="vertical" >
@@ -38,4 +37,4 @@
             android:textSize="25sp" />
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
