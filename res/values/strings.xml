@@ -14,9 +14,9 @@
     <string-array name="drawer_items">
         <item>首页</item>
         <item>全部题目</item>
-        <item>We</item>
-        <item>see</item>
-        <item>genius</item>
+        <item>Sample Page 0</item>
+        <item>Sample Page 1</item>
+        <item>Sample Page 2</item>
     </string-array>
     <!-- 版权信息 -->
     <string name="copy_right">哪错了？\n版本:Rolling Stone pre-ɑ\n2013 PaperAirplane Dev Team</string>
@@ -31,4 +31,11 @@
 	<!-- Tabs -->
 	<string name="tag">标签</string>
 	<string name="subject_or_grade">年级/科目</string>
+	<!-- 添加错题界面 -->
+	<string name="tv_grade">年级: </string>
+	<string name="tv_subject">科目: </string>
+	<string name="hint_title">标题</string>
+	<string name="hint_description">问题描述</string>
+	<string name="hint_answer">问题答案</string>
+	
 </resources>
