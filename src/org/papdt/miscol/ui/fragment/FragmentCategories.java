@@ -1,6 +1,8 @@
 package org.papdt.miscol.ui.fragment;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.papdt.miscol.R;
 import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.utils.MyLogger;
@@ -75,8 +77,12 @@ public class FragmentCategories extends Fragment {
 
 	public void fillContentAsTagIndex() {
 		ArrayList<CategoryCard> allTags = mDbHelper.getAllTags();
-		if (!allTags.isEmpty()) {
-			mCategories = (CategoryCard[]) allTags.toArray();
+		if (allTags != null) {
+			Iterator<CategoryCard> iterator = allTags.iterator();
+			int i = 0;
+			while (iterator.hasNext()) {
+				mCategories[i++] = iterator.next();
+			}
 		} else {
 			mCategories = new CategoryCard[3];
 			mCategories[0] = new CategoryCard("#第一次月考", 3);
@@ -87,10 +93,19 @@ public class FragmentCategories extends Fragment {
 	}
 
 	public void fillContentAsSubjectIndex() {
-		mCategories = new CategoryCard[3];
-		mCategories[0] = new CategoryCard("初二", 3, 2);
-		mCategories[1] = new CategoryCard("初三", 10, 2);
-		mCategories[2] = new CategoryCard("高一", 8, 3);
+		ArrayList<CategoryCard> allSubjects = mDbHelper.getAllTags();
+		if (allSubjects != null) {
+			Iterator<CategoryCard> iterator = allSubjects.iterator();
+			int i = 0;
+			while (iterator.hasNext()) {
+				mCategories[i++] = iterator.next();
+			}
+		} else {
+			mCategories = new CategoryCard[3];
+			mCategories[0] = new CategoryCard("初二", 3, 2);
+			mCategories[1] = new CategoryCard("初三", 10, 2);
+			mCategories[2] = new CategoryCard("高一", 8, 3);
+		}
 		fillContentsToView();
 	}
 
