@@ -114,6 +114,24 @@ public class Constants {
 			/** 删除表前缀 */
 			public static final String DROP = "DROP TABLE IF EXISTS ";
 
+			public static final String SELECT_ALL_ITEM = Mistakes.KEY_INT_ID
+					+ "," + Mistakes.KEY_DATETIME_ADD_TIME + ","
+					+ Mistakes.KEY_DATETIME_LAST_MODIFY_TIME + ","
+					+ Mistakes.KEY_STRING_TITLE + ","
+					+ Mistakes.KEY_INT_TYPE_ID + ","
+					+ Mistakes.KEY_STRING_QUESTION_TEXT + ","
+					+ Mistakes.KEY_INT_QUESTION_PHOTO_ID + ","
+					+ Mistakes.KEY_STRING_ANSWER_TEXT + ","
+					+ Mistakes.KEY_INT_ANSWER_PHOTO_ID + ","
+					+ Mistakes.KEY_DATETIME_LAST_REVIEW_TIME + ","
+					+ Mistakes.KEY_INT_REVIEW_TIMES + ","
+					+ Mistakes.KEY_INT_REVIEW_CORRECT_TIMES + ","
+					+ Mistakes.KEY_REAL_CORRECT_RATE + ","
+					+ Mistakes.KEY_INT_SUBJECT_ID + ","
+					+ Mistakes.KEY_INT_GRADE_ID + ","
+					+ Mistakes.KEY_STRING_TAG_IDS + ","
+					+ Mistakes.KEY_INT_IS_ISTARRED;
+
 			public static final String MISTAKES = Mistakes.TABLE_NAME + "("
 					+ Mistakes.KEY_INT_ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT" + ", "

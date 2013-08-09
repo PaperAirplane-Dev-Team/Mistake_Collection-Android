@@ -3,6 +3,7 @@ package org.papdt.miscol.dao;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import org.papdt.miscol.bean.CategoryInfo;
 import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.bean.MistakeOperationException;
 import org.papdt.miscol.bean.QueryCondition;
@@ -12,9 +13,9 @@ import org.papdt.miscol.utils.Constants.Databases.Files;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.utils.Constants.Databases.IDbWithIdAndName;
 import org.papdt.miscol.utils.Constants.Databases.Mistakes;
+import org.papdt.miscol.utils.Constants.Databases.SqlStatements;
 import org.papdt.miscol.utils.Constants.Databases.Subjects;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
-import org.papdt.miscol.utils.Constants;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.content.ContentValues;
@@ -23,7 +24,6 @@ import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.SparseArray;
 
 public class DatabaseHelper {
 
@@ -54,48 +54,44 @@ public class DatabaseHelper {
 
 	/**
 	 * 获取全部Tag的CategoryCard ArrayList
-	 * @return 
+	 * 
+	 * @return
 	 */
-	
+
 	public ArrayList<CategoryCard> getAllTags() {
-		SparseArray<String> tagArray = getIdToNameMap(Constants.Databases.Tags.TABLE_NAME);
+		CategoryInfo[] info = getCategoryInfo(Tags.TABLE_NAME);
 		ArrayList<CategoryCard> tags = new ArrayList<CategoryCard>();
-		if (tagArray != null) {
-			int size = tagArray.size();
-			for (int i = 0; i < size; i++) {
-				String tag = tagArray.get(i);
-				if (tag != null) {
-					QueryCondition c = new QueryCondition();
-					c.setTagIds(new Integer[] { DataItemProcessor
-							.convertItemIntoId(tag, mDatabase,
-									Constants.Databases.Tags.TABLE_NAME) });
-					tags.add(new CategoryCard(tag,this.queryMistakesByCondition(c).length));
-				}
-			}
+		for (CategoryInfo temp : info) {
+			tags.add(new CategoryCard(temp.getName(), temp.getCount()));
 		}
 		return tags;
 	}
 
 	/**
-	 * 返回表中所有id-name的映射
+	 * 返回表中所有id-name的映射以及计数
 	 * 
 	 * @param tableName
 	 *            查询的表名
-	 * @return 映射数组
+	 * @return 分类信息数组
 	 */
-	public SparseArray<String> getIdToNameMap(String tableName) {
-		Cursor cursor = mDatabase
-				.rawQuery("SELECT " + IDbWithIdAndName.KEY_INT_ID + ","
-						+ IDbWithIdAndName.KEY_STRING_NAME + " FROM "
-						+ tableName, null);
+	public CategoryInfo[] getCategoryInfo(String tableName) {
+		Cursor cursor = mDatabase.rawQuery("SELECT "
+				+ IDbWithIdAndName.KEY_INT_ID + ","
+				+ IDbWithIdAndName.KEY_STRING_NAME + ","
+				+ IDbWithIdAndName.KEY_INT_ITEM_COUNT + " FROM " + tableName,
+				null);
 		if (cursor.getCount() == 0)
 			return null;
-		SparseArray<String> array = new SparseArray<String>();
+		CategoryInfo info[] = new CategoryInfo[cursor.getCount()];
+		int i = 0;
 		while (cursor.moveToNext()) {
-			array.put(cursor.getInt(0), cursor.getString(1));
+			info[i].setId(cursor.getInt(0));
+			info[i].setName(cursor.getString(1).trim());
+			info[i].setCount(cursor.getInt(3));
+			i++;
 		}
 		cursor.close();
-		return array;
+		return info;
 	}
 
 	/**
@@ -135,7 +131,8 @@ public class DatabaseHelper {
 	 * @return 返回的符合条件的错题(可能为null)
 	 */
 	public Mistake[] queryMistakesByCondition(QueryCondition condition) {
-		String query = "SELECT * FROM " + Mistakes.TABLE_NAME + " WHERE "
+		String query = "SELECT " + SqlStatements.SELECT_ALL_ITEM + " FROM "
+				+ Mistakes.TABLE_NAME + " WHERE "
 				+ generateWhereClause(condition);
 		Cursor cursor = mDatabase.rawQuery(query, null);
 		if (cursor.getCount() == 0)
