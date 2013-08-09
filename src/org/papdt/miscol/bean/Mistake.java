@@ -1,7 +1,13 @@
 package org.papdt.miscol.bean;
 
-public class Mistake implements Cloneable {
-	
+import java.io.Serializable;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Mistake implements Cloneable, Serializable, Parcelable {
+
+	private static final long serialVersionUID = 1358856916991350617L;
 	private int id = -1;
 	private String addTime;
 	private String lastModifyTime = "NO";
@@ -209,4 +215,27 @@ public class Mistake implements Cloneable {
 	public void setCorrectRate(double correctRate) {
 		this.correctRate = correctRate;
 	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeSerializable(this);
+	}
+
+	public static final Parcelable.Creator<Mistake> CREATOR = new Parcelable.Creator<Mistake>() {
+
+		@Override
+		public Mistake createFromParcel(Parcel source) {
+			return (Mistake) source.readSerializable();
+		}
+
+		@Override
+		public Mistake[] newArray(int size) {
+			return new Mistake[size];
+		}
+	};
 }
