@@ -6,6 +6,10 @@
     <string name="menu_settings">设置</string>
     <string name="menu_search">搜索</string>
     <string name="menu_exit">退出</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_next">下一步</string>
+    <string name="action_prev">上一步</string>
+    <string name="action_finish">完成</string>
     <string name="action_search">搜索</string>
     <string name="drawer_open">打开导航面板</string>
     <string name="drawer_close">关闭导航面板</string>

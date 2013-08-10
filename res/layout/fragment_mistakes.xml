@@ -29,6 +29,7 @@
             android:background="@color/divider" />
 
         <Button
+            android:id="@+id/btn_addmistake"
             style="@android:style/Widget.ActionButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -37,6 +38,7 @@
             android:gravity="center"
             android:textColor="@color/add"
             android:textSize="25sp" />
+
     </LinearLayout>
 
 </LinearLayout>

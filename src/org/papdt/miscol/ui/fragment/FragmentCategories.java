@@ -6,23 +6,28 @@ import java.util.Iterator;
 import org.papdt.miscol.R;
 import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.utils.MyLogger;
+import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.ui.CategoryCard;
 
 import com.fima.cardsui.views.CardUI;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
 public class FragmentCategories extends Fragment {
 	private static FragmentCategories sInstance;
 	private CardUI mCardUI;
+	private Button mButton;
 	private SearchView mSearchView;
 	private CategoryCard[] mCategories;
 	private DatabaseHelper mDbHelper;
@@ -41,6 +46,21 @@ public class FragmentCategories extends Fragment {
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_mistakes, null);
 		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
+		mButton = (Button) v.findViewById(R.id.btn_addmistake);
+		mButton.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent =
+						new Intent(
+								getActivity().getApplicationContext(),
+								ActivityAddMistake.class
+								);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				getActivity().startActivity(intent);
+			}
+			
+		});
 		return v;
 	}
 
