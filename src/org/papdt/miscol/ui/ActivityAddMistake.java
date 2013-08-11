@@ -18,7 +18,7 @@ public class ActivityAddMistake extends Activity {
 	
 	private final static int step = 0;
 	
-	private final static String TAG = "ActivityMain";
+	private final static String TAG = "ActivityAddMistake";
 	private final static String[] TAGS = {"First", "Second"};
 
 	@Override
@@ -29,11 +29,15 @@ public class ActivityAddMistake extends Activity {
 		mFragments = new Fragment[2];
 		initializeActionBar();
 		selectStep(step);
+		//XXX 此类需要大改，不能直接照搬ActivityMain
 		MyLogger.d(TAG, TAG + "已完成初始化");
 	}
 	
 	private void initializeActionBar(){
-		getActionBar().setDisplayShowTitleEnabled(false);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		//有了这个向上按钮我们不再需要取消按钮
+		getActionBar().setTitle("添加错题");
+		//getActionBar().hide();
 	}
 	
 	private void selectStep(int step){

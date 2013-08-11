@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+
     <EditText
         android:id="@+id/et_answer"
         android:layout_width="match_parent"
@@ -14,7 +15,6 @@
         android:inputType="textMultiLine" >
 
         <requestFocus android:layout_width="wrap_content" />
-
     </EditText>
 
     <LinearLayout
@@ -38,7 +38,6 @@
             android:clickable="false"
             android:scaleType="fitCenter"
             android:src="@drawable/add_photo" />
-
     </LinearLayout>
 
 </LinearLayout>

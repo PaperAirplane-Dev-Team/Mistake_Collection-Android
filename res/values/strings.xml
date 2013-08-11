@@ -11,6 +11,8 @@
     <string name="action_prev">上一步</string>
     <string name="action_finish">完成</string>
     <string name="action_search">搜索</string>
+    <string name="action_add_photo">添加图片</string>
+    <string name="action_add_tag">添加标签</string>
     <string name="drawer_open">打开导航面板</string>
     <string name="drawer_close">关闭导航面板</string>
     <string name="drawer_title">想做什么？</string>

@@ -26,7 +26,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="3dp" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -46,7 +45,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="6dp" />
-
         </LinearLayout>
     </LinearLayout>
 
@@ -58,7 +56,6 @@
         android:hint="@string/hint_title" >
 
         <requestFocus android:layout_width="wrap_content" />
-
     </EditText>
 
     <EditText
@@ -104,7 +101,6 @@
                     android:gravity="center"
                     android:textColor="@color/add"
                     android:textSize="25sp" />
-
             </LinearLayout>
 
             <View
@@ -130,9 +126,7 @@
                     android:textColor="@color/add"
                     android:textSize="25sp" />
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>
