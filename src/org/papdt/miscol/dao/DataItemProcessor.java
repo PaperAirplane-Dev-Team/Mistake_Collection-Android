@@ -20,6 +20,7 @@ public class DataItemProcessor {
 				Subjects.TABLE_NAME));
 		mistake.setGradeId(convertItemIntoId(mistake.getGradeName(), db,
 				Grades.TABLE_NAME));
+		//以上三项都是必须的
 		mistake.setAnswerPhotoId(replaceOrDeletePhotoIdIfNecessary(
 				mistake.getAnswerPhotoId(), mistake.getAnswerPhotoPath(), db));
 		mistake.setQuestionPhotoId(replaceOrDeletePhotoIdIfNecessary(
@@ -78,7 +79,7 @@ public class DataItemProcessor {
 			itemCount = cursor.getInt(2) + 1;
 		} else {
 			cursor.close();
-			db.execSQL("INSERT INTO " + IDbWithIdAndName.KEY_STRING_NAME + " ("
+			db.execSQL("INSERT INTO " + tableName + " ("
 					+ IDbWithIdAndName.KEY_STRING_NAME + ") VALUES ("
 					+ itemName + ")");
 			cursor = db.rawQuery("SELECT * FROM " + tableName + " WHERE "
@@ -92,4 +93,6 @@ public class DataItemProcessor {
 				+ " WHERE " + IDbWithIdAndName.KEY_STRING_NAME + "=" + itemName);
 		return itemId;
 	}
+	
+	// TODO 实现一个方法在更新好删除的时候修改对应的item_count
 }
