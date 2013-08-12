@@ -32,6 +32,16 @@ public class Mistake implements Cloneable, Serializable, Parcelable {
 	private String[] tagNames;
 	private boolean isStarred;
 
+	public Mistake(String title,String questionText){
+		this.title = title;
+		this.questionText = questionText;
+		this.addTime = Long.toString(System.currentTimeMillis());
+	}
+	
+	public Mistake(){
+		
+	}
+	
 	public String getAddTime() {
 		return addTime;
 	}

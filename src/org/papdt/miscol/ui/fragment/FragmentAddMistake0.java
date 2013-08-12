@@ -1,6 +1,7 @@
 package org.papdt.miscol.ui.fragment;
 
 import org.papdt.miscol.R;
+import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.app.Fragment;
@@ -15,6 +16,8 @@ import android.widget.LinearLayout;
 public class FragmentAddMistake0 extends Fragment {
 
 	private LinearLayout mLayout;
+	private Mistake mMistake;
+
 	private final static String TAG = "FragmentAddMistake0";
 	private static FragmentAddMistake0 sInstance;
 
@@ -56,6 +59,7 @@ public class FragmentAddMistake0 extends Fragment {
 		switch (item.getItemId()) {
 		case R.id.action_next:
 			MyLogger.d(TAG, "用户触发下一步操作");
+			moveToNextStep();
 			break;
 		case android.R.id.home:
 			MyLogger.d(TAG, "用户点击ActionBar的返回按钮");
@@ -70,6 +74,20 @@ public class FragmentAddMistake0 extends Fragment {
 			break;
 		}
 		return true;
+	}
+
+	private void moveToNextStep() {
+		mMistake = getSampleMistake();
+		FragmentAddMistake1 fragment = new FragmentAddMistake1();
+	}
+
+	private Mistake getSampleMistake() {
+		Mistake m = new Mistake("测试","呵呵呵呵呵");
+		m.setGradeName("高一");
+		m.setSubjectName("节操");
+		m.setTagNames(new String[]{"Demo"});
+		m.setTypeName("选择题");
+		return m;
 	}
 
 }

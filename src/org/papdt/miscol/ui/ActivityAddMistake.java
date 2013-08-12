@@ -1,8 +1,8 @@
 package org.papdt.miscol.ui;
 
 import org.papdt.miscol.R;
+import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.ui.fragment.FragmentAddMistake0;
-import org.papdt.miscol.ui.fragment.FragmentAddMistake1;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.app.Activity;
@@ -12,75 +12,44 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 
 public class ActivityAddMistake extends Activity {
-	private Fragment[] mFragments;
-	private FragmentTransaction mTransaction;
-	private FragmentManager mFragmentManager;
-	
-	private final static int step = 0;
-	
+
 	private final static String TAG = "ActivityAddMistake";
-	private final static String[] TAGS = {"First", "Second"};
+
+	private FragmentManager mFragmentManager;
+	private FragmentTransaction mTransaction;
+
+	public final static String[] TAGS = { "First", "Second" };
+	public final static String KEY = "Mistake";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_addmistake);
 		mFragmentManager = getFragmentManager();
-		mFragments = new Fragment[2];
 		initializeActionBar();
-		selectStep(step);
-		//XXX 此类需要大改，不能直接照搬ActivityMain
+		startStepOne();
+		// XXX 此类需要大改，不能直接照搬ActivityMain
 		MyLogger.d(TAG, TAG + "已完成初始化");
 	}
-	
-	private void initializeActionBar(){
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		//有了这个向上按钮我们不再需要取消按钮
-		getActionBar().setTitle("添加错题");
-		//getActionBar().hide();
-	}
-	
-	private void selectStep(int step){
-		boolean initialized;
+
+	private void startStepOne() {
+		Fragment fragment = FragmentAddMistake0.getInstance();
 		mTransaction = mFragmentManager.beginTransaction();
-		for (Fragment fragment : mFragments) {
-			hideFragment(fragment);
-		}
-		if (mFragments[step] == null) {
-			MyLogger.d(TAG, "创建新的 Fragment:" + step);
-			initialized = false;
-			switch (step) {
-			case 0:
-				mFragments[step] = FragmentAddMistake0.getInstance();
-				break;
-			case 1:
-				mFragments[step] = FragmentAddMistake1.getInstance();
-				break;
-			default:
-				mFragments[step] = new Fragment();
-				// TODO 初始化各Fragment
-				break;
-			}
-		} else {
-			MyLogger.d(TAG, "已存在Fragment:" + step);
-			initialized = true;
-		}
-		replaceToFragment(mFragments[step], initialized, TAGS[step]);
-	}
-	
-	private void replaceToFragment(Fragment fragment, boolean hasInitialized, String tag) {
-		if (!hasInitialized) {
-			mTransaction.add(R.id.fl_content, fragment,tag);
-		}
+		mTransaction.add(R.id.fl_content, fragment, TAGS[0]).addToBackStack(
+				TAGS[0]);
 		mTransaction.attach(fragment).show(fragment).commit();
-		mFragmentManager.popBackStack();
 		mFragmentManager.executePendingTransactions();
 	}
 
-	private void hideFragment(Fragment fragment) {
-		if (fragment != null) {
-			mTransaction.hide(fragment);
-		}
-
+	private void initializeActionBar() {
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		// 有了这个向上按钮我们不再需要取消按钮
+		getActionBar().setTitle("添加错题");
 	}
+
+	public void finishAdding(Mistake m) {
+		// TODO 将mistake写入数据库
+		
+	}
+
 }

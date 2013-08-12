@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.papdt.miscol.R;
+import org.papdt.miscol.bean.Mistake;
+import org.papdt.miscol.bean.MistakeOperationException;
 import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.utils.MyLogger;
 import org.papdt.miscol.ui.ActivityAddMistake;
@@ -39,6 +41,20 @@ public class FragmentCategories extends Fragment {
 		this.setHasOptionsMenu(true);
 		this.mDbHelper = DatabaseHelper.getInstance(getActivity());
 		super.onCreate(savedInstanceState);
+//		addSampleData();
+	}
+
+	private void addSampleData() {
+		MyLogger.d(TAG, "添加测试数据");
+		Mistake m = new Mistake("测试","呵呵呵呵呵");
+		m.setGradeName("高一");
+		m.setSubjectName("节操");
+		m.setTagNames(new String[]{"Demo"});
+		try {
+			mDbHelper.insertMistake(m);
+		} catch (MistakeOperationException e) {
+			e.printStackTrace();
+		}		
 	}
 
 	@Override
@@ -113,7 +129,7 @@ public class FragmentCategories extends Fragment {
 	}
 
 	public void fillContentAsSubjectIndex() {
-		ArrayList<CategoryCard> allSubjects = mDbHelper.getAllTags();
+		ArrayList<CategoryCard> allSubjects = mDbHelper.getAllGrades();
 		if (allSubjects != null) {
 			Iterator<CategoryCard> iterator = allSubjects.iterator();
 			int i = 0;

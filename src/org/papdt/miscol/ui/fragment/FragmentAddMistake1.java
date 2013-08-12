@@ -14,17 +14,9 @@ public class FragmentAddMistake1 extends Fragment {
 
 	private LinearLayout mLayout;
 	private final static String TAG = "FragmentAddMistake1";
-	private static FragmentAddMistake1 sInstance;
 
-	@Deprecated
 	public FragmentAddMistake1() {
 		MyLogger.d(TAG, TAG + "被初始化");
-	}
-
-	public static FragmentAddMistake1 getInstance() {
-		if (sInstance == null)
-			sInstance = new FragmentAddMistake1();
-		return sInstance;
 	}
 
 	@Override
