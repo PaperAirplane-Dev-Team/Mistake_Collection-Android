@@ -10,6 +10,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class ActivityAddMistake extends Activity {
 
@@ -32,8 +33,9 @@ public class ActivityAddMistake extends Activity {
 		MyLogger.d(TAG, TAG + "已完成初始化");
 	}
 
+	@SuppressWarnings("deprecation")
 	private void startStepOne() {
-		Fragment fragment = FragmentAddMistake0.getInstance();
+		Fragment fragment = new FragmentAddMistake0();
 		mTransaction = mFragmentManager.beginTransaction();
 		mTransaction.add(R.id.fl_content, fragment, TAGS[0]).addToBackStack(
 				TAGS[0]);
@@ -49,7 +51,9 @@ public class ActivityAddMistake extends Activity {
 
 	public void finishAdding(Mistake m) {
 		// TODO 将mistake写入数据库
-		
+		MyLogger.i(TAG, "收到错题添加请求, 错题信息:" + m.toString());
+		Toast.makeText(getApplicationContext(), "添加成功!", Toast.LENGTH_SHORT).show();
+		finish();
 	}
 
 }

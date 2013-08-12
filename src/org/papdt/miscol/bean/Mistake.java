@@ -42,6 +42,15 @@ public class Mistake implements Cloneable, Serializable, Parcelable {
 		
 	}
 	
+	@Override
+	public String toString(){
+		return "{id:" + id + ", title:" + title
+				+ ", questionText:" + questionText
+				+ ", answerText:" + answerText
+				+ ", addTime:" + addTime
+				+ "}";
+	}
+	
 	public String getAddTime() {
 		return addTime;
 	}

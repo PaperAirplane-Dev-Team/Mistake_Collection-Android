@@ -3,8 +3,6 @@ package org.papdt.miscol.ui;
 import org.papdt.miscol.R;
 import org.papdt.miscol.ui.adapter.DrawerAdapter;
 import org.papdt.miscol.ui.adapter.DrawerAdapter.IDrawerNames;
-import org.papdt.miscol.ui.fragment.FragmentAddMistake0;
-import org.papdt.miscol.ui.fragment.FragmentAddMistake1;
 import org.papdt.miscol.ui.fragment.FragmentMain;
 import org.papdt.miscol.ui.fragment.FragmentCategories;
 import org.papdt.miscol.utils.MyLogger;
@@ -113,14 +111,6 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			case MISTAKES:
 				mFragments[position] = FragmentCategories.getInstance();
 				break;
-			case THIRD:
-				mFragments[position] = FragmentAddMistake0.getInstance();
-				// XXX 临时调试用
-				break;
-			case FORTH:
-				mFragments[position] = FragmentAddMistake1.getInstance();
-				// XXX 临时调试用
-				break;
 			default:
 				mFragments[position] = new Fragment();
 				// TODO 初始化各Fragment
@@ -226,8 +216,9 @@ public class ActivityMain extends Activity implements IDrawerNames {
 				getActionBar().setTitle(mDrawerTitle);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
-				((FragmentMain) mFragments[MAIN]).hideHint();
-
+				if ((FragmentMain) mFragments[MAIN] != null) {
+					((FragmentMain) mFragments[MAIN]).hideHint();
+				}
 			}
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
