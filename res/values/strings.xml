@@ -43,5 +43,7 @@
 	<string name="hint_title">标题</string>
 	<string name="hint_description">问题描述</string>
 	<string name="hint_answer">问题答案</string>
-	
+	<!-- steps -->
+	<string name="step_1">步骤 1/2</string>
+	<string name="step_2">步骤 2/2</string>
 </resources>

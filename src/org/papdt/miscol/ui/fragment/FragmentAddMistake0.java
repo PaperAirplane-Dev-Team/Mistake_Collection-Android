@@ -2,6 +2,7 @@ package org.papdt.miscol.ui.fragment;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.Mistake;
+import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.app.Fragment;
@@ -19,8 +20,8 @@ import android.widget.Spinner;
 public class FragmentAddMistake0 extends Fragment {
 
 	private LinearLayout mLayout;
-	private EditText mEditText_title , mEditText_description;
-	private Spinner mSpinner_grade , mSpinner_subject;
+	private EditText mEtTitle , mEtDescription;
+	private Spinner mSpinnerGrade , mSpinnerSubject;
 	private Mistake mMistake;
 
 	private final static String TAG = "FragmentAddMistake0";
@@ -41,7 +42,7 @@ public class FragmentAddMistake0 extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setHasOptionsMenu(true);
-		getActivity().getActionBar().setSubtitle("步骤 1/2");
+		getActivity().getActionBar().setSubtitle(R.string.step_1);
 	}
 	
 	@Override
@@ -49,10 +50,10 @@ public class FragmentAddMistake0 extends Fragment {
 			Bundle savedInstanceState) {
 		mLayout = (LinearLayout) inflater.inflate(
 				R.layout.fragment_addmistake_first, null);
-		mEditText_title = (EditText) mLayout.findViewById(R.id.et_title);
-		mEditText_description = (EditText) mLayout.findViewById(R.id.et_description);
-		mSpinner_grade = (Spinner) mLayout.findViewById(R.id.spinner_grade);
-		mSpinner_subject = (Spinner) mLayout.findViewById(R.id.spinner_subject);
+		mEtTitle = (EditText) mLayout.findViewById(R.id.et_title);
+		mEtDescription = (EditText) mLayout.findViewById(R.id.et_description);
+		mSpinnerGrade = (Spinner) mLayout.findViewById(R.id.spinner_grade);
+		mSpinnerSubject = (Spinner) mLayout.findViewById(R.id.spinner_subject);
 		return mLayout;
 	}
 
@@ -88,8 +89,8 @@ public class FragmentAddMistake0 extends Fragment {
 	private void moveToNextStep() {
 		mMistake = new
 				Mistake(
-						mEditText_title.getText().toString(),
-						mEditText_description.getText().toString()
+						mEtTitle.getText().toString(),
+						mEtDescription.getText().toString()
 				);
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		FragmentAddMistake1 fragment = new FragmentAddMistake1();
@@ -97,16 +98,8 @@ public class FragmentAddMistake0 extends Fragment {
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("Mistake", mMistake);
 		fragment.setArguments(bundle);
-		transaction.replace(R.id.fl_content, fragment).addToBackStack(null).commit();
+		transaction.addToBackStack(ActivityAddMistake.TAGS[0]).replace(R.id.fl_content, fragment,ActivityAddMistake.TAGS[1]).commit();
 	}
 	
-	private Mistake getSampleMistake() {
-		Mistake m = new Mistake("测试","呵呵呵呵呵");
-		m.setGradeName("高一");
-		m.setSubjectName("节操");
-		m.setTagNames(new String[]{"Demo"});
-		m.setTypeName("选择题");
-		return m;
-	}
 
 }

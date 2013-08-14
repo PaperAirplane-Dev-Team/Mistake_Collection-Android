@@ -29,7 +29,6 @@ public class ActivityAddMistake extends Activity {
 		mFragmentManager = getFragmentManager();
 		initializeActionBar();
 		startStepOne();
-		// XXX 此类需要大改，不能直接照搬ActivityMain
 		MyLogger.d(TAG, TAG + "已完成初始化");
 	}
 
@@ -46,7 +45,7 @@ public class ActivityAddMistake extends Activity {
 	private void initializeActionBar() {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		// 有了这个向上按钮我们不再需要取消按钮
-		getActionBar().setTitle("添加错题");
+		getActionBar().setTitle(R.string.add);
 	}
 
 	public void finishAdding(Mistake m) {

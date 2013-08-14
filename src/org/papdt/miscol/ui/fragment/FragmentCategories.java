@@ -50,6 +50,7 @@ public class FragmentCategories extends Fragment {
 		m.setGradeName("高一");
 		m.setSubjectName("节操");
 		m.setTagNames(new String[]{"Demo"});
+		m.setTypeName("填空题");
 		try {
 			mDbHelper.insertMistake(m);
 		} catch (MistakeOperationException e) {

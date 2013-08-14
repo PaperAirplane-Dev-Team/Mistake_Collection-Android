@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 public class FragmentAddMistake1 extends Fragment {
 
 	private LinearLayout mLayout;
-	private EditText mEditText_answer;
+	private EditText mEtAnswer;
 	private Mistake mMistake;
 	private final static String TAG = "FragmentAddMistake1";
 
@@ -32,7 +32,7 @@ public class FragmentAddMistake1 extends Fragment {
 		super.onCreate(savedInstanceState);
 		this.setHasOptionsMenu(true);
 		mMistake = this.getArguments().getParcelable("Mistake");
-		getActivity().getActionBar().setSubtitle("步骤 2/2");
+		getActivity().getActionBar().setSubtitle(R.string.step_2);
 	}
 	
 	@Override
@@ -61,14 +61,15 @@ public class FragmentAddMistake1 extends Fragment {
 	}
 	
 	private void moveToLastStep(){
-		getActivity().getActionBar().setSubtitle("步骤  1/2");
+		getActivity().getActionBar().setSubtitle(R.string.step_2);
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		getFragmentManager().popBackStack();
 		Fragment fragment = FragmentAddMistake0.getInstance();
-		transaction.replace(R.id.fl_content, fragment).addToBackStack(null).commit();
+		transaction.replace(R.id.fl_content, fragment).commit();
 	}
 	
 	private void moveToNextStep(){
-		mMistake.setAnswerText(mEditText_answer.getText().toString());
+		mMistake.setAnswerText(mEtAnswer.getText().toString());
 		((ActivityAddMistake) getActivity()).finishAdding(mMistake);
 	}
 	
@@ -77,7 +78,7 @@ public class FragmentAddMistake1 extends Fragment {
 			Bundle savedInstanceState) {
 		mLayout = (LinearLayout) inflater.inflate(R.layout.fragment_addmistake_second,
 				null);
-		mEditText_answer = (EditText) mLayout.findViewById(R.id.et_answer);
+		mEtAnswer = (EditText) mLayout.findViewById(R.id.et_answer);
 		return mLayout;
 	}
 	
