@@ -1,5 +1,7 @@
 package org.papdt.miscol.ui.fragment;
 
+import java.util.HashSet;
+
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.CategoryInfo;
 import org.papdt.miscol.bean.Mistake;
@@ -7,6 +9,7 @@ import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.utils.Constants.Databases.Subjects;
+import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.app.AlertDialog;
@@ -15,18 +18,22 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class FragmentAddMistake0 extends Fragment implements
@@ -35,10 +42,13 @@ public class FragmentAddMistake0 extends Fragment implements
 	private LinearLayout mLayout;
 	private EditText mEtTitle, mEtDescription;
 	private Spinner mSpinnerGrade, mSpinnerSubject;
+	private TextView mTvTags;
 	private Mistake mMistake;
 	private DatabaseHelper mDbHelper;
 	private ArrayAdapter<String> mGradeAdapter, mSubjectAdapter;
-	private FrameLayout mDialogLayout;
+	private HashSet<String> mTags = new HashSet<String>();
+	private HashSet<String> mAllTags = new HashSet<String>();
+	private CheckBox[] mCheckBoxes;
 
 	private final static String TAG = "FragmentAddMistake0";
 	private static FragmentAddMistake0 sInstance;
@@ -68,8 +78,6 @@ public class FragmentAddMistake0 extends Fragment implements
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mSubjectAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		mDialogLayout = (FrameLayout) getActivity().findViewById(
-				android.R.id.custom);
 	}
 
 	@Override
@@ -79,6 +87,7 @@ public class FragmentAddMistake0 extends Fragment implements
 				R.layout.fragment_addmistake_first, null);
 		mEtTitle = (EditText) mLayout.findViewById(R.id.et_title);
 		mEtDescription = (EditText) mLayout.findViewById(R.id.et_description);
+		mTvTags = (TextView) mLayout.findViewById(R.id.tv_tags);
 		mSpinnerGrade = (Spinner) mLayout.findViewById(R.id.spinner_grade);
 		mSpinnerSubject = (Spinner) mLayout.findViewById(R.id.spinner_subject);
 
@@ -87,15 +96,35 @@ public class FragmentAddMistake0 extends Fragment implements
 
 		mSpinnerGrade.setOnItemSelectedListener(this);
 		mSpinnerSubject.setOnItemSelectedListener(this);
-
 		fillDatas();
 		return mLayout;
+	}
+
+	private void showTags() {
+		if (mTags.size() != 0) {
+			mTvTags.setVisibility(View.VISIBLE);
+			StringBuilder sb = new StringBuilder();
+			for (String str : mTags) {
+				sb.append("#").append(str).append("\n");
+			}
+			mTvTags.setText(sb);
+		} else {
+			mTvTags.setVisibility(View.GONE);
+		}
+
 	}
 
 	private void fillDatas() {
 		mGradeAdapter.clear();
 		mSubjectAdapter.clear();
-
+		mAllTags.clear();
+		CategoryInfo[] tagInfo = mDbHelper.getCategoryInfo(Tags.TABLE_NAME);
+		if (tagInfo != null && tagInfo.length > 0) {
+			for (CategoryInfo ci : tagInfo) {
+				mAllTags.add(ci.getName());
+			}
+		}
+		mAllTags.addAll(mTags);
 		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(Grades.TABLE_NAME);
 		CategoryInfo[] subjectInfo = mDbHelper
 				.getCategoryInfo(Subjects.TABLE_NAME);
@@ -138,12 +167,88 @@ public class FragmentAddMistake0 extends Fragment implements
 			break;
 		case R.id.action_add_photo:
 			MyLogger.d(TAG, "用户触发添加照片操作");
+			// TODO 添加照片
 			break;
 		case R.id.action_add_tag:
 			MyLogger.d(TAG, "用户触发添加标签操作");
+			addTags();
 			break;
 		}
 		return true;
+	}
+
+	private void addTags() {
+		LinearLayout layout = new LinearLayout(getActivity());
+		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT);
+		String[] allTags = (String[]) mAllTags.toArray(new String[]{""});
+		if (allTags != null && allTags.length > 0) {
+			mCheckBoxes = new CheckBox[allTags.length];
+			for (int i = 0; i < mAllTags.size(); i++) {
+				mCheckBoxes[i] = new CheckBox(getActivity());
+				mCheckBoxes[i].setText(allTags[i]);
+				if (mTags.contains(allTags[i])) {
+					mCheckBoxes[i].setChecked(true);
+				}
+				layout.addView(mCheckBoxes[i], params);
+			}
+		}
+		DialogInterface.OnClickListener selectListener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				case DialogInterface.BUTTON_POSITIVE:
+					for(CheckBox cb:mCheckBoxes){
+						if(cb.isChecked()){
+							mTags.add(cb.getText().toString());
+						}
+					}
+					showTags();
+					break;
+				}
+			}
+		};
+		TextView tvAddTag = new TextView(getActivity());
+		tvAddTag.setGravity(Gravity.CENTER);
+		tvAddTag.setText(R.string.add_category);
+		tvAddTag.setTextAppearance(getActivity(),
+				android.R.attr.textAppearanceLarge);
+		tvAddTag.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				final EditText et = new EditText(getActivity());
+				et.setHint(R.string.add_tag_hint);
+				final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						case DialogInterface.BUTTON_POSITIVE:
+							if (!TextUtils.isEmpty(et.getText())) {
+								mTags.add(et.getText().toString());
+								mAllTags.add(et.getText().toString());
+								showTags();
+							} else {
+								Toast.makeText(getActivity(),
+										R.string.add_tag_empty,
+										Toast.LENGTH_SHORT).show();
+							}
+							break;
+						}
+					}
+				};
+				new AlertDialog.Builder(getActivity())
+						.setTitle(R.string.add_tag_title).setView(et)
+						.setPositiveButton(android.R.string.ok, listener)
+						.setNegativeButton(android.R.string.cancel, listener)
+						.show();
+			}
+		});
+		layout.addView(tvAddTag, params);
+		new AlertDialog.Builder(getActivity()).setTitle(R.string.add_tag_title)
+				.setView(layout)
+				.setPositiveButton(android.R.string.ok, selectListener)
+				.setNegativeButton(android.R.string.cancel, selectListener)
+				.show();
 	}
 
 	private void moveToNextStep() {
@@ -162,15 +267,14 @@ public class FragmentAddMistake0 extends Fragment implements
 	}
 
 	private void addSubject() {
-		mDialogLayout.removeAllViews();
 		final EditText etSubject = new EditText(getActivity());
-		etSubject.setText(R.string.add_subject_hint);
+		etSubject.setHint(R.string.add_subject_hint);
 		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				switch (which) {
 				case DialogInterface.BUTTON_POSITIVE:
-					if (TextUtils.isEmpty(etSubject.getText())) {
+					if (!TextUtils.isEmpty(etSubject.getText())) {
 						mSubjectAdapter
 								.remove(getString(R.string.add_category));
 						mSubjectAdapter.add(etSubject.getText().toString());
@@ -182,28 +286,26 @@ public class FragmentAddMistake0 extends Fragment implements
 								.show();
 					}
 					break;
-				case DialogInterface.BUTTON_NEGATIVE:
-					break;
 				}
 
 			}
 		};
+
 		new AlertDialog.Builder(getActivity())
-				.setTitle(R.string.add_subject_title)
+				.setTitle(R.string.add_subject_title).setView(etSubject)
 				.setPositiveButton(android.R.string.ok, listener)
 				.setNegativeButton(android.R.string.cancel, listener).show();
 	}
 
 	private void addGrade() {
-		mDialogLayout.removeAllViews();
 		final EditText etGrade = new EditText(getActivity());
-		etGrade.setText(R.string.add_grade_hint);
+		etGrade.setHint(R.string.add_grade_hint);
 		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				switch (which) {
 				case DialogInterface.BUTTON_POSITIVE:
-					if (TextUtils.isEmpty(etGrade.getText())) {
+					if (!TextUtils.isEmpty(etGrade.getText())) {
 						mGradeAdapter.remove(getString(R.string.add_category));
 						mGradeAdapter.add(etGrade.getText().toString());
 						mSpinnerGrade
@@ -222,6 +324,7 @@ public class FragmentAddMistake0 extends Fragment implements
 		new AlertDialog.Builder(getActivity())
 				.setTitle(R.string.add_grade_title)
 				.setPositiveButton(android.R.string.ok, listener)
+				.setView(etGrade)
 				.setNegativeButton(android.R.string.cancel, listener).show();
 	}
 
@@ -230,7 +333,7 @@ public class FragmentAddMistake0 extends Fragment implements
 			long id) {
 		MyLogger.d(TAG, "onItemSelected position: " + position);
 		try {
-			switch (view.getId()) {
+			switch (parent.getId()) {
 			case R.id.spinner_grade:
 				if (position == mGradeAdapter.getCount() - 1) {
 					MyLogger.d(TAG, "addGrade");
@@ -243,9 +346,6 @@ public class FragmentAddMistake0 extends Fragment implements
 					addSubject();
 				}
 				break;
-			default:
-				MyLogger.wtf(TAG, "view id 有问题");
-				// XXX 这不科学啊啊！！
 			}
 		} catch (NullPointerException e) {
 			e.printStackTrace();

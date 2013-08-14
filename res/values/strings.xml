@@ -44,10 +44,13 @@
     <string name="hint_description">问题描述</string>
     <string name="hint_answer">问题答案</string>
     <string name="add_subject_hint">科目名称</string>
-    <string name="add_grade_hint">年级名称</string>
     <string name="add_subject_empty">科目名称不能为空</string>
-    <string name="add_grade_empty">年级名称不能为空</string>
     <string name="add_subject_title">添加科目</string>
+    <string name="add_tag_hint">标签名称</string>
+    <string name="add_tag_empty">标签名称不能为空</string>
+    <string name="add_tag_title">添加标签</string>
+    <string name="add_grade_hint">年级名称</string>
+    <string name="add_grade_empty">年级名称不能为空</string>
     <string name="add_grade_title">添加年级</string>
 
     <!-- steps -->

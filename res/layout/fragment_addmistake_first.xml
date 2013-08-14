@@ -67,11 +67,18 @@
         android:ems="10"
         android:hint="@string/hint_description"
         android:inputType="textMultiLine" />
-	<TextView
-	    android:id="@+id/tv_tags"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:maxLines="3"
-	    android:visibility="gone"
-	     />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/tv_tags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="gone" />
+    </ScrollView>
+
 </LinearLayout>
