@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/add_fragment_background"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -66,5 +67,11 @@
         android:ems="10"
         android:hint="@string/hint_description"
         android:inputType="textMultiLine" />
-
+	<TextView
+	    android:id="@+id/tv_tags"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:maxLines="3"
+	    android:visibility="gone"
+	     />
 </LinearLayout>

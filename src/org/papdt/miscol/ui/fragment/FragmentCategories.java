@@ -8,7 +8,6 @@ import org.papdt.miscol.bean.CategoryInfo;
 import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.bean.MistakeOperationException;
 import org.papdt.miscol.dao.DatabaseHelper;
-import org.papdt.miscol.utils.Constants.Databases.Subjects;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.utils.MyLogger;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
@@ -48,6 +47,7 @@ public class FragmentCategories extends Fragment {
 		// addSampleData();
 	}
 
+	@SuppressWarnings("unused")
 	private void addSampleData() {
 		MyLogger.d(TAG, "添加测试数据");
 		Mistake m = new Mistake("测试", "呵呵呵呵呵");

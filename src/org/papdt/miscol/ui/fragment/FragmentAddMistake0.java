@@ -9,9 +9,12 @@ import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.utils.Constants.Databases.Subjects;
 import org.papdt.miscol.utils.MyLogger;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,21 +24,25 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-public class FragmentAddMistake0 extends Fragment implements OnItemSelectedListener{
+public class FragmentAddMistake0 extends Fragment implements
+		OnItemSelectedListener {
 
 	private LinearLayout mLayout;
-	private EditText mEtTitle , mEtDescription;
-	private Spinner mSpinnerGrade , mSpinnerSubject;
+	private EditText mEtTitle, mEtDescription;
+	private Spinner mSpinnerGrade, mSpinnerSubject;
 	private Mistake mMistake;
 	private DatabaseHelper mDbHelper;
-	private ArrayAdapter<String> mGradeAdapter,mSubjectAdapter;
+	private ArrayAdapter<String> mGradeAdapter, mSubjectAdapter;
+	private FrameLayout mDialogLayout;
 
 	private final static String TAG = "FragmentAddMistake0";
 	private static FragmentAddMistake0 sInstance;
-	
+
 	@Deprecated
 	public FragmentAddMistake0() {
 		mDbHelper = DatabaseHelper.getInstance(getActivity());
@@ -53,12 +60,18 @@ public class FragmentAddMistake0 extends Fragment implements OnItemSelectedListe
 		super.onCreate(savedInstanceState);
 		this.setHasOptionsMenu(true);
 		getActivity().getActionBar().setSubtitle(R.string.step_1);
-		mGradeAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item);
-		mSubjectAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item);
-		mGradeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		mSubjectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mGradeAdapter = new ArrayAdapter<String>(getActivity(),
+				android.R.layout.simple_spinner_item);
+		mSubjectAdapter = new ArrayAdapter<String>(getActivity(),
+				android.R.layout.simple_spinner_item);
+		mGradeAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mSubjectAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mDialogLayout = (FrameLayout) getActivity().findViewById(
+				android.R.id.custom);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -68,22 +81,26 @@ public class FragmentAddMistake0 extends Fragment implements OnItemSelectedListe
 		mEtDescription = (EditText) mLayout.findViewById(R.id.et_description);
 		mSpinnerGrade = (Spinner) mLayout.findViewById(R.id.spinner_grade);
 		mSpinnerSubject = (Spinner) mLayout.findViewById(R.id.spinner_subject);
-		
+
 		mSpinnerGrade.setAdapter(mGradeAdapter);
 		mSpinnerSubject.setAdapter(mSubjectAdapter);
-				
+
 		mSpinnerGrade.setOnItemSelectedListener(this);
 		mSpinnerSubject.setOnItemSelectedListener(this);
-		
+
 		fillDatas();
 		return mLayout;
 	}
 
 	private void fillDatas() {
+		mGradeAdapter.clear();
+		mSubjectAdapter.clear();
+
 		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(Grades.TABLE_NAME);
-		CategoryInfo[] subjectInfo = mDbHelper.getCategoryInfo(Subjects.TABLE_NAME);
-		addCategoryInfoToAdapter(gradeInfo,mGradeAdapter);
-		addCategoryInfoToAdapter(subjectInfo,mSubjectAdapter);
+		CategoryInfo[] subjectInfo = mDbHelper
+				.getCategoryInfo(Subjects.TABLE_NAME);
+		addCategoryInfoToAdapter(gradeInfo, mGradeAdapter);
+		addCategoryInfoToAdapter(subjectInfo, mSubjectAdapter);
 		String addCat = getString(R.string.add_category);
 		mGradeAdapter.add(addCat);
 		mSubjectAdapter.add(addCat);
@@ -91,11 +108,13 @@ public class FragmentAddMistake0 extends Fragment implements OnItemSelectedListe
 
 	private void addCategoryInfoToAdapter(CategoryInfo[] info,
 			ArrayAdapter<String> adapter) {
-			if(info!=null){
-				for(CategoryInfo ci:info){
-					adapter.add(ci.getName());
-				}
-			}	
+		if (info != null) {
+			for (CategoryInfo ci : info) {
+				adapter.add(ci.getName());
+			}
+		} else {
+			adapter.add(getString(R.string.spinner_default));
+		}
 	}
 
 	@Override
@@ -126,53 +145,116 @@ public class FragmentAddMistake0 extends Fragment implements OnItemSelectedListe
 		}
 		return true;
 	}
-	
+
 	private void moveToNextStep() {
-		mMistake = new
-				Mistake(
-						mEtTitle.getText().toString(),
-						mEtDescription.getText().toString()
-				);
-		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		mMistake = new Mistake(mEtTitle.getText().toString(), mEtDescription
+				.getText().toString());
+		FragmentTransaction transaction = getFragmentManager()
+				.beginTransaction();
 		FragmentAddMistake1 fragment = new FragmentAddMistake1();
 
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("Mistake", mMistake);
 		fragment.setArguments(bundle);
-		transaction.addToBackStack(ActivityAddMistake.TAGS[0]).replace(R.id.fl_content, fragment,ActivityAddMistake.TAGS[1]).commit();
+		transaction.addToBackStack(ActivityAddMistake.TAGS[0])
+				.replace(R.id.fl_content, fragment, ActivityAddMistake.TAGS[1])
+				.commit();
 	}
 
 	private void addSubject() {
-		// TODO 添加科目
-		
+		mDialogLayout.removeAllViews();
+		final EditText etSubject = new EditText(getActivity());
+		etSubject.setText(R.string.add_subject_hint);
+		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				case DialogInterface.BUTTON_POSITIVE:
+					if (TextUtils.isEmpty(etSubject.getText())) {
+						mSubjectAdapter
+								.remove(getString(R.string.add_category));
+						mSubjectAdapter.add(etSubject.getText().toString());
+						mSpinnerSubject
+								.setSelection(mSubjectAdapter.getCount() - 1);
+					} else {
+						Toast.makeText(getActivity(),
+								R.string.add_subject_empty, Toast.LENGTH_SHORT)
+								.show();
+					}
+					break;
+				case DialogInterface.BUTTON_NEGATIVE:
+					break;
+				}
+
+			}
+		};
+		new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.add_subject_title)
+				.setPositiveButton(android.R.string.ok, listener)
+				.setNegativeButton(android.R.string.cancel, listener).show();
 	}
 
 	private void addGrade() {
-		//TODO 添加年级
+		mDialogLayout.removeAllViews();
+		final EditText etGrade = new EditText(getActivity());
+		etGrade.setText(R.string.add_grade_hint);
+		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				case DialogInterface.BUTTON_POSITIVE:
+					if (TextUtils.isEmpty(etGrade.getText())) {
+						mGradeAdapter.remove(getString(R.string.add_category));
+						mGradeAdapter.add(etGrade.getText().toString());
+						mSpinnerGrade
+								.setSelection(mGradeAdapter.getCount() - 1);
+					} else {
+						Toast.makeText(getActivity(), R.string.add_grade_empty,
+								Toast.LENGTH_SHORT).show();
+					}
+					break;
+				case DialogInterface.BUTTON_NEGATIVE:
+					break;
+				}
+
+			}
+		};
+		new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.add_grade_title)
+				.setPositiveButton(android.R.string.ok, listener)
+				.setNegativeButton(android.R.string.cancel, listener).show();
 	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		switch(view.getId()){
-		case R.id.spinner_grade:
-			if(position==mGradeAdapter.getCount()-1){
-				addGrade();
+		MyLogger.d(TAG, "onItemSelected position: " + position);
+		try {
+			switch (view.getId()) {
+			case R.id.spinner_grade:
+				if (position == mGradeAdapter.getCount() - 1) {
+					MyLogger.d(TAG, "addGrade");
+					addGrade();
+				}
+				break;
+			case R.id.spinner_subject:
+				if (position == mSubjectAdapter.getCount() - 1) {
+					MyLogger.d(TAG, "addSubject");
+					addSubject();
+				}
+				break;
+			default:
+				MyLogger.wtf(TAG, "view id 有问题");
+				// XXX 这不科学啊啊！！
 			}
-			break;
-		case R.id.spinner_subject:
-			if(position==mSubjectAdapter.getCount()-1){
-				addSubject();
-			}
-			break;
-		}		
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
-		
+
 	}
-	
 
 }

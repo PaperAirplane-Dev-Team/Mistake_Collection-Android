@@ -26,26 +26,35 @@
     </string-array>
     <!-- 版权信息 -->
     <string name="copy_right">哪错了？\n版本:Rolling Stone pre-ɑ\n2013 PaperAirplane Dev Team</string>
-	<!-- 欢迎界面 -->
-	<string name="welcome">欢迎使用</string>
-	<string name="welcome_content">欢迎使用哪错了。\n哪错了能帮助您在Android手机和平板电脑上管理您的错题、难题；\n同时能帮助您进行错题测验。</string>
-	<string name="hint_text">从最左拖动拉出菜单</string>
-	<!-- 题目列表 -->
-	<string name="add_mistake">添加错题</string>
-	<string name="card_description" formatted="false" >%d道错题</string>
-	<string name="card_description_for_subject" formatted="false" >%d道错题，%d个科目</string>
-	<!-- Tabs -->
-	<string name="tag">标签</string>
-	<string name="subject_or_grade">年级/科目</string>
-	<!-- 添加错题界面 -->
-	<string name="tv_grade">年级: </string>
-	<string name="tv_subject">科目: </string>
-	<string name="hint_title">标题</string>
-	<string name="hint_description">问题描述</string>
-	<string name="hint_answer">问题答案</string>
-	<!-- steps -->
-	<string name="step_1">步骤 1/2</string>
-	<string name="step_2">步骤 2/2</string>
-	<!-- Spinner -->
-	<string name="add_category">添加……</string>
+    <!-- 欢迎界面 -->
+    <string name="welcome">欢迎使用</string>
+    <string name="welcome_content">欢迎使用哪错了。\n哪错了能帮助您在Android手机和平板电脑上管理您的错题、难题；\n同时能帮助您进行错题测验。</string>
+    <string name="hint_text">从最左拖动拉出菜单</string>
+    <!-- 题目列表 -->
+    <string name="add_mistake">添加错题</string>
+    <string name="card_description" formatted="false">%d道错题</string>
+    <string name="card_description_for_subject" formatted="false">%d道错题，%d个科目</string>
+    <!-- Tabs -->
+    <string name="tag">标签</string>
+    <string name="subject_or_grade">年级/科目</string>
+    <!-- 添加错题界面 -->
+    <string name="tv_grade">年级: </string>
+    <string name="tv_subject">科目: </string>
+    <string name="hint_title">标题</string>
+    <string name="hint_description">问题描述</string>
+    <string name="hint_answer">问题答案</string>
+    <string name="add_subject_hint">科目名称</string>
+    <string name="add_grade_hint">年级名称</string>
+    <string name="add_subject_empty">科目名称不能为空</string>
+    <string name="add_grade_empty">年级名称不能为空</string>
+    <string name="add_subject_title">添加科目</string>
+    <string name="add_grade_title">添加年级</string>
+
+    <!-- steps -->
+    <string name="step_1">步骤 1/2</string>
+    <string name="step_2">步骤 2/2</string>
+    <!-- Spinner -->
+    <string name="spinner_default">请选择</string>
+    <string name="add_category">添加……</string>
+
 </resources>
