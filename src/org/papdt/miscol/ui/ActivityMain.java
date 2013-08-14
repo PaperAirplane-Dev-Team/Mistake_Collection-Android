@@ -120,20 +120,21 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			MyLogger.d(TAG, "已存在Fragment:" + position);
 			initialized = true;
 		}
-		replaceToFragment(mFragments[position], initialized,TAGS[position]);
+		replaceToFragment(mFragments[position], initialized, TAGS[position]);
 		// update selected item and title, then close the drawer
 		mDrawerList.setItemChecked(position, true);
 		mDrawerLayout.closeDrawer(mRlDrawer);
 	}
 
-	private void replaceToFragment(Fragment fragment, boolean hasInitialized,String tag) {
+	private void replaceToFragment(Fragment fragment, boolean hasInitialized,
+			String tag) {
 		if (!hasInitialized) {
-			mTransaction.add(R.id.fl_content, fragment,tag);
+			mTransaction.add(R.id.fl_content, fragment, tag);
 		}
 		mTransaction.attach(fragment).show(fragment).commit();
 		mFragmentManager.popBackStack();
 		mFragmentManager.executePendingTransactions();
-		if(fragment.getTag().equals(TAGS[MISTAKES])){
+		if (fragment.getTag().equals(TAGS[MISTAKES])) {
 			initializeTabs();
 		}
 	}
@@ -141,7 +142,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	private void hideFragment(Fragment fragment) {
 		if (fragment != null) {
 			mTransaction.hide(fragment);
-			if(fragment.getTag().equals(TAGS[MISTAKES])){
+			if (fragment.getTag().equals(TAGS[MISTAKES])) {
 				removeTabs();
 			}
 		}
@@ -209,14 +210,15 @@ public class ActivityMain extends Activity implements IDrawerNames {
 				getActionBar().setTitle(mTitle);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
-				((FragmentMain) mFragments[MAIN]).showHint();
+				if (mFragments[MAIN] != null)
+					((FragmentMain) mFragments[MAIN]).showHint();
 			}
 
 			public void onDrawerOpened(View drawerView) {
 				getActionBar().setTitle(mDrawerTitle);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
-				if ((FragmentMain) mFragments[MAIN] != null) {
+				if (mFragments[MAIN] != null) {
 					((FragmentMain) mFragments[MAIN]).hideHint();
 				}
 			}

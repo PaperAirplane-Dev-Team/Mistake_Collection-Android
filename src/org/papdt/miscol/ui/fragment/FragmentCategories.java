@@ -25,14 +25,14 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
 public class FragmentCategories extends Fragment {
 	private static FragmentCategories sInstance;
 	private CardUI mCardUI;
-	private LinearLayout mAddButton;
+	private Button mAddButton;
 	private SearchView mSearchView;
 	private CategoryCard[] mCategories;
 	private DatabaseHelper mDbHelper;
@@ -67,7 +67,7 @@ public class FragmentCategories extends Fragment {
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_mistakes, null);
 		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
-		mAddButton = (LinearLayout) v.findViewById(R.id.ll_addmistake);
+		mAddButton = (Button) v.findViewById(R.id.btn_add);
 		mAddButton.setOnClickListener(new OnClickListener() {
 
 			@Override

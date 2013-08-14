@@ -7,25 +7,30 @@ import org.papdt.miscol.bean.CategoryInfo;
 import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.ui.ActivityAddMistake;
+import org.papdt.miscol.ui.dialog.SelectTagsDialog;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.utils.Constants.Databases.Subjects;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.utils.MyLogger;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.Gravity;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -46,10 +51,13 @@ public class FragmentAddMistake0 extends Fragment implements
 	private Mistake mMistake;
 	private DatabaseHelper mDbHelper;
 	private ArrayAdapter<String> mGradeAdapter, mSubjectAdapter;
-	private HashSet<String> mTags = new HashSet<String>();
-	private HashSet<String> mAllTags = new HashSet<String>();
-	private CheckBox[] mCheckBoxes;
+	public HashSet<String> mTags = new HashSet<String>();
+	public HashSet<String> mAllTags = new HashSet<String>();
+	public CheckBox[] mCheckBoxes;
+	private String mPicPath;
+	private Drawable mPic;
 
+	public final static int RESULT_LOAD_IMAGE = 1024;
 	private final static String TAG = "FragmentAddMistake0";
 	private static FragmentAddMistake0 sInstance;
 
@@ -100,7 +108,7 @@ public class FragmentAddMistake0 extends Fragment implements
 		return mLayout;
 	}
 
-	private void showTags() {
+	public void showTags() {
 		if (mTags.size() != 0) {
 			mTvTags.setVisibility(View.VISIBLE);
 			StringBuilder sb = new StringBuilder();
@@ -151,6 +159,9 @@ public class FragmentAddMistake0 extends Fragment implements
 		menu.clear();
 		getActivity().getMenuInflater().inflate(R.menu.fragment_addmistake_0,
 				menu);
+		if (mPic != null) {
+			menu.getItem(0).setIcon(mPic);
+		}
 	}
 
 	@Override
@@ -167,7 +178,7 @@ public class FragmentAddMistake0 extends Fragment implements
 			break;
 		case R.id.action_add_photo:
 			MyLogger.d(TAG, "用户触发添加照片操作");
-			// TODO 添加照片
+			addPhoto();
 			break;
 		case R.id.action_add_tag:
 			MyLogger.d(TAG, "用户触发添加标签操作");
@@ -177,78 +188,45 @@ public class FragmentAddMistake0 extends Fragment implements
 		return true;
 	}
 
-	private void addTags() {
-		LinearLayout layout = new LinearLayout(getActivity());
-		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
-				LayoutParams.WRAP_CONTENT);
-		String[] allTags = (String[]) mAllTags.toArray(new String[]{""});
-		if (allTags != null && allTags.length > 0) {
-			mCheckBoxes = new CheckBox[allTags.length];
-			for (int i = 0; i < mAllTags.size(); i++) {
-				mCheckBoxes[i] = new CheckBox(getActivity());
-				mCheckBoxes[i].setText(allTags[i]);
-				if (mTags.contains(allTags[i])) {
-					mCheckBoxes[i].setChecked(true);
-				}
-				layout.addView(mCheckBoxes[i], params);
+	private void addPhoto() {
+		if (mPicPath == null) {
+			Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+			i.setType("image/*");
+			startActivityForResult(i, RESULT_LOAD_IMAGE);
+		} else {
+			mPicPath = null;
+			mPic = null;
+			getActivity().invalidateOptionsMenu();
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == RESULT_LOAD_IMAGE
+				&& resultCode == Activity.RESULT_OK && null != data) {
+			Uri image = data.getData();
+			String[] projection = { MediaStore.Images.Media.DATA };
+			Cursor cursor = getActivity().getContentResolver().query(image,
+					projection, null, null, null);
+			cursor.moveToFirst();
+			mPicPath = cursor.getString(0);
+			MyLogger.i(TAG, "用户选择的Picture Path为" + mPicPath);
+			cursor.close();
+			if (mPicPath != null) {
+				DisplayMetrics dm = new DisplayMetrics();
+				getActivity().getWindowManager().getDefaultDisplay()
+						.getMetrics(dm);
+				mPic = Drawable.createFromPath(mPicPath);
+				getActivity().invalidateOptionsMenu();
 			}
 		}
-		DialogInterface.OnClickListener selectListener = new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				switch (which) {
-				case DialogInterface.BUTTON_POSITIVE:
-					for(CheckBox cb:mCheckBoxes){
-						if(cb.isChecked()){
-							mTags.add(cb.getText().toString());
-						}
-					}
-					showTags();
-					break;
-				}
-			}
-		};
-		TextView tvAddTag = new TextView(getActivity());
-		tvAddTag.setGravity(Gravity.CENTER);
-		tvAddTag.setText(R.string.add_category);
-		tvAddTag.setTextAppearance(getActivity(),
-				android.R.attr.textAppearanceLarge);
-		tvAddTag.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				final EditText et = new EditText(getActivity());
-				et.setHint(R.string.add_tag_hint);
-				final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-						case DialogInterface.BUTTON_POSITIVE:
-							if (!TextUtils.isEmpty(et.getText())) {
-								mTags.add(et.getText().toString());
-								mAllTags.add(et.getText().toString());
-								showTags();
-							} else {
-								Toast.makeText(getActivity(),
-										R.string.add_tag_empty,
-										Toast.LENGTH_SHORT).show();
-							}
-							break;
-						}
-					}
-				};
-				new AlertDialog.Builder(getActivity())
-						.setTitle(R.string.add_tag_title).setView(et)
-						.setPositiveButton(android.R.string.ok, listener)
-						.setNegativeButton(android.R.string.cancel, listener)
-						.show();
-			}
-		});
-		layout.addView(tvAddTag, params);
-		new AlertDialog.Builder(getActivity()).setTitle(R.string.add_tag_title)
-				.setView(layout)
-				.setPositiveButton(android.R.string.ok, selectListener)
-				.setNegativeButton(android.R.string.cancel, selectListener)
-				.show();
+	}
+
+	private void addTags() {
+		SelectTagsDialog dialog = new SelectTagsDialog();
+		dialog.setFragment(this);
+		dialog.show(getFragmentManager(), SelectTagsDialog.TAG);
 	}
 
 	private void moveToNextStep() {

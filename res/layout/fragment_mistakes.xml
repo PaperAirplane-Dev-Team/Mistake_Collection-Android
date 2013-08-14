@@ -14,13 +14,11 @@
     <!-- 添加键 -->
 
     <LinearLayout
-        android:id="@+id/ll_addmistake"
         style="@android:style/Widget.ActionButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/customized_button_background"
-        android:clickable="true"
         android:orientation="vertical" >
 
         <View
@@ -31,13 +29,13 @@
 
         <Button
             style="@android:style/Widget.ActionButton"
+            android:id="@+id/btn_add"
+            android:text="@string/add_mistake"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/add_normal"
-            android:clickable="false"
             android:gravity="center"
             android:textColor="@color/add"
-            android:textSize="25sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
 </LinearLayout>
