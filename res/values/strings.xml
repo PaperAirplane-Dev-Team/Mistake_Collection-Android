@@ -31,7 +31,7 @@
 	<string name="welcome_content">欢迎使用哪错了。\n哪错了能帮助您在Android手机和平板电脑上管理您的错题、难题；\n同时能帮助您进行错题测验。</string>
 	<string name="hint_text">从最左拖动拉出菜单</string>
 	<!-- 题目列表 -->
-	<string name="add">添加错题</string>
+	<string name="add_mistake">添加错题</string>
 	<string name="card_description" formatted="false" >%d道错题</string>
 	<string name="card_description_for_subject" formatted="false" >%d道错题，%d个科目</string>
 	<!-- Tabs -->
@@ -46,4 +46,6 @@
 	<!-- steps -->
 	<string name="step_1">步骤 1/2</string>
 	<string name="step_2">步骤 2/2</string>
+	<!-- Spinner -->
+	<string name="add_category">添加……</string>
 </resources>

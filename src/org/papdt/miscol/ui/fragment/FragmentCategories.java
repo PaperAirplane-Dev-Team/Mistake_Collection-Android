@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.papdt.miscol.R;
+import org.papdt.miscol.bean.CategoryInfo;
 import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.bean.MistakeOperationException;
 import org.papdt.miscol.dao.DatabaseHelper;
+import org.papdt.miscol.utils.Constants.Databases.Subjects;
+import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.utils.MyLogger;
+import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.ui.CategoryCard;
 
@@ -41,21 +45,21 @@ public class FragmentCategories extends Fragment {
 		this.setHasOptionsMenu(true);
 		this.mDbHelper = DatabaseHelper.getInstance(getActivity());
 		super.onCreate(savedInstanceState);
-//		addSampleData();
+		// addSampleData();
 	}
 
 	private void addSampleData() {
 		MyLogger.d(TAG, "添加测试数据");
-		Mistake m = new Mistake("测试","呵呵呵呵呵");
+		Mistake m = new Mistake("测试", "呵呵呵呵呵");
 		m.setGradeName("高一");
 		m.setSubjectName("节操");
-		m.setTagNames(new String[]{"Demo"});
-		m.setTypeName("填空题");
+		m.setTagNames(new String[] { "Demo" });
+		m.setTypeName("\'填空题\'");
 		try {
 			mDbHelper.insertMistake(m);
 		} catch (MistakeOperationException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
 	@Override
@@ -64,19 +68,16 @@ public class FragmentCategories extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_mistakes, null);
 		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
 		mAddButton = (LinearLayout) v.findViewById(R.id.ll_addmistake);
-		mAddButton.setOnClickListener(new OnClickListener(){
+		mAddButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				Intent intent =
-						new Intent(
-								getActivity().getApplicationContext(),
-								ActivityAddMistake.class
-								);
+				Intent intent = new Intent(getActivity()
+						.getApplicationContext(), ActivityAddMistake.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				getActivity().startActivity(intent);
 			}
-			
+
 		});
 		return v;
 	}
@@ -113,7 +114,7 @@ public class FragmentCategories extends Fragment {
 	}
 
 	public void fillContentAsTagIndex() {
-		ArrayList<CategoryCard> allTags = mDbHelper.getAllTags();
+		ArrayList<CategoryCard> allTags = getCategoryCards(mDbHelper.getCategoryInfo(Tags.TABLE_NAME));
 		if (allTags != null) {
 			Iterator<CategoryCard> iterator = allTags.iterator();
 			int i = 0;
@@ -129,10 +130,10 @@ public class FragmentCategories extends Fragment {
 		fillContentsToView();
 	}
 
-	public void fillContentAsSubjectIndex() {
-		ArrayList<CategoryCard> allSubjects = mDbHelper.getAllGrades();
-		if (allSubjects != null) {
-			Iterator<CategoryCard> iterator = allSubjects.iterator();
+	public void fillContentAsGradeIndex() {
+		ArrayList<CategoryCard> allGrades =  getCategoryCards(mDbHelper.getCategoryInfo(Grades.TABLE_NAME));
+		if (allGrades != null) {
+			Iterator<CategoryCard> iterator = allGrades.iterator();
 			int i = 0;
 			while (iterator.hasNext()) {
 				mCategories[i++] = iterator.next();
@@ -161,6 +162,17 @@ public class FragmentCategories extends Fragment {
 			sInstance = new FragmentCategories();
 		}
 		return sInstance;
+	}
+
+	private ArrayList<CategoryCard> getCategoryCards(CategoryInfo[] info) {
+		if(info == null){
+			return null;
+		}
+		ArrayList<CategoryCard> tags = new ArrayList<CategoryCard>();
+		for (CategoryInfo temp : info) {
+			tags.add(new CategoryCard(temp.getName(), temp.getCount()));
+		}
+		return tags;
 	}
 
 }

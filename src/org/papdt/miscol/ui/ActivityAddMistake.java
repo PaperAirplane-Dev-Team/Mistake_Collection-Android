@@ -45,7 +45,7 @@ public class ActivityAddMistake extends Activity {
 	private void initializeActionBar() {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		// 有了这个向上按钮我们不再需要取消按钮
-		getActionBar().setTitle(R.string.add);
+		getActionBar().setTitle(R.string.add_mistake);
 	}
 
 	public void finishAdding(Mistake m) {

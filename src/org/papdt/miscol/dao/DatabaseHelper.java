@@ -53,41 +53,6 @@ public class DatabaseHelper {
 	}
 
 	/**
-	 * 获取全部Tag的CategoryCard ArrayList
-	 * 
-	 * @return
-	 */
-
-	public ArrayList<CategoryCard> getAllTags() {
-		CategoryInfo[] info = getCategoryInfo(Tags.TABLE_NAME);
-		if (info == null) {
-			return null;
-		} else {
-			ArrayList<CategoryCard> tags = new ArrayList<CategoryCard>();
-			for (CategoryInfo temp : info) {
-				tags.add(new CategoryCard(temp.getName(), temp.getCount()));
-			}
-			return tags;
-		}
-	}
-	
-	public ArrayList<CategoryCard> getAllGrades(){
-		CategoryInfo[] info = getCategoryInfo(Grades.TABLE_NAME);
-		if (info == null) {
-			return null;
-		} else {
-			ArrayList<CategoryCard> tags = new ArrayList<CategoryCard>();
-			for (CategoryInfo temp : info) {
-				/*要我统计每个年级下面有几个科目臣妾做不到啊……！
-				 * 我可以Select出对应年级的所有题目的SubjectId然后让我统计么
-				 * 天啊这又是那个MusicListAdapter的重演不是么…… */
-				tags.add(new CategoryCard(temp.getName(), temp.getCount()));
-			}
-			return tags;
-		}
-	}
-
-	/**
 	 * 返回表中所有id-name的映射以及计数
 	 * 
 	 * @param tableName

@@ -33,7 +33,7 @@ public class MistakesTabListener implements ActionBar.TabListener {
 			break;
 		case SUBJECTS:
 			MyLogger.d(TAG, "年级/科目 Tab 被选中");
-			mFragment.fillContentAsSubjectIndex();
+			mFragment.fillContentAsGradeIndex();
 			break;
 		}
 	}
