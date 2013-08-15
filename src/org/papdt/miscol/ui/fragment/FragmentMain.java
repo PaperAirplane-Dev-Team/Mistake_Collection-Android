@@ -2,7 +2,6 @@ package org.papdt.miscol.ui.fragment;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.ui.MistakeCard;
-import org.papdt.miscol.utils.MyLogger;
 import com.fima.cardsui.objects.Card.OnCardSwiped;
 import com.fima.cardsui.views.CardUI;
 
@@ -10,6 +9,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +29,7 @@ public class FragmentMain extends Fragment {
 
 	@Deprecated
 	public FragmentMain() {
-		MyLogger.d(TAG, TAG + "被初始化");
+		Log.d(TAG, TAG + "被初始化");
 	}
 
 	public static FragmentMain getInstance() {
@@ -61,13 +61,13 @@ public class FragmentMain extends Fragment {
 			public void onCardSwiped() {
 				Toast.makeText(getActivity(), "I'm being swiped!",
 						Toast.LENGTH_SHORT).show();
-				MyLogger.d(TAG, "being swiped");
+				Log.d(TAG, "being swiped");
 				// XXX 不知道为什么没有用于移除Card的相关方法
 			}
 		});
 		mCardUI.addCard(cardWelcome);
 		mCardUI.refresh();
-		MyLogger.d(TAG, "Card已添加");
+		Log.d(TAG, "Card已添加");
 		return mCardsLayout;
 	}
 

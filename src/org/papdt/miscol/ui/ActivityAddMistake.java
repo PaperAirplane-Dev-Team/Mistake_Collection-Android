@@ -3,13 +3,13 @@ package org.papdt.miscol.ui;
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.ui.fragment.FragmentAddMistake0;
-import org.papdt.miscol.utils.MyLogger;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 public class ActivityAddMistake extends Activity {
@@ -29,7 +29,7 @@ public class ActivityAddMistake extends Activity {
 		mFragmentManager = getFragmentManager();
 		initializeActionBar();
 		startStepOne();
-		MyLogger.d(TAG, TAG + "已完成初始化");
+		Log.d(TAG, TAG + "已完成初始化");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -50,7 +50,7 @@ public class ActivityAddMistake extends Activity {
 
 	public void finishAdding(Mistake m) {
 		// TODO 将mistake写入数据库
-		MyLogger.i(TAG, "收到错题添加请求, 错题信息:" + m.toString());
+		Log.i(TAG, "收到错题添加请求, 错题信息:" + m.toString());
 		Toast.makeText(getApplicationContext(), "添加成功!", Toast.LENGTH_SHORT).show();
 		finish();
 	}

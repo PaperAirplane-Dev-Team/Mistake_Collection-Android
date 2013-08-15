@@ -1,13 +1,11 @@
 package org.papdt.miscol.dao;
 
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import org.papdt.miscol.bean.CategoryInfo;
 import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.bean.MistakeOperationException;
 import org.papdt.miscol.bean.QueryCondition;
-import org.papdt.miscol.ui.CategoryCard;
 import org.papdt.miscol.utils.Constants.Databases;
 import org.papdt.miscol.utils.Constants.Databases.Files;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
@@ -16,7 +14,6 @@ import org.papdt.miscol.utils.Constants.Databases.Mistakes;
 import org.papdt.miscol.utils.Constants.Databases.SqlStatements;
 import org.papdt.miscol.utils.Constants.Databases.Subjects;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
-import org.papdt.miscol.utils.MyLogger;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,6 +21,7 @@ import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DatabaseHelper {
 
@@ -44,7 +42,7 @@ public class DatabaseHelper {
 			sInstance = new DatabaseHelper(context, new DatabaseErrorHandler() {
 				@Override
 				public void onCorruption(SQLiteDatabase dbObj) {
-					MyLogger.e(TAG, "onCorruption");
+					Log.e(TAG, "onCorruption");
 				}
 
 			});
@@ -98,11 +96,11 @@ public class DatabaseHelper {
 					valuesToInsert);
 		} catch (Exception e) {
 			mDatabase.endTransaction();
-			MyLogger.wtf(TAG, "SQL错误" + e.getMessage());
+			Log.wtf(TAG, "SQL错误" + e.getMessage());
 			throw new MistakeOperationException(mistake, "插入时发生错误，为"
 					+ e.getStackTrace());
 		}
-		MyLogger.d(TAG, "成功插入错题，ID为" + mistake.getId());
+		Log.d(TAG, "成功插入错题，ID为" + mistake.getId());
 		mDatabase.setTransactionSuccessful();
 		mDatabase.endTransaction();
 		return true;
@@ -183,13 +181,13 @@ public class DatabaseHelper {
 					+ IDbWithIdAndName.KEY_INT_ID + "=" + id);
 		} catch (SQLException e) {
 			mDatabase.endTransaction();
-			MyLogger.wtf(TAG, "SQL错误" + e.getMessage());
+			Log.wtf(TAG, "SQL错误" + e.getMessage());
 			throw new MistakeOperationException(mistake, "删除时发生错误，为"
 					+ e.getStackTrace());
 		}
 		mDatabase.setTransactionSuccessful();
 		mDatabase.endTransaction();
-		MyLogger.d(TAG, "成功删除错题,ID为" + id);
+		Log.d(TAG, "成功删除错题,ID为" + id);
 		return true;
 	}
 

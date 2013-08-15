@@ -52,15 +52,16 @@
     <string name="add_grade_hint">年级名称</string>
     <string name="add_grade_empty">年级名称不能为空</string>
     <string name="add_grade_title">添加年级</string>
-
+    <string name="field_empty" formatted="false">%c不能为空</string>
     <!-- steps -->
     <string name="step_1">步骤 1/2</string>
     <string name="step_2">步骤 2/2</string>
     <!-- Spinner -->
     <string name="spinner_default">请选择</string>
     <string name="add_category">添加……</string>
-	<!-- Add photo -->
-	<string name="photo_pick">选择图片</string>
-	<string name="photo_capture">拍摄图片</string>
-	<string name="photo_clear">清除图片</string>
+    <!-- Add photo -->
+    <string name="photo_pick">选择图片</string>
+    <string name="photo_capture">拍摄图片</string>
+    <string name="photo_clear">清除图片</string>
+
 </resources>

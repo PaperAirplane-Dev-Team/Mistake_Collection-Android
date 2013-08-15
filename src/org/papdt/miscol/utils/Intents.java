@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 
 public class Intents {
 	public static final int RESULT_PICK_IMAGE = 1024;
@@ -16,7 +17,7 @@ public class Intents {
 	public static final int MEDIA_TYPE_IMAGE = 1;
 	public static final int MEDIA_TYPE_VIDEO = 2;
 
-	public static final String TAG = "MediaIntents";
+	public static final String TAG = "Intents";
 	public static final String APP_NAME = "MisCol";
 
 	public static final Intent CAPTURE_PHOTO_INTENT = new Intent(
@@ -26,7 +27,6 @@ public class Intents {
 			android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
 	public static Uri getOutputMediaFileUri(int type) {
-		MyLogger.d(TAG,Uri.fromFile(getOutputMediaFile(type)).getPath());
 		return Uri.fromFile(getOutputMediaFile(type));
 	}
 
@@ -45,7 +45,7 @@ public class Intents {
 		// Create the storage directory if it does not exist
 		if (!mediaStorageDir.exists()) {
 			if (!mediaStorageDir.mkdirs()) {
-				MyLogger.d(TAG, "failed to create directory");
+				Log.d(TAG, "failed to create directory");
 				return null;
 			}
 		}

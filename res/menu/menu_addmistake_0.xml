@@ -17,6 +17,11 @@
                 android:icon="@android:drawable/ic_menu_camera"
                 android:showAsAction="withText|always"
                 android:title="@string/photo_capture"/>
+            <item
+                android:id="@+id/action_remove_photo"
+                android:icon="@android:drawable/ic_menu_delete"
+                android:showAsAction="withText|always"
+                android:title="@string/photo_clear"/>
         </menu>
     </item>
     <item

@@ -9,7 +9,6 @@ import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.bean.MistakeOperationException;
 import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
-import org.papdt.miscol.utils.MyLogger;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.ui.CategoryCard;
@@ -19,6 +18,7 @@ import com.fima.cardsui.views.CardUI;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,7 +49,7 @@ public class FragmentCategories extends Fragment {
 
 	@SuppressWarnings("unused")
 	private void addSampleData() {
-		MyLogger.d(TAG, "添加测试数据");
+		Log.d(TAG, "添加测试数据");
 		Mistake m = new Mistake("测试", "呵呵呵呵呵");
 		m.setGradeName("高一");
 		m.setSubjectName("节操");
@@ -86,9 +86,8 @@ public class FragmentCategories extends Fragment {
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.clear();// 还不能忘了加这句
 		MenuInflater inflater = getActivity().getMenuInflater();
-		inflater.inflate(R.menu.fragment_main, menu);
-		mSearchView = (SearchView) menu.findItem(R.id.menu_search)
-				.getActionView();
+		inflater.inflate(R.menu.menu_categories, menu);
+		mSearchView = (SearchView) menu.getItem(0).getActionView();
 		mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
 
 			@Override
@@ -100,7 +99,7 @@ public class FragmentCategories extends Fragment {
 			@Override
 			public boolean onQueryTextSubmit(String arg0) {
 				// TODO 完善搜索功能
-				MyLogger.i(TAG, "用户搜索关键词: " + arg0);
+				Log.i(TAG, "用户搜索关键词: " + arg0);
 				return false;
 			}
 
@@ -110,11 +109,12 @@ public class FragmentCategories extends Fragment {
 
 	@Deprecated
 	public FragmentCategories() {
-		MyLogger.d(TAG, TAG + "被初始化");
+		Log.d(TAG, TAG + "被初始化");
 	}
 
 	public void fillContentAsTagIndex() {
-		ArrayList<CategoryCard> allTags = getCategoryCards(mDbHelper.getCategoryInfo(Tags.TABLE_NAME));
+		ArrayList<CategoryCard> allTags = getCategoryCards(mDbHelper
+				.getCategoryInfo(Tags.TABLE_NAME));
 		if (allTags != null) {
 			Iterator<CategoryCard> iterator = allTags.iterator();
 			int i = 0;
@@ -131,7 +131,8 @@ public class FragmentCategories extends Fragment {
 	}
 
 	public void fillContentAsGradeIndex() {
-		ArrayList<CategoryCard> allGrades =  getCategoryCards(mDbHelper.getCategoryInfo(Grades.TABLE_NAME));
+		ArrayList<CategoryCard> allGrades = getCategoryCards(mDbHelper
+				.getCategoryInfo(Grades.TABLE_NAME));
 		if (allGrades != null) {
 			Iterator<CategoryCard> iterator = allGrades.iterator();
 			int i = 0;
@@ -165,7 +166,7 @@ public class FragmentCategories extends Fragment {
 	}
 
 	private ArrayList<CategoryCard> getCategoryCards(CategoryInfo[] info) {
-		if(info == null){
+		if (info == null) {
 			return null;
 		}
 		ArrayList<CategoryCard> tags = new ArrayList<CategoryCard>();

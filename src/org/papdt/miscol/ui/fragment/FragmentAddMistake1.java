@@ -3,11 +3,11 @@ package org.papdt.miscol.ui.fragment;
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.ui.ActivityAddMistake;
-import org.papdt.miscol.utils.MyLogger;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +24,7 @@ public class FragmentAddMistake1 extends Fragment {
 	private final static String TAG = "FragmentAddMistake1";
 
 	public FragmentAddMistake1() {
-		MyLogger.d(TAG, TAG + "被初始化");
+		Log.d(TAG, TAG + "被初始化");
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class FragmentAddMistake1 extends Fragment {
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
-		getActivity().getMenuInflater().inflate(R.menu.fragment_addmistake_1,
+		getActivity().getMenuInflater().inflate(R.menu.menu_addmistake_1,
 				menu);
 	}
 
@@ -46,15 +46,15 @@ public class FragmentAddMistake1 extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_finish:
-			MyLogger.d(TAG, "用户触发下一步操作");
+			Log.d(TAG, "用户触发下一步操作");
 			moveToNextStep();
 			break;
 		case android.R.id.home:
-			MyLogger.d(TAG, "用户点击ActionBar的返回按钮");
+			Log.d(TAG, "用户点击ActionBar的返回按钮");
 			moveToLastStep();
 			break;
 		case R.id.action_add_photo:
-			MyLogger.d(TAG, "用户触发添加照片操作");
+			Log.d(TAG, "用户触发添加照片操作");
 			break;
 		}
 		return true;

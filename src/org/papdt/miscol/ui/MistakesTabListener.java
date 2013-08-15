@@ -1,11 +1,11 @@
 package org.papdt.miscol.ui;
 
 import org.papdt.miscol.ui.fragment.FragmentCategories;
-import org.papdt.miscol.utils.MyLogger;
 
 import android.app.ActionBar.Tab;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.util.Log;
 
 public class MistakesTabListener implements ActionBar.TabListener {
 	public final static int TAGS = 0;
@@ -28,11 +28,11 @@ public class MistakesTabListener implements ActionBar.TabListener {
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		switch ((Integer) tab.getTag()) {
 		case TAGS:
-			MyLogger.d(TAG, "标签 Tab 被选中");
+			Log.d(TAG, "标签 Tab 被选中");
 			mFragment.fillContentAsTagIndex();
 			break;
 		case SUBJECTS:
-			MyLogger.d(TAG, "年级/科目 Tab 被选中");
+			Log.d(TAG, "年级/科目 Tab 被选中");
 			mFragment.fillContentAsGradeIndex();
 			break;
 		}

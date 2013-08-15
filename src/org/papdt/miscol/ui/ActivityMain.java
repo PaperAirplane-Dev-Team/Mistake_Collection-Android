@@ -5,7 +5,6 @@ import org.papdt.miscol.ui.adapter.DrawerAdapter;
 import org.papdt.miscol.ui.adapter.DrawerAdapter.IDrawerNames;
 import org.papdt.miscol.ui.fragment.FragmentMain;
 import org.papdt.miscol.ui.fragment.FragmentCategories;
-import org.papdt.miscol.utils.MyLogger;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -19,6 +18,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +42,8 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	private String[] mDrawerItemNames;
 	private FragmentManager mFragmentManager;
 	private MistakesTabListener mTabListener;
+	private int mCurrentFragment;
+	private boolean mDrawerClosed;
 
 	private final static String TAG = "ActivityMain";
 
@@ -57,7 +59,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			selectItem(MAIN);
 			// 默认打开FragmentMain
 		}
-		MyLogger.d(TAG, TAG + "已完成初始化");
+		Log.d(TAG, TAG + "已完成初始化");
 	}
 
 	@Override
@@ -96,13 +98,14 @@ public class ActivityMain extends Activity implements IDrawerNames {
 
 	private void selectItem(int position) {
 		// update the main content by replacing mFragments
+		mCurrentFragment = position;
 		boolean initialized;
 		mTransaction = mFragmentManager.beginTransaction();
 		for (Fragment fragment : mFragments) {
 			hideFragment(fragment);
 		}
 		if (mFragments[position] == null) {
-			MyLogger.d(TAG, "创建新的 Fragment:" + position);
+			Log.d(TAG, "创建新的 Fragment:" + position);
 			initialized = false;
 			switch (position) {
 			case MAIN:
@@ -117,7 +120,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 				break;
 			}
 		} else {
-			MyLogger.d(TAG, "已存在Fragment:" + position);
+			Log.d(TAG, "已存在Fragment:" + position);
 			initialized = true;
 		}
 		replaceToFragment(mFragments[position], initialized, TAGS[position]);
@@ -134,17 +137,11 @@ public class ActivityMain extends Activity implements IDrawerNames {
 		mTransaction.attach(fragment).show(fragment).commit();
 		mFragmentManager.popBackStack();
 		mFragmentManager.executePendingTransactions();
-		if (fragment.getTag().equals(TAGS[MISTAKES])) {
-			initializeTabs();
-		}
 	}
 
 	private void hideFragment(Fragment fragment) {
 		if (fragment != null) {
 			mTransaction.hide(fragment);
-			if (fragment.getTag().equals(TAGS[MISTAKES])) {
-				removeTabs();
-			}
 		}
 
 	}
@@ -206,19 +203,33 @@ public class ActivityMain extends Activity implements IDrawerNames {
 		R.string.drawer_open, /* "open drawer" description for accessibility */
 		R.string.drawer_close /* "close drawer" description for accessibility */
 		) {
+			@Override
 			public void onDrawerClosed(View view) {
 				getActionBar().setTitle(mTitle);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
-				if (mFragments[MAIN] != null)
+				if (mCurrentFragment == MAIN && mFragments[MAIN] != null)
 					((FragmentMain) mFragments[MAIN]).showHint();
+				if (mCurrentFragment == MISTAKES) {
+					initializeTabs();
+				}
+				mDrawerClosed = true;
 			}
 
+			@Override
+			public void onDrawerSlide(View drawerView, float slideOffset) {
+				if (mDrawerClosed&&mCurrentFragment == MISTAKES) {
+					removeTabs();
+				}
+				mDrawerClosed = false;
+			}
+
+			@Override
 			public void onDrawerOpened(View drawerView) {
 				getActionBar().setTitle(mDrawerTitle);
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
-				if (mFragments[MAIN] != null) {
+				if (mCurrentFragment == MAIN && mFragments[MAIN] != null) {
 					((FragmentMain) mFragments[MAIN]).hideHint();
 				}
 			}
@@ -233,6 +244,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			mTabListener = new MistakesTabListener(
 					(FragmentCategories) mFragments[MISTAKES]);
 		}
+		actionBar.removeAllTabs();
 		Tab tagTab = actionBar.newTab().setText(R.string.tag)
 				.setTag(MistakesTabListener.TAGS).setTabListener(mTabListener);
 		Tab gradeTab = actionBar.newTab().setText(R.string.subject_or_grade)

@@ -12,7 +12,6 @@ import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.utils.Constants.Databases.Subjects;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.utils.Intents;
-import org.papdt.miscol.utils.MyLogger;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,6 +26,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,8 +55,8 @@ public class FragmentAddMistake0 extends Fragment implements
 	public HashSet<String> mTags = new HashSet<String>();
 	public HashSet<String> mAllTags = new HashSet<String>();
 	public CheckBox[] mCheckBoxes;
-	private String mPicPath;
-	private Drawable mPic;
+	private String mPicPath = null;
+	private Drawable mPic = null;
 	private int mDeletePicMenuItemId = -1;
 
 	private final static String TAG = "FragmentAddMistake0";
@@ -65,7 +65,7 @@ public class FragmentAddMistake0 extends Fragment implements
 	@Deprecated
 	public FragmentAddMistake0() {
 		mDbHelper = DatabaseHelper.getInstance(getActivity());
-		MyLogger.d(TAG, TAG + "被初始化");
+		Log.d(TAG, TAG + "被初始化");
 	}
 
 	public static FragmentAddMistake0 getInstance() {
@@ -158,13 +158,9 @@ public class FragmentAddMistake0 extends Fragment implements
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
-		getActivity().getMenuInflater().inflate(R.menu.fragment_addmistake_0,
-				menu);
-		if (mPic != null) {
-			menu.getItem(0).setIcon(mPic);
-			mDeletePicMenuItemId = menu.getItem(0).getSubMenu()
-					.add(R.string.photo_clear)
-					.setIcon(android.R.drawable.ic_menu_delete).getItemId();
+		getActivity().getMenuInflater().inflate(R.menu.menu_addmistake_0, menu);
+		if (mPic == null) {
+			menu.getItem(0).getSubMenu().removeItem(R.id.action_remove_photo);
 		}
 	}
 
@@ -172,30 +168,29 @@ public class FragmentAddMistake0 extends Fragment implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_next:
-			MyLogger.d(TAG, "用户触发下一步操作");
+			Log.d(TAG, "用户触发下一步操作");
 			moveToNextStep();
 			break;
 		case android.R.id.home:
-			MyLogger.d(TAG, "用户点击ActionBar的返回按钮");
+			Log.d(TAG, "用户点击ActionBar的返回按钮");
 			getFragmentManager().beginTransaction().detach(this).commit();
 			getActivity().finish();
 			break;
 		case R.id.action_pick_photo:
-			MyLogger.d(TAG, "用户触发选择照片操作");
+			Log.d(TAG, "用户触发选择照片操作");
 			addPhoto();
 			break;
 		case R.id.action_capture_photo:
-			MyLogger.d(TAG, "用户触发拍摄照片操作");
+			Log.d(TAG, "用户触发拍摄照片操作");
 			capturePhoto();
 			break;
 		case R.id.action_add_tag:
-			MyLogger.d(TAG, "用户触发添加标签操作");
+			Log.d(TAG, "用户触发添加标签操作");
 			addTags();
 			break;
 		default:
 			if (item.getItemId() == mDeletePicMenuItemId) {
-				mPic = null;
-				mPicPath = null;
+				setPicture(null);
 				getActivity().invalidateOptionsMenu();
 			}
 
@@ -219,7 +214,7 @@ public class FragmentAddMistake0 extends Fragment implements
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		MyLogger.d(TAG, String.format(
+		Log.d(TAG, String.format(
 				"onActivityResult,requestCode = %d ,resultCode = %d ,OK = %d ,data is null = "
 						+ (data == null), requestCode, resultCode,
 				Activity.RESULT_OK));
@@ -240,15 +235,19 @@ public class FragmentAddMistake0 extends Fragment implements
 	}
 
 	private void setPicture(String path) {
+		mPicPath = path;
 		if (path != null) {
-			mPicPath = path;
-			MyLogger.i(TAG, "用户选择的Picture Path为" + mPicPath);
-
+			Log.i(TAG, "用户选择的Picture Path为" + mPicPath);
 			DisplayMetrics dm = new DisplayMetrics();
 			getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-			// TODO 缩放图片……
 			mPic = Drawable.createFromPath(mPicPath);
+			int sideLength = (int) (dm.widthPixels * 0.2);
+			mPic.setBounds(0, 0, sideLength, sideLength);
+			mEtDescription.setCompoundDrawables(mPic, null, null, null);
 			getActivity().invalidateOptionsMenu();
+		} else {
+			mEtDescription.setCompoundDrawables(null, null, null, null);
+			mPic = null;
 		}
 	}
 
@@ -259,8 +258,14 @@ public class FragmentAddMistake0 extends Fragment implements
 	}
 
 	private void moveToNextStep() {
+		if (isFieldEmpty())
+			return;
 		mMistake = new Mistake(mEtTitle.getText().toString(), mEtDescription
 				.getText().toString());
+		if (mPicPath != null)
+			mMistake.setQuestionPhotoPath(mPicPath);
+		if (mTags.size() > 0)
+			mMistake.setTagNames(mTags.toArray(new String[0]));
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
 		FragmentAddMistake1 fragment = new FragmentAddMistake1();
@@ -271,6 +276,37 @@ public class FragmentAddMistake0 extends Fragment implements
 		transaction.addToBackStack(ActivityAddMistake.TAGS[0])
 				.replace(R.id.fl_content, fragment, ActivityAddMistake.TAGS[1])
 				.commit();
+	}
+
+	private boolean isFieldEmpty() {
+		String format = getString(R.string.field_empty);
+		if (TextUtils.isEmpty(mEtTitle.getText())) {
+			Toast.makeText(getActivity(),
+					String.format(format, mEtTitle.getHint()),
+					Toast.LENGTH_SHORT).show();
+			return true;
+		}
+		if (TextUtils.isEmpty(mEtDescription.getText())) {
+			Toast.makeText(getActivity(),
+					String.format(format, mEtDescription.getHint()),
+					Toast.LENGTH_SHORT).show();
+			return true;
+		}
+		if (((String) mSpinnerGrade.getSelectedItem())
+				.equals(getString(R.string.spinner_default))) {
+			Toast.makeText(getActivity(),
+					String.format(format, getString(R.string.tv_grade)),
+					Toast.LENGTH_SHORT).show();
+			return true;
+		}
+		if (((String) mSpinnerSubject.getSelectedItem())
+				.equals(getString(R.string.spinner_default))) {
+			Toast.makeText(getActivity(),
+					String.format(format, getString(R.string.tv_subject)),
+					Toast.LENGTH_SHORT).show();
+			return true;
+		}
+		return false;
 	}
 
 	private void addSubject() {
@@ -284,6 +320,8 @@ public class FragmentAddMistake0 extends Fragment implements
 					if (!TextUtils.isEmpty(etSubject.getText())) {
 						mSubjectAdapter
 								.remove(getString(R.string.add_category));
+						mSubjectAdapter
+								.remove(getString(R.string.spinner_default));
 						mSubjectAdapter.add(etSubject.getText().toString());
 						mSpinnerSubject
 								.setSelection(mSubjectAdapter.getCount() - 1);
@@ -314,6 +352,8 @@ public class FragmentAddMistake0 extends Fragment implements
 				case DialogInterface.BUTTON_POSITIVE:
 					if (!TextUtils.isEmpty(etGrade.getText())) {
 						mGradeAdapter.remove(getString(R.string.add_category));
+						mGradeAdapter
+								.remove(getString(R.string.spinner_default));
 						mGradeAdapter.add(etGrade.getText().toString());
 						mSpinnerGrade
 								.setSelection(mGradeAdapter.getCount() - 1);
@@ -338,18 +378,18 @@ public class FragmentAddMistake0 extends Fragment implements
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		MyLogger.d(TAG, "onItemSelected position: " + position);
+		Log.d(TAG, "onItemSelected position: " + position);
 		try {
 			switch (parent.getId()) {
 			case R.id.spinner_grade:
 				if (position == mGradeAdapter.getCount() - 1) {
-					MyLogger.d(TAG, "addGrade");
+					Log.d(TAG, "addGrade");
 					addGrade();
 				}
 				break;
 			case R.id.spinner_subject:
 				if (position == mSubjectAdapter.getCount() - 1) {
-					MyLogger.d(TAG, "addSubject");
+					Log.d(TAG, "addSubject");
 					addSubject();
 				}
 				break;

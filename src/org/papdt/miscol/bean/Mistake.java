@@ -1,13 +1,23 @@
 package org.papdt.miscol.bean;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Mistake implements Cloneable, Serializable, Parcelable {
 
 	private static final long serialVersionUID = 1358856916991350617L;
+	@SuppressLint("SimpleDateFormat")
+	private static final SimpleDateFormat sDateFormat = new SimpleDateFormat(
+			"YYYY/MM/DD hh:m:ss");
+
 	private int id = -1;
 	private String addTime;
 	private String lastModifyTime = "NO";
@@ -32,25 +42,36 @@ public class Mistake implements Cloneable, Serializable, Parcelable {
 	private String[] tagNames;
 	private boolean isStarred;
 
-	public Mistake(String title,String questionText){
+	public Mistake(String title, String questionText) {
 		this.title = title;
 		this.questionText = questionText;
-		this.addTime = Long.toString(System.currentTimeMillis());
+		this.addTime = sDateFormat.format(new Date());
 	}
-	
-	public Mistake(){
-		
+
+	@SuppressWarnings("unused")
+	@Deprecated
+	private Mistake() {
 	}
-	
+
 	@Override
-	public String toString(){
-		return "{id:" + id + ", title:" + title
-				+ ", questionText:" + questionText
-				+ ", answerText:" + answerText
-				+ ", addTime:" + addTime
-				+ "}";
+	public String toString() {
+		/*
+		 * 手动拼接JSON！！还不用StringBuilder！我又不能够了！ 不知道有org.json么……
+		 * 虽然我不知道这个方法存在的意义要说用来导出吧信息还不全但是看不下去了重写了它
+		 */
+		JSONObject jobj = new JSONObject();
+		try {
+			jobj.put("id", id);
+			jobj.put("title", title);
+			jobj.put(questionText, questionText);
+			jobj.put(answerText, answerText);
+			jobj.put("answerText", answerText);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jobj.toString();
 	}
-	
+
 	public String getAddTime() {
 		return addTime;
 	}
