@@ -11,6 +11,7 @@ import org.papdt.miscol.ui.dialog.SelectTagsDialog;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.utils.Constants.Databases.Subjects;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
+import org.papdt.miscol.utils.Intents;
 import org.papdt.miscol.utils.MyLogger;
 
 import android.app.Activity;
@@ -56,8 +57,8 @@ public class FragmentAddMistake0 extends Fragment implements
 	public CheckBox[] mCheckBoxes;
 	private String mPicPath;
 	private Drawable mPic;
+	private int mDeletePicMenuItemId = -1;
 
-	public final static int RESULT_LOAD_IMAGE = 1024;
 	private final static String TAG = "FragmentAddMistake0";
 	private static FragmentAddMistake0 sInstance;
 
@@ -161,6 +162,9 @@ public class FragmentAddMistake0 extends Fragment implements
 				menu);
 		if (mPic != null) {
 			menu.getItem(0).setIcon(mPic);
+			mDeletePicMenuItemId = menu.getItem(0).getSubMenu()
+					.add(R.string.photo_clear)
+					.setIcon(android.R.drawable.ic_menu_delete).getItemId();
 		}
 	}
 
@@ -176,50 +180,75 @@ public class FragmentAddMistake0 extends Fragment implements
 			getFragmentManager().beginTransaction().detach(this).commit();
 			getActivity().finish();
 			break;
-		case R.id.action_add_photo:
-			MyLogger.d(TAG, "用户触发添加照片操作");
+		case R.id.action_pick_photo:
+			MyLogger.d(TAG, "用户触发选择照片操作");
 			addPhoto();
+			break;
+		case R.id.action_capture_photo:
+			MyLogger.d(TAG, "用户触发拍摄照片操作");
+			capturePhoto();
 			break;
 		case R.id.action_add_tag:
 			MyLogger.d(TAG, "用户触发添加标签操作");
 			addTags();
 			break;
+		default:
+			if (item.getItemId() == mDeletePicMenuItemId) {
+				mPic = null;
+				mPicPath = null;
+				getActivity().invalidateOptionsMenu();
+			}
+
 		}
 		return true;
 	}
 
+	private void capturePhoto() {
+		Uri uri = Intents.getOutputMediaFileUri(Intents.MEDIA_TYPE_IMAGE);
+		mPicPath = uri.getPath();
+		startActivityForResult(Intents.CAPTURE_PHOTO_INTENT.putExtra(
+				MediaStore.EXTRA_OUTPUT, uri), Intents.RESULT_CAPTURE_IMAGE);
+
+	}
+
 	private void addPhoto() {
-		if (mPicPath == null) {
-			Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-			i.setType("image/*");
-			startActivityForResult(i, RESULT_LOAD_IMAGE);
-		} else {
-			mPicPath = null;
-			mPic = null;
-			getActivity().invalidateOptionsMenu();
-		}
+		startActivityForResult(Intents.PICK_PHOTO_INTENT,
+				Intents.RESULT_PICK_IMAGE);
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == RESULT_LOAD_IMAGE
+		MyLogger.d(TAG, String.format(
+				"onActivityResult,requestCode = %d ,resultCode = %d ,OK = %d ,data is null = "
+						+ (data == null), requestCode, resultCode,
+				Activity.RESULT_OK));
+		if (requestCode == Intents.RESULT_PICK_IMAGE
 				&& resultCode == Activity.RESULT_OK && null != data) {
 			Uri image = data.getData();
 			String[] projection = { MediaStore.Images.Media.DATA };
 			Cursor cursor = getActivity().getContentResolver().query(image,
 					projection, null, null, null);
 			cursor.moveToFirst();
-			mPicPath = cursor.getString(0);
-			MyLogger.i(TAG, "用户选择的Picture Path为" + mPicPath);
+			setPicture(cursor.getString(0));
 			cursor.close();
-			if (mPicPath != null) {
-				DisplayMetrics dm = new DisplayMetrics();
-				getActivity().getWindowManager().getDefaultDisplay()
-						.getMetrics(dm);
-				mPic = Drawable.createFromPath(mPicPath);
-				getActivity().invalidateOptionsMenu();
-			}
+		}
+		if (requestCode == Intents.RESULT_CAPTURE_IMAGE
+				&& resultCode == Activity.RESULT_OK) {
+			setPicture(mPicPath);
+		}
+	}
+
+	private void setPicture(String path) {
+		if (path != null) {
+			mPicPath = path;
+			MyLogger.i(TAG, "用户选择的Picture Path为" + mPicPath);
+
+			DisplayMetrics dm = new DisplayMetrics();
+			getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+			// TODO 缩放图片……
+			mPic = Drawable.createFromPath(mPicPath);
+			getActivity().invalidateOptionsMenu();
 		}
 	}
 

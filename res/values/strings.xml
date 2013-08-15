@@ -59,5 +59,8 @@
     <!-- Spinner -->
     <string name="spinner_default">请选择</string>
     <string name="add_category">添加……</string>
-
+	<!-- Add photo -->
+	<string name="photo_pick">选择图片</string>
+	<string name="photo_capture">拍摄图片</string>
+	<string name="photo_clear">清除图片</string>
 </resources>
