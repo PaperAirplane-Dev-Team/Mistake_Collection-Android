@@ -264,6 +264,7 @@ public class DatabaseHelper {
 	}
 
 	private Mistake generateMistakeWithCursor(Cursor cursor) {
+		@SuppressWarnings("deprecation")
 		Mistake mistake = new Mistake();
 		mistake.setId(cursor.getInt(0));
 		mistake.setAddTime(cursor.getString(1));

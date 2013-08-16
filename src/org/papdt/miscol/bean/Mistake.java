@@ -50,7 +50,7 @@ public class Mistake implements Cloneable, Serializable, Parcelable {
 
 	@SuppressWarnings("unused")
 	@Deprecated
-	private Mistake() {
+	public Mistake() {
 	}
 
 	@Override
