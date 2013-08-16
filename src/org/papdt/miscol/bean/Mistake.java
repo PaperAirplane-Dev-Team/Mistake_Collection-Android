@@ -16,7 +16,7 @@ public class Mistake implements Cloneable, Serializable, Parcelable {
 	private static final long serialVersionUID = 1358856916991350617L;
 	@SuppressLint("SimpleDateFormat")
 	private static final SimpleDateFormat sDateFormat = new SimpleDateFormat(
-			"YYYY/MM/DD hh:m:ss");
+			"yyyy/MM/dd HH:m:ss");
 
 	private int id = -1;
 	private String addTime;
@@ -48,7 +48,6 @@ public class Mistake implements Cloneable, Serializable, Parcelable {
 		this.addTime = sDateFormat.format(new Date());
 	}
 
-	@SuppressWarnings("unused")
 	@Deprecated
 	public Mistake() {
 	}

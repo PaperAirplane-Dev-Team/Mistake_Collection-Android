@@ -34,12 +34,11 @@ public class FragmentAddMistake1 extends Fragment {
 		mMistake = this.getArguments().getParcelable("Mistake");
 		getActivity().getActionBar().setSubtitle(R.string.step_2);
 	}
-	
+
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
-		getActivity().getMenuInflater().inflate(R.menu.menu_addmistake_1,
-				menu);
+		getActivity().getMenuInflater().inflate(R.menu.menu_addmistake_1, menu);
 	}
 
 	@Override
@@ -59,28 +58,28 @@ public class FragmentAddMistake1 extends Fragment {
 		}
 		return true;
 	}
-	
-	private void moveToLastStep(){
+
+	private void moveToLastStep() {
 		getActivity().getActionBar().setSubtitle(R.string.step_2);
-		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		FragmentTransaction transaction = getFragmentManager()
+				.beginTransaction();
 		getFragmentManager().popBackStack();
 		Fragment fragment = FragmentAddMistake0.getInstance();
 		transaction.replace(R.id.fl_content, fragment).commit();
 	}
-	
-	private void moveToNextStep(){
+
+	private void moveToNextStep() {
 		mMistake.setAnswerText(mEtAnswer.getText().toString());
 		((ActivityAddMistake) getActivity()).finishAdding(mMistake);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mLayout = (LinearLayout) inflater.inflate(R.layout.fragment_addmistake_second,
-				null);
+		mLayout = (LinearLayout) inflater.inflate(
+				R.layout.fragment_addmistake_second, null);
 		mEtAnswer = (EditText) mLayout.findViewById(R.id.et_answer);
 		return mLayout;
 	}
-	
 
 }

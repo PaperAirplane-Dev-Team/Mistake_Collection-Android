@@ -36,8 +36,7 @@ public class ActivityAddMistake extends Activity {
 	private void startStepOne() {
 		Fragment fragment = new FragmentAddMistake0();
 		mTransaction = mFragmentManager.beginTransaction();
-		mTransaction.add(R.id.fl_content, fragment, TAGS[0]).addToBackStack(
-				TAGS[0]);
+		mTransaction.add(R.id.fl_content, fragment, TAGS[0]);
 		mTransaction.attach(fragment).show(fragment).commit();
 		mFragmentManager.executePendingTransactions();
 	}
