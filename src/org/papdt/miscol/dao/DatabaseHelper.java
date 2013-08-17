@@ -64,14 +64,18 @@ public class DatabaseHelper {
 	 */
 	public CategoryInfo[] getCategoryInfo(String tableName,
 			String itemColumnName, boolean isTag) {
+		Log.d(TAG, "从表" + tableName + "获取信息, 在主表中列名为" + itemColumnName
+				+ (isTag ? ",是标签" : ",不是标签"));
 		Cursor cursor = mDatabase
 				.rawQuery("SELECT " + IDbWithIdAndName.KEY_INT_ID + ","
 						+ IDbWithIdAndName.KEY_STRING_NAME + " FROM "
 						+ tableName, null);
 		if (cursor.getCount() == 0) {
+			Log.d(TAG, "未能查询到有关信息");
 			return new CategoryInfo[0]; // OK
 		}
 		CategoryInfo info[] = new CategoryInfo[cursor.getCount()];
+		Log.d(TAG, "获取到" + info.length + "条记录");
 		int i = 0;
 		while (cursor.moveToNext()) {
 			info[i] = new CategoryInfo();
@@ -80,6 +84,9 @@ public class DatabaseHelper {
 			info[i].setName(cursor.getString(1).trim());
 			info[i].setCount(getItemCount(Mistakes.TABLE_NAME, itemColumnName,
 					info[i].getId(), isTag));
+			Log.d(TAG,
+					"填充CategoryInfo:" + info[i].getId() + " "
+							+ info[i].getName() + " " + info[i].getCount());
 			i++;
 		}
 		cursor.close();

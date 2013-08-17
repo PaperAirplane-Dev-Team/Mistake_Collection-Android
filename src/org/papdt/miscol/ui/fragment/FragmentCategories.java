@@ -44,7 +44,7 @@ public class FragmentCategories extends Fragment {
 		this.setHasOptionsMenu(true);
 		this.mDbHelper = DatabaseHelper.getInstance(getActivity());
 		super.onCreate(savedInstanceState);
-		addSampleData();
+		// addSampleData(); //Tested
 	}
 
 	@SuppressWarnings("unused")
@@ -120,9 +120,11 @@ public class FragmentCategories extends Fragment {
 		if (allTags != null) {
 			int size = allTags.size();
 			Log.d(TAG, "获取到list长度为" + size);
+			mCategories = new CategoryCard[size];
+			// 初始化数组我求你了...亏我还去掉了迭代器原来是这个坑爹东西
 			for (int i = 0; i < size; i++) {
 				mCategories[i] = allTags.get(i);
-				//FIXME NullPointerException 实在无力@1:52 AM
+				// FIXED
 			}
 		} else {
 			mCategories = new CategoryCard[3];
@@ -139,6 +141,7 @@ public class FragmentCategories extends Fragment {
 		if (allGrades != null) {
 			int size = allGrades.size();
 			Log.d(TAG, "获取到list长度为" + size);
+			mCategories = new CategoryCard[size];
 			for (int i = 0; i < size; i++) {
 				mCategories[i] = allGrades.get(i);
 			}
@@ -174,6 +177,8 @@ public class FragmentCategories extends Fragment {
 		}
 		ArrayList<CategoryCard> tags = new ArrayList<CategoryCard>();
 		for (CategoryInfo temp : info) {
+			Log.d(TAG,
+					"添加CategoryCard:" + temp.getName() + " " + temp.getCount());
 			tags.add(new CategoryCard(temp.getName(), temp.getCount()));
 		}
 		return tags;
