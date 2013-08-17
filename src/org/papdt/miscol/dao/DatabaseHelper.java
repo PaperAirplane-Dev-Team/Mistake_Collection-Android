@@ -52,7 +52,7 @@ public class DatabaseHelper {
 
 	public CategoryInfo[] getCategoryInfo(String tableName,
 			String itemColumnName) {
-		return getCategoryInfo(tableName, itemColumnName, false);
+		return getCategoryInfo(tableName, itemColumnName, false, false);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class DatabaseHelper {
 	 * @return 分类信息数组
 	 */
 	public CategoryInfo[] getCategoryInfo(String tableName,
-			String itemColumnName, boolean isTag) {
+			String itemColumnName, boolean isTag, boolean isGrade) {
 		Log.d(TAG, "从表" + tableName + "获取信息, 在主表中列名为" + itemColumnName
 				+ (isTag ? ",是标签" : ",不是标签"));
 		Cursor cursor = mDatabase
@@ -84,13 +84,23 @@ public class DatabaseHelper {
 			info[i].setName(cursor.getString(1).trim());
 			info[i].setCount(getItemCount(Mistakes.TABLE_NAME, itemColumnName,
 					info[i].getId(), isTag));
-			Log.d(TAG,
-					"填充CategoryInfo:" + info[i].getId() + " "
-							+ info[i].getName() + " " + info[i].getCount());
+			if (isGrade) {
+				info[i].setSubCount(getSubjectAmountOfGrade(info[i].getId()));
+			}
 			i++;
 		}
 		cursor.close();
 		return info;
+	}
+
+	private int getSubjectAmountOfGrade(int gradeId) {
+		Cursor cursor = mDatabase.rawQuery("SELECT COUNT(DISTINCT "
+				+ Mistakes.KEY_INT_SUBJECT_ID + ") FROM " + Mistakes.TABLE_NAME
+				+ " WHERE " + Mistakes.KEY_INT_GRADE_ID + "=" + gradeId, null);
+		cursor.moveToNext();
+		int count = cursor.getInt(0);
+		cursor.close();
+		return count;
 	}
 
 	/**

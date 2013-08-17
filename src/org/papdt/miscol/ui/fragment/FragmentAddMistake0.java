@@ -162,15 +162,15 @@ public class FragmentAddMistake0 extends Fragment implements
 		mSubjectAdapter.clear();
 		mAllTags.clear();
 		CategoryInfo[] tagInfo = mDbHelper.getCategoryInfo(Tags.TABLE_NAME,
-				Mistakes.KEY_STRING_TAG_IDS, true);
+				Mistakes.KEY_STRING_TAG_IDS, true, false);
 		if (tagInfo != null && tagInfo.length > 0) {
 			for (CategoryInfo ci : tagInfo) {
 				mAllTags.add(ci.getName());
 			}
 		}
 		mAllTags.addAll(mTags);
-		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(
-				Grades.TABLE_NAME, Mistakes.KEY_INT_GRADE_ID);
+		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(Grades.TABLE_NAME,
+				Mistakes.KEY_INT_GRADE_ID);
 		CategoryInfo[] subjectInfo = mDbHelper.getCategoryInfo(
 				Subjects.TABLE_NAME, Mistakes.KEY_INT_SUBJECT_ID);
 		addCategoryInfoToAdapter(gradeInfo, mGradeAdapter, mGrades);

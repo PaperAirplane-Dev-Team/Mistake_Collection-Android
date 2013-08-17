@@ -114,9 +114,9 @@ public class FragmentCategories extends Fragment {
 	}
 
 	public void fillContentAsTagIndex() {
-		ArrayList<CategoryCard> allTags = getCategoryCards(mDbHelper
-				.getCategoryInfo(Tags.TABLE_NAME, Mistakes.KEY_STRING_TAG_IDS,
-						true));
+		ArrayList<CategoryCard> allTags = getCategoryCards(
+				mDbHelper.getCategoryInfo(Tags.TABLE_NAME,
+						Mistakes.KEY_STRING_TAG_IDS, true, false), false);
 		if (allTags != null) {
 			int size = allTags.size();
 			Log.d(TAG, "获取到list长度为" + size);
@@ -136,8 +136,9 @@ public class FragmentCategories extends Fragment {
 	}
 
 	public void fillContentAsGradeIndex() {
-		ArrayList<CategoryCard> allGrades = getCategoryCards(mDbHelper
-				.getCategoryInfo(Grades.TABLE_NAME, Mistakes.KEY_INT_GRADE_ID));
+		ArrayList<CategoryCard> allGrades = getCategoryCards(
+				mDbHelper.getCategoryInfo(Grades.TABLE_NAME,
+						Mistakes.KEY_INT_GRADE_ID, false, true), true);
 		if (allGrades != null) {
 			int size = allGrades.size();
 			Log.d(TAG, "获取到list长度为" + size);
@@ -171,15 +172,23 @@ public class FragmentCategories extends Fragment {
 		return sInstance;
 	}
 
-	private ArrayList<CategoryCard> getCategoryCards(CategoryInfo[] info) {
+	private ArrayList<CategoryCard> getCategoryCards(CategoryInfo[] info,
+			boolean isGrade) {
 		if (info.length == 0 || info == null) {
 			return null;
 		}
 		ArrayList<CategoryCard> tags = new ArrayList<CategoryCard>();
 		for (CategoryInfo temp : info) {
-			Log.d(TAG,
-					"添加CategoryCard:" + temp.getName() + " " + temp.getCount());
-			tags.add(new CategoryCard(temp.getName(), temp.getCount()));
+			if (!isGrade) {
+				Log.d(TAG, "添加CategoryCard, 名称:" + temp.getName() + ",数量"
+						+ temp.getCount());
+				tags.add(new CategoryCard(temp.getName(), temp.getCount()));
+			} else {
+				Log.d(TAG, "添加CategoryCard, 名称:" + temp.getName() + ",数量"
+						+ temp.getCount() + ",科目数量" + temp.getSubCount());
+				tags.add(new CategoryCard(temp.getName(), temp.getCount(), temp
+						.getSubCount()));
+			}
 		}
 		return tags;
 	}
