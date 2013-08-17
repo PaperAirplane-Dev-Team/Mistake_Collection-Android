@@ -11,7 +11,6 @@ import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.ui.dialog.SelectTagsDialog;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
-import org.papdt.miscol.utils.Constants.Databases.Mistakes;
 import org.papdt.miscol.utils.Constants.Databases.Subjects;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.utils.Intents;
@@ -161,18 +160,16 @@ public class FragmentAddMistake0 extends Fragment implements
 		mGradeAdapter.clear();
 		mSubjectAdapter.clear();
 		mAllTags.clear();
-		CategoryInfo[] tagInfo = mDbHelper.getCategoryInfo(Tags.TABLE_NAME,
-				Mistakes.KEY_STRING_TAG_IDS, true, false);
+		CategoryInfo[] tagInfo = mDbHelper.getCategoryInfo(Tags.TABLE_NAME);
 		if (tagInfo != null && tagInfo.length > 0) {
 			for (CategoryInfo ci : tagInfo) {
 				mAllTags.add(ci.getName());
 			}
 		}
 		mAllTags.addAll(mTags);
-		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(Grades.TABLE_NAME,
-				Mistakes.KEY_INT_GRADE_ID);
-		CategoryInfo[] subjectInfo = mDbHelper.getCategoryInfo(
-				Subjects.TABLE_NAME, Mistakes.KEY_INT_SUBJECT_ID);
+		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(Grades.TABLE_NAME);
+		CategoryInfo[] subjectInfo = mDbHelper
+				.getCategoryInfo(Subjects.TABLE_NAME);
 		addCategoryInfoToAdapter(gradeInfo, mGradeAdapter, mGrades);
 		addCategoryInfoToAdapter(subjectInfo, mSubjectAdapter, mSubjects);
 		String addCat = getString(R.string.add_category);
@@ -464,3 +461,5 @@ public class FragmentAddMistake0 extends Fragment implements
 	}
 
 }
+
+

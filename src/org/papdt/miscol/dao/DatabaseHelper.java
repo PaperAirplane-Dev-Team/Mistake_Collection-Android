@@ -50,9 +50,9 @@ public class DatabaseHelper {
 		return sInstance;
 	}
 
-	public CategoryInfo[] getCategoryInfo(String tableName,
-			String itemColumnName) {
-		return getCategoryInfo(tableName, itemColumnName, false, false);
+	public CategoryInfo[] getCategoryInfo(String tableName) {
+		return getCategoryInfo(tableName, tableName.equals(Tags.TABLE_NAME),
+				tableName.equals(Grades.TABLE_NAME));
 	}
 
 	/**
@@ -62,10 +62,9 @@ public class DatabaseHelper {
 	 *            查询的表名
 	 * @return 分类信息数组
 	 */
-	public CategoryInfo[] getCategoryInfo(String tableName,
-			String itemColumnName, boolean isTag, boolean isGrade) {
-		Log.d(TAG, "从表" + tableName + "获取信息, 在主表中列名为" + itemColumnName
-				+ (isTag ? ",是标签" : ",不是标签"));
+	private CategoryInfo[] getCategoryInfo(String tableName, boolean isTag,
+			boolean isGrade) {
+		Log.d(TAG, "从表" + tableName + "获取信息" + (isTag ? ",是标签" : ",不是标签"));
 		Cursor cursor = mDatabase
 				.rawQuery("SELECT " + IDbWithIdAndName.KEY_INT_ID + ","
 						+ IDbWithIdAndName.KEY_STRING_NAME + " FROM "
@@ -82,8 +81,8 @@ public class DatabaseHelper {
 			// 不初始化永远是个痛,调试半小时
 			info[i].setId(cursor.getInt(0));
 			info[i].setName(cursor.getString(1).trim());
-			info[i].setCount(getItemCount(Mistakes.TABLE_NAME, itemColumnName,
-					info[i].getId(), isTag));
+			info[i].setCount(getItemCount(Mistakes.TABLE_NAME, info[i].getId(),
+					isTag));
 			if (isGrade) {
 				info[i].setSubCount(getSubjectAmountOfGrade(info[i].getId()));
 			}
@@ -226,6 +225,13 @@ public class DatabaseHelper {
 		mDatabase.endTransaction();
 		Log.d(TAG, "成功删除错题,ID为" + id);
 		return true;
+	}
+
+	private int getItemCount(String tableName, int itemId, boolean isTag) {
+		String columnName = (tableName.equals(Tags.TABLE_NAME) ? Mistakes.KEY_STRING_TAG_IDS
+				: (tableName.equals(Grades.TABLE_NAME) ? Mistakes.KEY_INT_GRADE_ID
+						: Mistakes.KEY_INT_SUBJECT_ID));
+		return getItemCount(tableName, columnName, itemId, isTag);
 	}
 
 	private int getItemCount(String tableName, String itemColumnName,
