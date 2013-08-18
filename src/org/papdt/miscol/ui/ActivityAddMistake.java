@@ -2,6 +2,8 @@ package org.papdt.miscol.ui;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.Mistake;
+import org.papdt.miscol.bean.MistakeOperationException;
+import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.ui.fragment.FragmentAddMistake0;
 
 import android.app.Activity;
@@ -18,6 +20,7 @@ public class ActivityAddMistake extends Activity {
 
 	private FragmentManager mFragmentManager;
 	private FragmentTransaction mTransaction;
+	private DatabaseHelper mDbHelper;
 
 	public final static String[] TAGS = { "First", "Second" };
 	public final static String KEY = "Mistake";
@@ -27,12 +30,12 @@ public class ActivityAddMistake extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_addmistake);
 		mFragmentManager = getFragmentManager();
+		mDbHelper = DatabaseHelper.getInstance(this);
 		initializeActionBar();
 		startStepOne();
 		Log.d(TAG, TAG + "已完成初始化");
 	}
 
-	@SuppressWarnings("deprecation")
 	private void startStepOne() {
 		Fragment fragment = new FragmentAddMistake0();
 		mTransaction = mFragmentManager.beginTransaction();
@@ -48,9 +51,14 @@ public class ActivityAddMistake extends Activity {
 	}
 
 	public void finishAdding(Mistake m) {
-		// TODO 将mistake写入数据库
 		Log.i(TAG, "收到错题添加请求, 错题信息:" + m.toString());
-		Toast.makeText(getApplicationContext(), "添加成功!", Toast.LENGTH_SHORT).show();
+		try {
+			mDbHelper.insertMistake(m);
+		} catch (MistakeOperationException e) {
+			e.printStackTrace();
+		}
+		Toast.makeText(getApplicationContext(), R.string.add_mistake_succeed,
+				Toast.LENGTH_SHORT).show();
 		finish();
 	}
 

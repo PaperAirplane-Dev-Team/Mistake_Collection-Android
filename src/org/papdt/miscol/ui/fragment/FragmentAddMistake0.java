@@ -1,9 +1,7 @@
 package org.papdt.miscol.ui.fragment;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.CategoryInfo;
 import org.papdt.miscol.bean.Mistake;
@@ -13,21 +11,11 @@ import org.papdt.miscol.ui.dialog.SelectTagsDialog;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.utils.Constants.Databases.Subjects;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
-import org.papdt.miscol.utils.Intents;
-
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,11 +32,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FragmentAddMistake0 extends Fragment implements
+public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 		OnItemSelectedListener {
 
 	private LinearLayout mLayout;
-	private EditText mEtTitle, mEtDescription;
+	private EditText mEtTitle;
 	private Spinner mSpinnerGrade, mSpinnerSubject;
 	private TextView mTvTags;
 	private Mistake mMistake;
@@ -56,38 +44,13 @@ public class FragmentAddMistake0 extends Fragment implements
 	private ArrayAdapter<String> mGradeAdapter, mSubjectAdapter;
 	public HashSet<String> mTags = new HashSet<String>();
 	public HashSet<String> mAllTags = new HashSet<String>();
-	public ArrayList<String> mGrades = new ArrayList<String>();
-	public ArrayList<String> mSubjects = new ArrayList<String>();
 	public CheckBox[] mCheckBoxes;
-	private String mPicPath = null;
-	private Drawable mPic = null;
-	private int mDeletePicMenuItemId = -1;
 
 	private final static String TAG = "FragmentAddMistake0";
 
-	static interface KEYS {
-		final String GRADES = "Grades";
-		final String SUBJECTS = "Subjects";
-		final String GRADE_SELECTION = "Grade Selection";
-		final String SUBJECT_SELECTION = "Subject Selection";
-		final String TITLE = "Title";
-		final String DESCRIPTION = "Description";
-		final String PICTURE = "PicturePath";
-		final String TAGS = "Tags";
-	}
-
-	private static FragmentAddMistake0 sInstance;
-
-	@Deprecated
 	public FragmentAddMistake0() {
 		mDbHelper = DatabaseHelper.getInstance(getActivity());
 		Log.d(TAG, TAG + "被初始化");
-	}
-
-	public static FragmentAddMistake0 getInstance() {
-		if (sInstance == null)
-			sInstance = new FragmentAddMistake0();
-		return sInstance;
 	}
 
 	@Override
@@ -96,9 +59,9 @@ public class FragmentAddMistake0 extends Fragment implements
 		this.setHasOptionsMenu(true);
 		getActivity().getActionBar().setSubtitle(R.string.step_1);
 		mGradeAdapter = new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_spinner_item, mGrades);
+				android.R.layout.simple_spinner_item);
 		mSubjectAdapter = new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_spinner_item, mSubjects);
+				android.R.layout.simple_spinner_item);
 		mGradeAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mSubjectAdapter
@@ -125,22 +88,6 @@ public class FragmentAddMistake0 extends Fragment implements
 		return mLayout;
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		Log.d(TAG, "onSaveInstanceState");
-		outState.putString(KEYS.TITLE, mEtTitle.getText().toString());
-		outState.putString(KEYS.DESCRIPTION, mEtDescription.getText()
-				.toString());
-		outState.putStringArrayList(KEYS.GRADES, mGrades);
-		outState.putStringArrayList(KEYS.SUBJECTS, mSubjects);
-		outState.putInt(KEYS.GRADE_SELECTION,
-				mSpinnerGrade.getSelectedItemPosition());
-		outState.putInt(KEYS.SUBJECT_SELECTION,
-				mSpinnerSubject.getSelectedItemPosition());
-		outState.putString(KEYS.PICTURE, mPicPath);
-		outState.putStringArrayList(KEYS.TAGS, new ArrayList<String>(mTags));
-	}
 
 	public void showTags() {
 		if (mTags.size() != 0) {
@@ -157,6 +104,19 @@ public class FragmentAddMistake0 extends Fragment implements
 	}
 
 	private void fillDatas() {
+		if (getArguments() != null) {
+			mMistake = getArguments().getParcelable(ActivityAddMistake.KEY);
+			if (mMistake.getTagNames() != null
+					&& mMistake.getTagNames().length > 0) {
+				mTags = new HashSet<String>(Arrays.asList(mMistake
+						.getTagNames()));
+				showTags();
+			}
+			mEtDescription.setText(mMistake.getQuestionText());
+			mEtTitle.setText(mMistake.getTitle());
+			setPicture(mMistake.getQuestionPhotoPath());
+		}
+
 		mGradeAdapter.clear();
 		mSubjectAdapter.clear();
 		mAllTags.clear();
@@ -170,20 +130,36 @@ public class FragmentAddMistake0 extends Fragment implements
 		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(Grades.TABLE_NAME);
 		CategoryInfo[] subjectInfo = mDbHelper
 				.getCategoryInfo(Subjects.TABLE_NAME);
-		addCategoryInfoToAdapter(gradeInfo, mGradeAdapter, mGrades);
-		addCategoryInfoToAdapter(subjectInfo, mSubjectAdapter, mSubjects);
+		addCategoryInfoToAdapter(gradeInfo, mGradeAdapter);
+		addCategoryInfoToAdapter(subjectInfo, mSubjectAdapter);
 		String addCat = getString(R.string.add_category);
 		mGradeAdapter.add(addCat);
 		mSubjectAdapter.add(addCat);
+		if (mMistake != null) {
+			int gradeIndex = mGradeAdapter.getPosition(mMistake.getGradeName());
+			int subjectIndex = mSubjectAdapter.getPosition(mMistake
+					.getSubjectName());
+			if (gradeIndex == -1) {
+				mGradeAdapter.remove(getString(R.string.spinner_default));
+				addGrade(mMistake.getGradeName());
+			} else {
+				mSpinnerGrade.setSelection(gradeIndex);
+			}
+			if (subjectIndex == -1) {
+				mSubjectAdapter.remove(getString(R.string.spinner_default));
+				addSubject(mMistake.getSubjectName());
+			} else {
+				mSpinnerSubject.setSelection(subjectIndex);
+			}
+		}
 	}
 
 	private void addCategoryInfoToAdapter(CategoryInfo[] info,
-			ArrayAdapter<String> adapter, List<String> data) {
+			ArrayAdapter<String> adapter) {
 		if (info != null) {
 			for (CategoryInfo ci : info) {
-				data.add(ci.getName());
+				adapter.add(ci.getName());
 			}
-			adapter.notifyDataSetChanged();
 		} else {
 			adapter.add(getString(R.string.spinner_default));
 		}
@@ -232,59 +208,6 @@ public class FragmentAddMistake0 extends Fragment implements
 		return true;
 	}
 
-	private void capturePhoto() {
-		Uri uri = Intents.getOutputMediaFileUri(Intents.MEDIA_TYPE_IMAGE);
-		mPicPath = uri.getPath();
-		startActivityForResult(Intents.CAPTURE_PHOTO_INTENT.putExtra(
-				MediaStore.EXTRA_OUTPUT, uri), Intents.RESULT_CAPTURE_IMAGE);
-
-	}
-
-	private void addPhoto() {
-		startActivityForResult(Intents.PICK_PHOTO_INTENT,
-				Intents.RESULT_PICK_IMAGE);
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		Log.d(TAG, String.format(
-				"onActivityResult,requestCode = %d ,resultCode = %d ,OK = %d ,data is null = "
-						+ (data == null), requestCode, resultCode,
-				Activity.RESULT_OK));
-		if (requestCode == Intents.RESULT_PICK_IMAGE
-				&& resultCode == Activity.RESULT_OK && null != data) {
-			Uri image = data.getData();
-			String[] projection = { MediaStore.Images.Media.DATA };
-			Cursor cursor = getActivity().getContentResolver().query(image,
-					projection, null, null, null);
-			cursor.moveToFirst();
-			setPicture(cursor.getString(0));
-			cursor.close();
-		}
-		if (requestCode == Intents.RESULT_CAPTURE_IMAGE
-				&& resultCode == Activity.RESULT_OK) {
-			setPicture(mPicPath);
-		}
-	}
-
-	private void setPicture(String path) {
-		mPicPath = path;
-		if (path != null) {
-			Log.i(TAG, "用户选择的Picture Path为" + mPicPath);
-			DisplayMetrics dm = new DisplayMetrics();
-			getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-			mPic = Drawable.createFromPath(mPicPath);
-			int sideLength = (int) (dm.widthPixels * 0.2);
-			mPic.setBounds(0, 0, sideLength, sideLength);
-			mEtDescription.setCompoundDrawables(mPic, null, null, null);
-			getActivity().invalidateOptionsMenu();
-		} else {
-			mEtDescription.setCompoundDrawables(null, null, null, null);
-			mPic = null;
-		}
-	}
-
 	private void addTags() {
 		SelectTagsDialog dialog = new SelectTagsDialog();
 		dialog.setFragment(this);
@@ -300,6 +223,8 @@ public class FragmentAddMistake0 extends Fragment implements
 			mMistake.setQuestionPhotoPath(mPicPath);
 		if (mTags.size() > 0)
 			mMistake.setTagNames(mTags.toArray(new String[0]));
+		mMistake.setSubjectName((String) mSpinnerSubject.getSelectedItem());
+		mMistake.setGradeName((String) mSpinnerGrade.getSelectedItem());
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
 		FragmentAddMistake1 fragment = new FragmentAddMistake1();
@@ -312,7 +237,8 @@ public class FragmentAddMistake0 extends Fragment implements
 				.commit();
 	}
 
-	private boolean isFieldEmpty() {
+	@Override
+	protected boolean isFieldEmpty() {
 		String format = getString(R.string.field_empty);
 		if (TextUtils.isEmpty(mEtTitle.getText())) {
 			Toast.makeText(getActivity(),
@@ -327,14 +253,18 @@ public class FragmentAddMistake0 extends Fragment implements
 			return true;
 		}
 		if (((String) mSpinnerGrade.getSelectedItem())
-				.equals(getString(R.string.spinner_default))) {
+				.equals(getString(R.string.spinner_default))
+				|| ((String) mSpinnerGrade.getSelectedItem())
+						.equals(getString(R.string.add_category))) {
 			Toast.makeText(getActivity(),
 					String.format(format, getString(R.string.tv_grade)),
 					Toast.LENGTH_SHORT).show();
 			return true;
 		}
 		if (((String) mSpinnerSubject.getSelectedItem())
-				.equals(getString(R.string.spinner_default))) {
+				.equals(getString(R.string.spinner_default))
+				|| ((String) mSpinnerSubject.getSelectedItem())
+						.equals(getString(R.string.add_category))) {
 			Toast.makeText(getActivity(),
 					String.format(format, getString(R.string.tv_subject)),
 					Toast.LENGTH_SHORT).show();
@@ -343,7 +273,7 @@ public class FragmentAddMistake0 extends Fragment implements
 		return false;
 	}
 
-	private void addSubject() {
+	private void openAddSubjectDialog() {
 		final EditText etSubject = new EditText(getActivity());
 		etSubject.setHint(R.string.add_subject_hint);
 		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
@@ -355,13 +285,9 @@ public class FragmentAddMistake0 extends Fragment implements
 						mSubjectAdapter
 								.remove(getString(R.string.spinner_default));
 						String text = etSubject.getText().toString();
-						if (!mSubjects.contains(text)) {
-							mSubjectAdapter
-									.remove(getString(R.string.add_category));
-							mSubjects.add(text);
-							mSubjectAdapter.notifyDataSetChanged();
-							mSpinnerSubject.setSelection(mSubjectAdapter
-									.getCount() - 1);
+
+						if (mSubjectAdapter.getPosition(text) == -1) {
+							addSubject(text);
 						} else {
 							mSpinnerSubject.setSelection(mSubjectAdapter
 									.getPosition(text));
@@ -386,7 +312,7 @@ public class FragmentAddMistake0 extends Fragment implements
 				.setNegativeButton(android.R.string.cancel, listener).show();
 	}
 
-	private void addGrade() {
+	private void openAddGradeDialog() {
 		final EditText etGrade = new EditText(getActivity());
 		etGrade.setHint(R.string.add_grade_hint);
 		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
@@ -398,13 +324,8 @@ public class FragmentAddMistake0 extends Fragment implements
 						mGradeAdapter
 								.remove(getString(R.string.spinner_default));
 						String text = etGrade.getText().toString();
-						if (!mGrades.contains(text)) {
-							mGradeAdapter
-									.remove(getString(R.string.add_category));
-							mGrades.add(text);
-							mGradeAdapter.notifyDataSetChanged();
-							mSpinnerGrade
-									.setSelection(mGradeAdapter.getCount() - 1);
+						if (mGradeAdapter.getPosition(text) == -1) {
+							addGrade(text);
 						} else {
 							mSpinnerGrade.setSelection(mGradeAdapter
 									.getPosition(text));
@@ -429,6 +350,16 @@ public class FragmentAddMistake0 extends Fragment implements
 				.setNegativeButton(android.R.string.cancel, listener).show();
 	}
 
+	private void addSubject(String name) {
+		mSubjectAdapter.insert(name, 0);
+		mSpinnerSubject.setSelection(0);
+	}
+
+	private void addGrade(String name) {
+		mGradeAdapter.insert(name, 0);
+		mSpinnerGrade.setSelection(0);
+	}
+
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
@@ -439,14 +370,14 @@ public class FragmentAddMistake0 extends Fragment implements
 				if (mGradeAdapter.getItem(position).equals(
 						getString(R.string.add_category))) {
 					Log.d(TAG, "addGrade");
-					addGrade();
+					openAddGradeDialog();
 				}
 				break;
 			case R.id.spinner_subject:
 				if (mSubjectAdapter.getItem(position).equals(
 						getString(R.string.add_category))) {
 					Log.d(TAG, "addSubject");
-					addSubject();
+					openAddSubjectDialog();
 				}
 				break;
 			}

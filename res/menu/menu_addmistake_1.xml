@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <!-- 图标什么的 -->
     <item
-        android:id="@+id/action_add_photo"
         android:icon="@android:drawable/ic_menu_gallery"
         android:showAsAction="withText|always"
         android:title="@string/action_add_photo">
+        <menu>
+            <item
+                android:id="@+id/action_pick_photo"
+                android:icon="@android:drawable/ic_menu_gallery"
+                android:showAsAction="withText|always"
+                android:title="@string/photo_pick"/>
+            <item
+                android:id="@+id/action_capture_photo"
+                android:icon="@android:drawable/ic_menu_camera"
+                android:showAsAction="withText|always"
+                android:title="@string/photo_capture"/>
+            <item
+                android:id="@+id/action_remove_photo"
+                android:icon="@android:drawable/ic_menu_delete"
+                android:showAsAction="withText|always"
+                android:title="@string/photo_clear"/>
+        </menu>
     </item>
     <item
         android:id="@+id/action_finish"
         android:icon="@android:drawable/ic_menu_save"
         android:showAsAction="always|withText"
-        android:title="@string/action_finish">
-    </item>
+        android:title="@string/action_finish"/>
 
 </menu>

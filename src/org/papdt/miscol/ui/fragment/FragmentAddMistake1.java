@@ -7,6 +7,7 @@ import org.papdt.miscol.ui.ActivityAddMistake;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,10 +17,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-public class FragmentAddMistake1 extends Fragment {
+public class FragmentAddMistake1 extends AbsFragmentAddMistake {
 
 	private LinearLayout mLayout;
-	private EditText mEtAnswer;
 	private Mistake mMistake;
 	private final static String TAG = "FragmentAddMistake1";
 
@@ -33,12 +33,15 @@ public class FragmentAddMistake1 extends Fragment {
 		this.setHasOptionsMenu(true);
 		mMistake = this.getArguments().getParcelable("Mistake");
 		getActivity().getActionBar().setSubtitle(R.string.step_2);
+		mMistake = getArguments().getParcelable(ActivityAddMistake.KEY);
 	}
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
 		getActivity().getMenuInflater().inflate(R.menu.menu_addmistake_1, menu);
+		if(mPicPath==null)
+			menu.getItem(0).getSubMenu().removeItem(R.id.action_remove_photo);
 	}
 
 	@Override
@@ -52,9 +55,19 @@ public class FragmentAddMistake1 extends Fragment {
 			Log.d(TAG, "用户点击ActionBar的返回按钮");
 			moveToLastStep();
 			break;
-		case R.id.action_add_photo:
-			Log.d(TAG, "用户触发添加照片操作");
+		case R.id.action_pick_photo:
+			Log.d(TAG, "用户触发选择照片操作");
+			addPhoto();
 			break;
+		case R.id.action_capture_photo:
+			Log.d(TAG, "用户触发拍摄照片操作");
+			capturePhoto();
+			break;
+		default:
+			if (item.getItemId() == mDeletePicMenuItemId) {
+				setPicture(null);
+				getActivity().invalidateOptionsMenu();
+			}
 		}
 		return true;
 	}
@@ -64,12 +77,20 @@ public class FragmentAddMistake1 extends Fragment {
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
 		getFragmentManager().popBackStack();
-		Fragment fragment = FragmentAddMistake0.getInstance();
+		Bundle arg = new Bundle();
+		arg.putParcelable(ActivityAddMistake.KEY, mMistake);
+		Fragment fragment = new FragmentAddMistake0();
+		fragment.setArguments(arg);
 		transaction.replace(R.id.fl_content, fragment).commit();
 	}
 
+
+	
 	private void moveToNextStep() {
-		mMistake.setAnswerText(mEtAnswer.getText().toString());
+		mMistake.setAnswerText(mEtDescription.getText().toString());
+		if (mPicPath != null) {
+			mMistake.setAnswerPhotoPath(mPicPath);
+		}
 		((ActivityAddMistake) getActivity()).finishAdding(mMistake);
 	}
 
@@ -78,8 +99,13 @@ public class FragmentAddMistake1 extends Fragment {
 			Bundle savedInstanceState) {
 		mLayout = (LinearLayout) inflater.inflate(
 				R.layout.fragment_addmistake_second, null);
-		mEtAnswer = (EditText) mLayout.findViewById(R.id.et_answer);
+		mEtDescription = (EditText) mLayout.findViewById(R.id.et_answer);
 		return mLayout;
+	}
+
+	@Override
+	protected boolean isFieldEmpty() {
+		return TextUtils.isEmpty(mEtDescription.getText());
 	}
 
 }

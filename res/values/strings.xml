@@ -53,6 +53,7 @@
     <string name="add_grade_empty">年级名称不能为空</string>
     <string name="add_grade_title">添加年级</string>
     <string name="field_empty" formatted="false">%s不能为空</string>
+    <string name="add_mistake_succeed">添加成功!</string>
     <!-- steps -->
     <string name="step_1">步骤 1/2</string>
     <string name="step_2">步骤 2/2</string>
