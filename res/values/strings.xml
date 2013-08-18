@@ -65,7 +65,11 @@
         <item>填空题</item>
         <item>判断题</item>
     </string-array>
+
+    <string name="selection_not_enough">请添加更多选项</string>
     <string name="add_selection">添加选项</string>
+    <string name="add_selection_hint">选项</string>
+    <string name="add_selection_empty">选项不能为空</string>
     <!-- 判断题 -->
     <string name="jud_true">正确</string>
     <string name="jud_false">错误</string>

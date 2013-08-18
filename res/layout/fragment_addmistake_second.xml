@@ -6,12 +6,6 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp" >
 
-    <ViewStub
-        android:id="@+id/stub_sel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout="@layout/stub_select" />
-
     <EditText
         android:id="@+id/et_answer"
         android:layout_width="match_parent"
@@ -23,6 +17,12 @@
 
         <requestFocus android:layout_width="wrap_content" />
     </EditText>
+
+    <ViewStub
+        android:id="@+id/stub_sel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/stub_select" />
 
     <ViewStub
         android:id="@+id/stub_jud"
