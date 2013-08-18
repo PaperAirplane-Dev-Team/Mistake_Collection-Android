@@ -2,8 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp" >
 
+    <ViewStub
+        android:id="@+id/stub_sel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/stub_select" />
 
     <EditText
         android:id="@+id/et_answer"
@@ -16,5 +23,11 @@
 
         <requestFocus android:layout_width="wrap_content" />
     </EditText>
+
+    <ViewStub
+        android:id="@+id/stub_jud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/stub_judgement" />
 
 </LinearLayout>

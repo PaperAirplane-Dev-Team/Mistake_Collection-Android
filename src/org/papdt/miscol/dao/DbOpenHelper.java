@@ -30,8 +30,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		createAllTables(db);
-
+		createAllTables(db);		
 	}
 
 	@Override
