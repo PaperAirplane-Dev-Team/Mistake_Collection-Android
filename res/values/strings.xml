@@ -34,6 +34,9 @@
     <string name="add_mistake">添加错题</string>
     <string name="card_description" formatted="false">%d道错题</string>
     <string name="card_description_for_subject" formatted="false">%d道错题，%d个科目</string>
+    <string name="no_category_hint_title">这里似乎有些空虚……</string>
+    <string name="no_subject_hint">点击下方的“添加错题”按钮以添加错题</string>
+    <string name="no_tag_hint">编辑错题以添加标签</string>
     <!-- Tabs -->
     <string name="tag">标签</string>
     <string name="subject_or_grade">年级/科目</string>
@@ -64,5 +67,4 @@
     <string name="photo_pick">选择图片</string>
     <string name="photo_capture">拍摄图片</string>
     <string name="photo_clear">清除图片</string>
-
 </resources>

@@ -5,13 +5,12 @@ import java.util.Iterator;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.CategoryInfo;
-import org.papdt.miscol.bean.Mistake;
-import org.papdt.miscol.bean.MistakeOperationException;
 import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.ui.CategoryCard;
+import org.papdt.miscol.ui.InfoCard;
 
 import com.fima.cardsui.views.CardUI;
 
@@ -44,22 +43,6 @@ public class FragmentCategories extends Fragment {
 		this.setHasOptionsMenu(true);
 		this.mDbHelper = DatabaseHelper.getInstance(getActivity());
 		super.onCreate(savedInstanceState);
-		// addSampleData();
-	}
-
-	@SuppressWarnings("unused")
-	private void addSampleData() {
-		Log.d(TAG, "添加测试数据");
-		Mistake m = new Mistake("测试", "呵呵呵呵呵");
-		m.setGradeName("高一");
-		m.setSubjectName("节操");
-		m.setTagNames(new String[] { "Demo" });
-		m.setTypeName("\'填空题\'");
-		try {
-			mDbHelper.insertMistake(m);
-		} catch (MistakeOperationException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -121,13 +104,13 @@ public class FragmentCategories extends Fragment {
 			while (iterator.hasNext()) {
 				mCategories[i++] = iterator.next();
 			}
+			fillContentsToView();
 		} else {
-			mCategories = new CategoryCard[3];
-			mCategories[0] = new CategoryCard("#第一次月考", 3);
-			mCategories[1] = new CategoryCard("#语文测验", 4);
-			mCategories[2] = new CategoryCard("#数学第三次周测", 2);
+			InfoCard card = new InfoCard(getString(R.string.no_category_hint_title),getString(R.string.no_tag_hint));
+			mCardUI.clearCards();
+			mCardUI.addCard(card);
+			mCardUI.refresh();
 		}
-		fillContentsToView();
 	}
 
 	public void fillContentAsGradeIndex() {
@@ -139,13 +122,13 @@ public class FragmentCategories extends Fragment {
 			while (iterator.hasNext()) {
 				mCategories[i++] = iterator.next();
 			}
+			fillContentsToView();
 		} else {
-			mCategories = new CategoryCard[3];
-			mCategories[0] = new CategoryCard("初二", 3, 2);
-			mCategories[1] = new CategoryCard("初三", 10, 2);
-			mCategories[2] = new CategoryCard("高一", 8, 3);
+			InfoCard card = new InfoCard(getString(R.string.no_category_hint_title),getString(R.string.no_subject_hint));
+			mCardUI.clearCards();
+			mCardUI.addCard(card);
+			mCardUI.refresh();
 		}
-		fillContentsToView();
 	}
 
 	private void fillContentsToView() {
