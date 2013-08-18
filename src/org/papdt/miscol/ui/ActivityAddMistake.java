@@ -32,7 +32,6 @@ public class ActivityAddMistake extends Activity {
 		Log.d(TAG, TAG + "已完成初始化");
 	}
 
-	@SuppressWarnings("deprecation")
 	private void startStepOne() {
 		Fragment fragment = new FragmentAddMistake0();
 		mTransaction = mFragmentManager.beginTransaction();

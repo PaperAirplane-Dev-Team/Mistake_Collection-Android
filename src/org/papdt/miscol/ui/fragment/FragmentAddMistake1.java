@@ -33,6 +33,7 @@ public class FragmentAddMistake1 extends Fragment {
 		this.setHasOptionsMenu(true);
 		mMistake = this.getArguments().getParcelable("Mistake");
 		getActivity().getActionBar().setSubtitle(R.string.step_2);
+		mMistake = getArguments().getParcelable(ActivityAddMistake.KEY);
 	}
 
 	@Override
@@ -64,7 +65,10 @@ public class FragmentAddMistake1 extends Fragment {
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
 		getFragmentManager().popBackStack();
-		Fragment fragment = FragmentAddMistake0.getInstance();
+		Bundle arg = new Bundle();
+		arg.putParcelable(ActivityAddMistake.KEY, mMistake);
+		Fragment fragment = new FragmentAddMistake0();
+		fragment.setArguments(arg);
 		transaction.replace(R.id.fl_content, fragment).commit();
 	}
 
