@@ -290,6 +290,7 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 						String text = etSubject.getText().toString();
 						if (mSubjectAdapter.getPosition(text) == -1) {
 							addSubject(text);
+
 						} else {
 							mSpinnerSubject.setSelection(mSubjectAdapter
 									.getPosition(text));
@@ -394,3 +395,5 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 	}
 
 }
+
+

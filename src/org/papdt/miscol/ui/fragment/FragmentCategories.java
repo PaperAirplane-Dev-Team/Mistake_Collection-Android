@@ -1,13 +1,12 @@
 package org.papdt.miscol.ui.fragment;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.CategoryInfo;
 import org.papdt.miscol.dao.DatabaseHelper;
-import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
+import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.ui.CategoryCard;
 import org.papdt.miscol.ui.InfoCard;
@@ -43,6 +42,26 @@ public class FragmentCategories extends Fragment {
 		this.setHasOptionsMenu(true);
 		this.mDbHelper = DatabaseHelper.getInstance(getActivity());
 		super.onCreate(savedInstanceState);
+<<<<<<< HEAD
+=======
+		addSampleData(); // Tested
+	}
+
+	@SuppressWarnings("unused")
+	private void addSampleData() {
+		Log.d(TAG, "添加测试数据");
+		Mistake m = new Mistake("测试", "呵呵呵呵呵");
+		m.setGradeName("高一");
+		m.setSubjectName("节操");
+		m.setTagNames(new String[] { "Demo" });
+		m.setTypeName("填空题");
+		m.setAnswerText("Xavier");
+		try {
+			mDbHelper.insertMistake(m);
+		} catch (MistakeOperationException e) {
+			e.printStackTrace();
+		}
+>>>>>>> dao
 	}
 
 	@Override
@@ -99,10 +118,13 @@ public class FragmentCategories extends Fragment {
 		ArrayList<CategoryCard> allTags = getCategoryCards(mDbHelper
 				.getCategoryInfo(Tags.TABLE_NAME));
 		if (allTags != null) {
-			Iterator<CategoryCard> iterator = allTags.iterator();
-			int i = 0;
-			while (iterator.hasNext()) {
-				mCategories[i++] = iterator.next();
+			int size = allTags.size();
+			Log.d(TAG, "获取到list长度为" + size);
+			mCategories = new CategoryCard[size];
+			// 初始化数组我求你了...亏我还去掉了迭代器原来是这个坑爹东西
+			for (int i = 0; i < size; i++) {
+				mCategories[i] = allTags.get(i);
+				// FIXED
 			}
 			fillContentsToView();
 		} else {
@@ -117,10 +139,11 @@ public class FragmentCategories extends Fragment {
 		ArrayList<CategoryCard> allGrades = getCategoryCards(mDbHelper
 				.getCategoryInfo(Grades.TABLE_NAME));
 		if (allGrades != null) {
-			Iterator<CategoryCard> iterator = allGrades.iterator();
-			int i = 0;
-			while (iterator.hasNext()) {
-				mCategories[i++] = iterator.next();
+			int size = allGrades.size();
+			Log.d(TAG, "获取到list长度为" + size);
+			mCategories = new CategoryCard[size];
+			for (int i = 0; i < size; i++) {
+				mCategories[i] = allGrades.get(i);
 			}
 			fillContentsToView();
 		} else {
@@ -149,12 +172,21 @@ public class FragmentCategories extends Fragment {
 	}
 
 	private ArrayList<CategoryCard> getCategoryCards(CategoryInfo[] info) {
-		if (info == null) {
+		if (info.length == 0 || info == null) {
 			return null;
 		}
 		ArrayList<CategoryCard> tags = new ArrayList<CategoryCard>();
 		for (CategoryInfo temp : info) {
-			tags.add(new CategoryCard(temp.getName(), temp.getCount()));
+			if (temp.getSubCount() == CategoryInfo.NULL) {
+				Log.d(TAG, "添加CategoryCard, 名称:" + temp.getName() + ",数量"
+						+ temp.getCount());
+				tags.add(new CategoryCard(temp.getName(), temp.getCount()));
+			} else {
+				Log.d(TAG, "添加CategoryCard, 名称:" + temp.getName() + ",数量"
+						+ temp.getCount() + ",科目数量" + temp.getSubCount());
+				tags.add(new CategoryCard(temp.getName(), temp.getCount(), temp
+						.getSubCount()));
+			}
 		}
 		return tags;
 	}

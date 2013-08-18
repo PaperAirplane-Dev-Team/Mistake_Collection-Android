@@ -50,6 +50,11 @@ public class DatabaseHelper {
 		return sInstance;
 	}
 
+	public CategoryInfo[] getCategoryInfo(String tableName) {
+		return getCategoryInfo(tableName, tableName.equals(Tags.TABLE_NAME),
+				tableName.equals(Grades.TABLE_NAME));
+	}
+
 	/**
 	 * 返回表中所有id-name的映射以及计数
 	 * 
@@ -57,24 +62,44 @@ public class DatabaseHelper {
 	 *            查询的表名
 	 * @return 分类信息数组
 	 */
-	public CategoryInfo[] getCategoryInfo(String tableName) {
-		Cursor cursor = mDatabase.rawQuery("SELECT "
-				+ IDbWithIdAndName.KEY_INT_ID + ","
-				+ IDbWithIdAndName.KEY_STRING_NAME + ","
-				+ IDbWithIdAndName.KEY_INT_ITEM_COUNT + " FROM " + tableName,
-				null);
-		if (cursor.getCount() == 0)
-			return null;
+	private CategoryInfo[] getCategoryInfo(String tableName, boolean isTag,
+			boolean isGrade) {
+		Log.d(TAG, "从表" + tableName + "获取信息" + (isTag ? ",是标签" : ",不是标签"));
+		Cursor cursor = mDatabase
+				.rawQuery("SELECT " + IDbWithIdAndName.KEY_INT_ID + ","
+						+ IDbWithIdAndName.KEY_STRING_NAME + " FROM "
+						+ tableName, null);
+		if (cursor.getCount() == 0) {
+			Log.d(TAG, "未能查询到有关信息");
+			return new CategoryInfo[0]; // OK
+		}
 		CategoryInfo info[] = new CategoryInfo[cursor.getCount()];
+		Log.d(TAG, "获取到" + info.length + "条记录");
 		int i = 0;
 		while (cursor.moveToNext()) {
+			info[i] = new CategoryInfo();
+			// 不初始化永远是个痛,调试半小时
 			info[i].setId(cursor.getInt(0));
 			info[i].setName(cursor.getString(1).trim());
-			info[i].setCount(cursor.getInt(3));
+			info[i].setCount(getItemCount(Mistakes.TABLE_NAME, info[i].getId(),
+					isTag));
+			if (isGrade) {
+				info[i].setSubCount(getSubjectAmountOfGrade(info[i].getId()));
+			}
 			i++;
 		}
 		cursor.close();
 		return info;
+	}
+
+	private int getSubjectAmountOfGrade(int gradeId) {
+		Cursor cursor = mDatabase.rawQuery("SELECT COUNT(DISTINCT "
+				+ Mistakes.KEY_INT_SUBJECT_ID + ") FROM " + Mistakes.TABLE_NAME
+				+ " WHERE " + Mistakes.KEY_INT_GRADE_ID + "=" + gradeId, null);
+		cursor.moveToNext();
+		int count = cursor.getInt(0);
+		cursor.close();
+		return count;
 	}
 
 	/**
@@ -100,7 +125,7 @@ public class DatabaseHelper {
 			throw new MistakeOperationException(mistake, "插入时发生错误，为"
 					+ e.getStackTrace());
 		}
-		Log.d(TAG, "成功插入错题，ID为" + mistake.getId());
+		Log.d(TAG, "成功插入错题");
 		mDatabase.setTransactionSuccessful();
 		mDatabase.endTransaction();
 		return true;
@@ -130,7 +155,16 @@ public class DatabaseHelper {
 	}
 
 	/**
-	 * 更新一道错题
+	 * 更新一道错题<br />
+	 * 对于那些同时具有name和id的属性(年级、科目、tag)如下处理<br />
+	 * id和name均不变-不变<br />
+	 * 如果要改变，只需要改变name，id和相应的count会自动改变<br />
+	 * 对于tags的count处理问题目前我还是有点头疼，因为要执行的查询过于多<br />
+	 * 对于照片:<br />
+	 * id和path均不变-不变<br />
+	 * id不变，path置空(请事先删除照片文件)-删除对应记录<br />
+	 * id不变，path改变(仍然做好对原文件的删除)-删除原纪录插入新纪录，并更新Mistake表中相应的id<br />
+	 * id=-1,path存在,则为插入照片操作，更新id为插入的记录<br />
 	 * 
 	 * @param mistake
 	 *            修改后的错题
@@ -144,6 +178,7 @@ public class DatabaseHelper {
 			throw new MistakeOperationException(mistake, "试图在数据库内更改未保存的错题");
 		}
 		// TODO 如果有照片修改那么删掉源文件并修改path,在Fragment中完成
+		// 详见update方法的JavaDoc注释
 		DataItemProcessor.processMistake(mistake, mDatabase);
 		ContentValues values = generateContentValues(mistake, false);
 		mDatabase.beginTransaction();
@@ -155,7 +190,8 @@ public class DatabaseHelper {
 	}
 
 	/**
-	 * 从数据库中删除错题
+	 * 从数据库中删除错题<br />
+	 * 请先删除对应的照片文件
 	 * 
 	 * @param mistake
 	 *            要删除的错题
@@ -191,10 +227,35 @@ public class DatabaseHelper {
 		return true;
 	}
 
+	private int getItemCount(String tableName, int itemId, boolean isTag) {
+		String columnName = (tableName.equals(Tags.TABLE_NAME) ? Mistakes.KEY_STRING_TAG_IDS
+				: (tableName.equals(Grades.TABLE_NAME) ? Mistakes.KEY_INT_GRADE_ID
+						: Mistakes.KEY_INT_SUBJECT_ID));
+		return getItemCount(tableName, columnName, itemId, isTag);
+	}
+
+	private int getItemCount(String tableName, String itemColumnName,
+			int itemId, boolean isTag) {
+		Cursor cursor;
+		if (!isTag) {
+			cursor = mDatabase.rawQuery("SELECT COUNT(" + itemColumnName
+					+ ") FROM " + tableName + " WHERE " + itemColumnName + "='"
+					+ itemId + "'", null);
+		} else {
+			cursor = mDatabase.rawQuery("SELECT COUNT(" + itemColumnName
+					+ ") FROM " + tableName + " WHERE " + itemColumnName
+					+ " LIKE '%" + itemId + "%'", null);
+		}
+		cursor.moveToNext();
+		int count = cursor.getInt(0);
+		cursor.close();
+		return count;
+	}
+
 	private String generateWhereClause(QueryCondition condition) {
 		StringBuilder sb = new StringBuilder();
 		if (condition.getTitle() != null) {
-			sb.append("(" + Mistakes.KEY_STRING_TITLE + " LIKE '"
+			sb.append("(" + Mistakes.KEY_STRING_TITLE + " LIKE '%"
 					+ condition.getTitle() + "%' )");
 			hasPrevious = true;
 		}
@@ -247,7 +308,7 @@ public class DatabaseHelper {
 			}
 			if (isExact) {
 				for (Integer s : choices) {
-					sb.append(" (" + key + "=" + s.intValue() + ") OR");
+					sb.append(" (" + key + "='" + s.intValue() + "') OR");
 				}
 			} else {
 				for (Integer s : choices) {
