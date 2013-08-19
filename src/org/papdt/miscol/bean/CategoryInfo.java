@@ -3,7 +3,7 @@ package org.papdt.miscol.bean;
 public class CategoryInfo {
 
 	public static final int NULL = -1;
-	
+		
 	private String name;
 	private int id, count, subCount = NULL;
 

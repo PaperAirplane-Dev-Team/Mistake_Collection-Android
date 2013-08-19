@@ -411,8 +411,10 @@ public class DatabaseHelper {
 		values.put(Mistakes.KEY_REAL_CORRECT_RATE, mistake.getCorrectRate());
 		values.put(Mistakes.KEY_INT_SUBJECT_ID, mistake.getSubjectId());
 		values.put(Mistakes.KEY_INT_GRADE_ID, mistake.getGradeId());
-		values.put(Mistakes.KEY_STRING_TAG_IDS,
-				DataItemProcessor.convertTagsIntoString(mistake, mDatabase));
+		if (mistake.getTagNames() != null) {
+			values.put(Mistakes.KEY_STRING_TAG_IDS,
+					DataItemProcessor.convertTagsIntoString(mistake, mDatabase));
+		}
 		values.put(Mistakes.KEY_INT_IS_ISTARRED, mistake.isStarred() ? 1 : 0);
 		return values;
 	}

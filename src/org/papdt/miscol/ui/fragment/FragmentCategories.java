@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.CategoryInfo;
+import org.papdt.miscol.bean.QueryCondition;
 import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
 import org.papdt.miscol.utils.Constants.Databases.Tags;
@@ -27,7 +28,7 @@ import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
-public class FragmentCategories extends Fragment {
+public class FragmentCategories extends Fragment implements OnClickListener {
 	private static FragmentCategories sInstance;
 	private CardUI mCardUI;
 	private Button mAddButton;
@@ -35,39 +36,21 @@ public class FragmentCategories extends Fragment {
 	private CategoryCard[] mCategories;
 	private DatabaseHelper mDbHelper;
 
-	private final static String TAG = "FragmentMistakes";
+	private final static String TAG = "FragmentCategories";
+	
+	public static final int TAGS = 0,SUBJECTS = 1,GRADES = 2;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		this.setHasOptionsMenu(true);
 		this.mDbHelper = DatabaseHelper.getInstance(getActivity());
 		super.onCreate(savedInstanceState);
-<<<<<<< HEAD
-=======
-		addSampleData(); // Tested
-	}
-
-	@SuppressWarnings("unused")
-	private void addSampleData() {
-		Log.d(TAG, "添加测试数据");
-		Mistake m = new Mistake("测试", "呵呵呵呵呵");
-		m.setGradeName("高一");
-		m.setSubjectName("节操");
-		m.setTagNames(new String[] { "Demo" });
-		m.setTypeName("填空题");
-		m.setAnswerText("Xavier");
-		try {
-			mDbHelper.insertMistake(m);
-		} catch (MistakeOperationException e) {
-			e.printStackTrace();
-		}
->>>>>>> dao
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.fragment_mistakes, null);
+		View v = inflater.inflate(R.layout.fragment_categories, null);
 		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
 		mAddButton = (Button) v.findViewById(R.id.btn_add);
 		mAddButton.setOnClickListener(new OnClickListener() {
@@ -115,8 +98,8 @@ public class FragmentCategories extends Fragment {
 	}
 
 	public void fillContentAsTagIndex() {
-		ArrayList<CategoryCard> allTags = getCategoryCards(mDbHelper
-				.getCategoryInfo(Tags.TABLE_NAME));
+		CategoryInfo[] tagInfo = mDbHelper.getCategoryInfo(Tags.TABLE_NAME);
+		ArrayList<CategoryCard> allTags = getCategoryCards(tagInfo);
 		if (allTags != null) {
 			int size = allTags.size();
 			Log.d(TAG, "获取到list长度为" + size);
@@ -124,11 +107,14 @@ public class FragmentCategories extends Fragment {
 			// 初始化数组我求你了...亏我还去掉了迭代器原来是这个坑爹东西
 			for (int i = 0; i < size; i++) {
 				mCategories[i] = allTags.get(i);
-				// FIXED
+				mCategories[i].setOnClickListener(this);
+				mCategories[i].setmBindedObject(new Object[]{tagInfo[i],TAGS});
 			}
 			fillContentsToView();
 		} else {
-			InfoCard card = new InfoCard(getString(R.string.no_category_hint_title),getString(R.string.no_tag_hint));
+			InfoCard card = new InfoCard(
+					getString(R.string.no_category_hint_title),
+					getString(R.string.no_tag_hint));
 			mCardUI.clearCards();
 			mCardUI.addCard(card);
 			mCardUI.refresh();
@@ -136,18 +122,22 @@ public class FragmentCategories extends Fragment {
 	}
 
 	public void fillContentAsGradeIndex() {
-		ArrayList<CategoryCard> allGrades = getCategoryCards(mDbHelper
-				.getCategoryInfo(Grades.TABLE_NAME));
+		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(Grades.TABLE_NAME);
+		ArrayList<CategoryCard> allGrades = getCategoryCards(gradeInfo);
 		if (allGrades != null) {
 			int size = allGrades.size();
 			Log.d(TAG, "获取到list长度为" + size);
 			mCategories = new CategoryCard[size];
 			for (int i = 0; i < size; i++) {
 				mCategories[i] = allGrades.get(i);
+				mCategories[i].setOnClickListener(this);
+				mCategories[i].setmBindedObject(new Object[]{gradeInfo[i],GRADES});
 			}
 			fillContentsToView();
 		} else {
-			InfoCard card = new InfoCard(getString(R.string.no_category_hint_title),getString(R.string.no_subject_hint));
+			InfoCard card = new InfoCard(
+					getString(R.string.no_category_hint_title),
+					getString(R.string.no_subject_hint));
 			mCardUI.clearCards();
 			mCardUI.addCard(card);
 			mCardUI.refresh();
@@ -189,6 +179,24 @@ public class FragmentCategories extends Fragment {
 			}
 		}
 		return tags;
+	}
+
+	@Override
+	public void onClick(View v) {
+		Object[] objs = (Object[]) v.getTag();
+		showMistakes((CategoryInfo)objs[0],(Integer)objs[1]);
+	}
+
+	private void showMistakes(CategoryInfo info,int type) {
+		QueryCondition c = new QueryCondition();
+		switch(type){
+		case TAGS:
+			break;
+		case GRADES:
+			break;
+		}
+		Bundle b = new Bundle();
+		
 	}
 
 }
