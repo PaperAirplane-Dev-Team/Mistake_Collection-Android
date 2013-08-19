@@ -21,8 +21,7 @@ public class Constants {
 			public static final String KEY_INT_ID = "_id";
 			/** 科目名称 */
 			public static final String KEY_STRING_NAME = "name";
-			/** 维护一个计数，以供清理不用的项目 */
-			public static final String KEY_INT_ITEM_COUNT = "item_count";
+			// item_count 被取消
 		}
 
 		/** 数据库版本 */
@@ -157,24 +156,20 @@ public class Constants {
 			public static final String SUBJECTS = Subjects.TABLE_NAME + "("
 					+ Subjects.KEY_INT_ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
-					+ Subjects.KEY_STRING_NAME + " TEXT NOT NULL" + ", "
-					+ Subjects.KEY_INT_ITEM_COUNT + " INTEGER NOT NULL" + ")";
+					+ Subjects.KEY_STRING_NAME + " TEXT NOT NULL" + ")";
 
 			public static final String GRADES = Grades.TABLE_NAME + "("
 					+ Grades.KEY_INT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT"
-					+ ", " + Grades.KEY_STRING_NAME + " TEXT NOT NULL" + ", "
-					+ Subjects.KEY_INT_ITEM_COUNT + " INTEGER NOT NULL" + ")";
+					+ ", " + Grades.KEY_STRING_NAME + " TEXT NOT NULL" + ")";
 
 			public static final String TAGS = Tags.TABLE_NAME + "("
 					+ Tags.KEY_INT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT"
-					+ ", " + Tags.KEY_STRING_NAME + " TEXT NOT NULL" + ", "
-					+ Subjects.KEY_INT_ITEM_COUNT + " INTEGER NOT NULL" + ")";
+					+ ", " + Tags.KEY_STRING_NAME + " TEXT NOT NULL" + ")";
 
 			public static final String QUESTION_TYPE = QuestionType.TABLE_NAME
 					+ "(" + QuestionType.KEY_INT_ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT" + ", "
-					+ QuestionType.KEY_STRING_NAME + " TEXT NOT NULL" + ", "
-					+ Subjects.KEY_INT_ITEM_COUNT + " INTEGER NOT NULL" + ")";
+					+ QuestionType.KEY_STRING_NAME + " TEXT NOT NULL" + ")";
 
 			public static final String FILES = Files.TABLE_NAME + "("
 					+ Files.KEY_INT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT"

@@ -62,8 +62,7 @@ public class Mistake implements Cloneable, Serializable, Parcelable {
 		try {
 			jobj.put("id", id);
 			jobj.put("title", title);
-			jobj.put(questionText, questionText);
-			jobj.put(answerText, answerText);
+			jobj.put("questionText", questionText);//我说不加引号还重复是要干嘛？
 			jobj.put("answerText", answerText);
 		} catch (JSONException e) {
 			e.printStackTrace();

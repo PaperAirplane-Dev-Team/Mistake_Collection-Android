@@ -37,7 +37,7 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 
 	private LinearLayout mLayout;
 	private EditText mEtTitle;
-	private Spinner mSpinnerGrade, mSpinnerSubject;
+	private Spinner mSpinnerGrade, mSpinnerSubject, mSpinnerType;
 	private TextView mTvTags;
 	private Mistake mMistake;
 	private DatabaseHelper mDbHelper;
@@ -78,10 +78,13 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 		mTvTags = (TextView) mLayout.findViewById(R.id.tv_tags);
 		mSpinnerGrade = (Spinner) mLayout.findViewById(R.id.spinner_grade);
 		mSpinnerSubject = (Spinner) mLayout.findViewById(R.id.spinner_subject);
-
+		mSpinnerType = (Spinner)mLayout.findViewById(R.id.spinner_type);
+		
 		mSpinnerGrade.setAdapter(mGradeAdapter);
 		mSpinnerSubject.setAdapter(mSubjectAdapter);
-
+		mSpinnerType.setAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,getResources().getStringArray(R.array.types)));
+		((ArrayAdapter<?>)mSpinnerType.getAdapter()).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
 		mSpinnerGrade.setOnItemSelectedListener(this);
 		mSpinnerSubject.setOnItemSelectedListener(this);
 		fillDatas();
@@ -224,10 +227,11 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 			mMistake.setTagNames(mTags.toArray(new String[0]));
 		mMistake.setSubjectName((String) mSpinnerSubject.getSelectedItem());
 		mMistake.setGradeName((String) mSpinnerGrade.getSelectedItem());
+		mMistake.setTypeName((String) mSpinnerType.getSelectedItem());
+		
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
 		FragmentAddMistake1 fragment = new FragmentAddMistake1();
-
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("Mistake", mMistake);
 		fragment.setArguments(bundle);
@@ -286,6 +290,7 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 						String text = etSubject.getText().toString();
 						if (mSubjectAdapter.getPosition(text) == -1) {
 							addSubject(text);
+
 						} else {
 							mSpinnerSubject.setSelection(mSubjectAdapter
 									.getPosition(text));
@@ -390,3 +395,5 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 	}
 
 }
+
+

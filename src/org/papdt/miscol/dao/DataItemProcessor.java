@@ -20,7 +20,7 @@ public class DataItemProcessor {
 				Subjects.TABLE_NAME));
 		mistake.setGradeId(convertItemIntoId(mistake.getGradeName(), db,
 				Grades.TABLE_NAME));
-		//以上三项都是必须的
+		// 以上三项都是必须的
 		mistake.setAnswerPhotoId(replaceOrDeletePhotoIdIfNecessary(
 				mistake.getAnswerPhotoId(), mistake.getAnswerPhotoPath(), db));
 		mistake.setQuestionPhotoId(replaceOrDeletePhotoIdIfNecessary(
@@ -33,7 +33,7 @@ public class DataItemProcessor {
 		int result = -1;
 		if (id != -1 && path == null) {
 			db.execSQL("DELETE FROM " + Files.TABLE_NAME + " WHERE "
-					+ Files.KEY_STRING_PATH + "=" + path);
+					+ Files.KEY_STRING_PATH + "='" + path + "'");
 		} else if (id != -1 && path != null) {
 			int temp = convertItemIntoId(path, db, Files.TABLE_NAME,
 					Files.KEY_STRING_PATH);
@@ -69,30 +69,22 @@ public class DataItemProcessor {
 
 	private static int convertItemIntoId(String itemName, SQLiteDatabase db,
 			String tableName, String itemColumnName) {
-		// 处理Type
-		int itemId, itemCount;
+		int itemId;
 		Cursor cursor = db.rawQuery("SELECT * FROM " + tableName + " WHERE "
-				+ IDbWithIdAndName.KEY_STRING_NAME + "=" + itemName, null);
+				+ itemColumnName + "='" + itemName + "'", null);
 		if (cursor.moveToNext()) {
-			itemId = cursor.getInt(1);
+			itemId = cursor.getInt(0);
 			cursor.close();
-			itemCount = cursor.getInt(2) + 1;
 		} else {
 			cursor.close();
-			db.execSQL("INSERT INTO " + tableName + " ("
-					+ IDbWithIdAndName.KEY_STRING_NAME + ") VALUES ("
-					+ itemName + ")");
+			db.execSQL("INSERT INTO " + tableName + " (" + itemColumnName
+					+ ") VALUES ( '" + itemName + "' )");
 			cursor = db.rawQuery("SELECT * FROM " + tableName + " WHERE "
-					+ IDbWithIdAndName.KEY_STRING_NAME + "=" + itemName, null);
+					+ itemColumnName + "='" + itemName + "'", null);
 			cursor.moveToNext();
-			itemId = cursor.getInt(1);
-			itemCount = 1;
+			itemId = cursor.getInt(0);
 		}
-		db.execSQL("UPDATE " + tableName + "SET "
-				+ IDbWithIdAndName.KEY_INT_ITEM_COUNT + "=" + itemCount
-				+ " WHERE " + IDbWithIdAndName.KEY_STRING_NAME + "=" + itemName);
 		return itemId;
 	}
-	
-	// TODO 实现一个方法在更新好删除的时候修改对应的item_count
+
 }

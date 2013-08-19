@@ -43,7 +43,6 @@ public class ActivityMain extends Activity implements IDrawerNames {
 	private FragmentManager mFragmentManager;
 	private MistakesTabListener mTabListener;
 	private int mCurrentFragment;
-	private boolean mDrawerClosed;
 
 	private final static String TAG = "ActivityMain";
 
@@ -137,13 +136,16 @@ public class ActivityMain extends Activity implements IDrawerNames {
 		mTransaction.attach(fragment).show(fragment).commit();
 		mFragmentManager.popBackStack();
 		mFragmentManager.executePendingTransactions();
+		if (tag.equals(TAGS[MISTAKES]))
+			initializeTabs();
 	}
 
 	private void hideFragment(Fragment fragment) {
 		if (fragment != null) {
 			mTransaction.hide(fragment);
+			if (fragment.getTag().equals(TAGS[MISTAKES]))
+				removeTabs();
 		}
-
 	}
 
 	@Override
@@ -203,6 +205,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 		R.string.drawer_open, /* "open drawer" description for accessibility */
 		R.string.drawer_close /* "close drawer" description for accessibility */
 		) {
+
 			@Override
 			public void onDrawerClosed(View view) {
 				getActionBar().setTitle(mTitle);
@@ -210,19 +213,9 @@ public class ActivityMain extends Activity implements IDrawerNames {
 											// onPrepareOptionsMenu()
 				if (mCurrentFragment == MAIN && mFragments[MAIN] != null)
 					((FragmentMain) mFragments[MAIN]).showHint();
-				if (mCurrentFragment == MISTAKES) {
-					initializeTabs();
-				}
-				mDrawerClosed = true;
 			}
 
-			@Override
-			public void onDrawerSlide(View drawerView, float slideOffset) {
-				if (mDrawerClosed&&mCurrentFragment == MISTAKES) {
-					removeTabs();
-				}
-				mDrawerClosed = false;
-			}
+
 
 			@Override
 			public void onDrawerOpened(View drawerView) {
@@ -232,7 +225,10 @@ public class ActivityMain extends Activity implements IDrawerNames {
 				if (mCurrentFragment == MAIN && mFragments[MAIN] != null) {
 					((FragmentMain) mFragments[MAIN]).hideHint();
 				}
+
 			}
+
+			
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
