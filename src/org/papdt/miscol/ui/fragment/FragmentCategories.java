@@ -46,7 +46,6 @@ public class FragmentCategories extends Fragment {
 		addSampleData(); // Tested
 	}
 
-	@SuppressWarnings("unused")
 	private void addSampleData() {
 		Log.d(TAG, "添加测试数据");
 		Mistake m = new Mistake("测试", "呵呵呵呵呵");
