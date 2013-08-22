@@ -50,56 +50,14 @@ public class DatabaseHelper {
 		return sInstance;
 	}
 
+	public int convertItemNameToId(String itemName, String tableName) {
+		return DataItemProcessor.convertItemIntoId(itemName, mDatabase,
+				tableName);
+	}
+
 	public CategoryInfo[] getCategoryInfo(String tableName) {
 		return getCategoryInfo(tableName, tableName.equals(Tags.TABLE_NAME),
 				tableName.equals(Grades.TABLE_NAME));
-	}
-
-	/**
-	 * 返回表中所有id-name的映射以及计数
-	 * 
-	 * @param tableName
-	 *            查询的表名
-	 * @return 分类信息数组
-	 */
-	private CategoryInfo[] getCategoryInfo(String tableName, boolean isTag,
-			boolean isGrade) {
-		Log.d(TAG, "从表" + tableName + "获取信息" + (isTag ? ",是标签" : ",不是标签"));
-		Cursor cursor = mDatabase
-				.rawQuery("SELECT " + IDbWithIdAndName.KEY_INT_ID + ","
-						+ IDbWithIdAndName.KEY_STRING_NAME + " FROM "
-						+ tableName, null);
-		if (cursor.getCount() == 0) {
-			Log.d(TAG, "未能查询到有关信息");
-			return new CategoryInfo[0]; // OK
-		}
-		CategoryInfo info[] = new CategoryInfo[cursor.getCount()];
-		Log.d(TAG, "获取到" + info.length + "条记录");
-		int i = 0;
-		while (cursor.moveToNext()) {
-			info[i] = new CategoryInfo();
-			// 不初始化永远是个痛,调试半小时
-			info[i].setId(cursor.getInt(0));
-			info[i].setName(cursor.getString(1).trim());
-			info[i].setCount(getItemCount(Mistakes.TABLE_NAME, info[i].getId(),
-					isTag));
-			if (isGrade) {
-				info[i].setSubCount(getSubjectAmountOfGrade(info[i].getId()));
-			}
-			i++;
-		}
-		cursor.close();
-		return info;
-	}
-
-	private int getSubjectAmountOfGrade(int gradeId) {
-		Cursor cursor = mDatabase.rawQuery("SELECT COUNT(DISTINCT "
-				+ Mistakes.KEY_INT_SUBJECT_ID + ") FROM " + Mistakes.TABLE_NAME
-				+ " WHERE " + Mistakes.KEY_INT_GRADE_ID + "=" + gradeId, null);
-		cursor.moveToNext();
-		int count = cursor.getInt(0);
-		cursor.close();
-		return count;
 	}
 
 	/**
@@ -225,6 +183,53 @@ public class DatabaseHelper {
 		mDatabase.endTransaction();
 		Log.d(TAG, "成功删除错题,ID为" + id);
 		return true;
+	}
+
+	private int getSubjectAmountOfGrade(int gradeId) {
+		Cursor cursor = mDatabase.rawQuery("SELECT COUNT(DISTINCT "
+				+ Mistakes.KEY_INT_SUBJECT_ID + ") FROM " + Mistakes.TABLE_NAME
+				+ " WHERE " + Mistakes.KEY_INT_GRADE_ID + "=" + gradeId, null);
+		cursor.moveToNext();
+		int count = cursor.getInt(0);
+		cursor.close();
+		return count;
+	}
+
+	/**
+	 * 返回表中所有id-name的映射以及计数
+	 * 
+	 * @param tableName
+	 *            查询的表名
+	 * @return 分类信息数组
+	 */
+	private CategoryInfo[] getCategoryInfo(String tableName, boolean isTag,
+			boolean isGrade) {
+		Log.d(TAG, "从表" + tableName + "获取信息" + (isTag ? ",是标签" : ",不是标签"));
+		Cursor cursor = mDatabase
+				.rawQuery("SELECT " + IDbWithIdAndName.KEY_INT_ID + ","
+						+ IDbWithIdAndName.KEY_STRING_NAME + " FROM "
+						+ tableName, null);
+		if (cursor.getCount() == 0) {
+			Log.d(TAG, "未能查询到有关信息");
+			return new CategoryInfo[0]; // OK
+		}
+		CategoryInfo info[] = new CategoryInfo[cursor.getCount()];
+		Log.d(TAG, "获取到" + info.length + "条记录");
+		int i = 0;
+		while (cursor.moveToNext()) {
+			info[i] = new CategoryInfo();
+			// 不初始化永远是个痛,调试半小时
+			info[i].setId(cursor.getInt(0));
+			info[i].setName(cursor.getString(1).trim());
+			info[i].setCount(getItemCount(Mistakes.TABLE_NAME, info[i].getId(),
+					isTag));
+			if (isGrade) {
+				info[i].setSubCount(getSubjectAmountOfGrade(info[i].getId()));
+			}
+			i++;
+		}
+		cursor.close();
+		return info;
 	}
 
 	private int getItemCount(String tableName, int itemId, boolean isTag) {

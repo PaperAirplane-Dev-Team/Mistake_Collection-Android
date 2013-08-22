@@ -91,6 +91,48 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 		return mLayout;
 	}
 	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		menu.clear();
+		getActivity().getMenuInflater().inflate(R.menu.menu_addmistake_0, menu);
+		if (mPic == null) {
+			menu.getItem(0).getSubMenu().removeItem(R.id.action_remove_photo);
+		}
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_next:
+			Log.d(TAG, "用户触发下一步操作");
+			moveToNextStep();
+			break;
+		case android.R.id.home:
+			Log.d(TAG, "用户点击ActionBar的返回按钮");
+			getFragmentManager().beginTransaction().detach(this).commit();
+			getActivity().finish();
+			break;
+		case R.id.action_pick_photo:
+			Log.d(TAG, "用户触发选择照片操作");
+			addPhoto();
+			break;
+		case R.id.action_capture_photo:
+			Log.d(TAG, "用户触发拍摄照片操作");
+			capturePhoto();
+			break;
+		case R.id.action_add_tag:
+			Log.d(TAG, "用户触发添加标签操作");
+			addTags();
+			break;
+		case R.id.action_remove_photo:
+			Log.d(TAG, "用户触发清除照片操作");
+			setPicture(null);
+			getActivity().invalidateOptionsMenu();
+			break;
+		}
+		return true;
+	}
+
 	public void showTags() {
 		if (mTags.size() != 0) {
 			mTvTags.setVisibility(View.VISIBLE);
@@ -165,47 +207,6 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 		} else {
 			adapter.add(getString(R.string.spinner_default));
 		}
-	}
-
-	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
-		getActivity().getMenuInflater().inflate(R.menu.menu_addmistake_0, menu);
-		if (mPic == null) {
-			menu.getItem(0).getSubMenu().removeItem(R.id.action_remove_photo);
-		}
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_next:
-			Log.d(TAG, "用户触发下一步操作");
-			moveToNextStep();
-			break;
-		case android.R.id.home:
-			Log.d(TAG, "用户点击ActionBar的返回按钮");
-			getFragmentManager().beginTransaction().detach(this).commit();
-			getActivity().finish();
-			break;
-		case R.id.action_pick_photo:
-			Log.d(TAG, "用户触发选择照片操作");
-			addPhoto();
-			break;
-		case R.id.action_capture_photo:
-			Log.d(TAG, "用户触发拍摄照片操作");
-			capturePhoto();
-			break;
-		case R.id.action_add_tag:
-			Log.d(TAG, "用户触发添加标签操作");
-			addTags();
-			break;
-		case R.id.action_remove_photo:
-			Log.d(TAG, "用户触发清除照片操作");
-			setPicture(null);
-			break;
-		}
-		return true;
 	}
 
 	private void addTags() {

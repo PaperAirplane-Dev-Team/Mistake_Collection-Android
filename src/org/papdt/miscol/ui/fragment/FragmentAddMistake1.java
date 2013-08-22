@@ -82,11 +82,11 @@ public class FragmentAddMistake1 extends AbsFragmentAddMistake implements
 			Log.d(TAG, "用户触发拍摄照片操作");
 			capturePhoto();
 			break;
-		default:
-			if (item.getItemId() == mDeletePicMenuItemId) {
-				setPicture(null);
-				getActivity().invalidateOptionsMenu();
-			}
+		case R.id.action_remove_photo:
+			Log.d(TAG, "用户触发清除照片操作");
+			setPicture(null);
+			getActivity().invalidateOptionsMenu();
+			break;
 		}
 		return true;
 	}

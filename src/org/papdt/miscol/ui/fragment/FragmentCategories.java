@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.CategoryInfo;
+import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.bean.QueryCondition;
 import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.utils.Constants.Databases.Grades;
@@ -14,6 +15,7 @@ import org.papdt.miscol.ui.InfoCard;
 
 import com.fima.cardsui.views.CardUI;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,8 +39,8 @@ public class FragmentCategories extends Fragment implements OnClickListener {
 	private DatabaseHelper mDbHelper;
 
 	private final static String TAG = "FragmentCategories";
-	
-	public static final int TAGS = 0,SUBJECTS = 1,GRADES = 2;
+
+	public static final int TAGS = 0, SUBJECTS = 1, GRADES = 2;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -108,7 +110,8 @@ public class FragmentCategories extends Fragment implements OnClickListener {
 			for (int i = 0; i < size; i++) {
 				mCategories[i] = allTags.get(i);
 				mCategories[i].setOnClickListener(this);
-				mCategories[i].setmBindedObject(new Object[]{tagInfo[i],TAGS});
+				mCategories[i]
+						.setmBindedObject(new Object[] { tagInfo[i], TAGS });
 			}
 			fillContentsToView();
 		} else {
@@ -131,7 +134,8 @@ public class FragmentCategories extends Fragment implements OnClickListener {
 			for (int i = 0; i < size; i++) {
 				mCategories[i] = allGrades.get(i);
 				mCategories[i].setOnClickListener(this);
-				mCategories[i].setmBindedObject(new Object[]{gradeInfo[i],GRADES});
+				mCategories[i].setmBindedObject(new Object[] { gradeInfo[i],
+						GRADES });
 			}
 			fillContentsToView();
 		} else {
@@ -184,19 +188,31 @@ public class FragmentCategories extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		Object[] objs = (Object[]) v.getTag();
-		showMistakes((CategoryInfo)objs[0],(Integer)objs[1]);
+		showMistakes((CategoryInfo) objs[0], (Integer) objs[1]);
 	}
 
-	private void showMistakes(CategoryInfo info,int type) {
+	private void showMistakes(CategoryInfo info, int type) {
 		QueryCondition c = new QueryCondition();
-		switch(type){
+		switch (type) {
 		case TAGS:
+			c.setTagIds(new Integer[] { mDbHelper.convertItemNameToId(
+					info.getName(), Tags.TABLE_NAME) });
 			break;
 		case GRADES:
+			c.setGradeIds(new Integer[] { mDbHelper.convertItemNameToId(
+					info.getName(), Grades.TABLE_NAME) });
 			break;
 		}
+		// FIXME SQLiteException: near "R" : syntax error
+		Mistake[] m = mDbHelper.queryMistakesByCondition(c);
 		Bundle b = new Bundle();
-		
+		b.putParcelableArray(FragmentMistakes.KEY, m);
+		Fragment fragment = new FragmentMistakes();
+		fragment.setArguments(b);
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_STANDARD);
+		getFragmentManager().beginTransaction().addToBackStack(TAG)
+				.replace(R.id.fl_content, fragment).commit();
 	}
 
 }

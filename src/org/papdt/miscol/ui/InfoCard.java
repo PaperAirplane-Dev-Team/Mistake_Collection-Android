@@ -22,7 +22,7 @@ public class InfoCard extends Card {
 
 	@Override
 	public View getCardContent(Context context) {
-		mCardContent = View.inflate(context, R.layout.mistake_card, null);
+		mCardContent = View.inflate(context, R.layout.info_card, null);
 		mTvCardTitle = (TextView) mCardContent.findViewById(R.id.tv_card_title);
 		mTvCardDescription = (TextView) mCardContent
 				.findViewById(R.id.tv_card_description);

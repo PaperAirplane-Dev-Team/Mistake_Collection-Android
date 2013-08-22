@@ -1,6 +1,7 @@
 package org.papdt.miscol.ui.fragment;
 
 import org.papdt.miscol.R;
+import org.papdt.miscol.bean.Mistake;
 
 import com.fima.cardsui.views.CardUI;
 
@@ -18,8 +19,10 @@ import android.widget.SearchView.OnQueryTextListener;
 public class FragmentMistakes extends Fragment {
 	private CardUI mCardUI;
 	private SearchView mSearchView;
+	private Mistake[] mMistakes;
 
 	private static final String TAG = "FragmentMistakes";
+	public static final String KEY = "Mistakes";
 
 	public FragmentMistakes() {
 		Log.d(TAG, TAG + "被初始化");
@@ -30,6 +33,7 @@ public class FragmentMistakes extends Fragment {
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_categories, null);
 		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
+		fillDatas();
 		return v;
 	}
 
@@ -56,5 +60,10 @@ public class FragmentMistakes extends Fragment {
 
 		});
 		super.onPrepareOptionsMenu(menu);
+	}
+
+	private void fillDatas() {
+		mMistakes = (Mistake[]) getArguments().getParcelableArray(KEY); 
+		
 	}
 }
