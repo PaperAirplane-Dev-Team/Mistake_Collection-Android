@@ -56,7 +56,7 @@ public class DataItemProcessor {
 		StringBuilder sb = new StringBuilder();
 		for (String tag : mistake.getTagNames()) {
 			int tagId = convertItemIntoId(tag, db, Tags.TABLE_NAME);
-			sb.append(tagId + ", ");
+			sb.append(tagId + ",");
 		}
 		return sb.toString();
 	}

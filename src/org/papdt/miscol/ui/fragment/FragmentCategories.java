@@ -104,7 +104,7 @@ public class FragmentCategories extends Fragment implements OnClickListener {
 		ArrayList<CategoryCard> allTags = getCategoryCards(tagInfo);
 		if (allTags != null) {
 			int size = allTags.size();
-			Log.d(TAG, "获取到list长度为" + size);
+			Log.d(TAG, "获取到Tag list长度为" + size);
 			mCategories = new CategoryCard[size];
 			// 初始化数组我求你了...亏我还去掉了迭代器原来是这个坑爹东西
 			for (int i = 0; i < size; i++) {
@@ -203,8 +203,10 @@ public class FragmentCategories extends Fragment implements OnClickListener {
 					info.getName(), Grades.TABLE_NAME) });
 			break;
 		}
-		// FIXME SQLiteException: near "R" : syntax error
+		// FIXED SQLiteException: near "R" : syntax error
+		// 抱歉，当初写Condition的时候没有测试
 		Mistake[] m = mDbHelper.queryMistakesByCondition(c);
+		Log.d(TAG, "查询到" + m.length + "个符合条件的Mistake");
 		Bundle b = new Bundle();
 		b.putParcelableArray(FragmentMistakes.KEY, m);
 		Fragment fragment = new FragmentMistakes();

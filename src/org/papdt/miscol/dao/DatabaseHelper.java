@@ -220,9 +220,10 @@ public class DatabaseHelper {
 			info[i] = new CategoryInfo();
 			// 不初始化永远是个痛,调试半小时
 			info[i].setId(cursor.getInt(0));
+			Log.d(TAG, "Tag ID为" + cursor.getInt(0));
 			info[i].setName(cursor.getString(1).trim());
 			info[i].setCount(getItemCount(Mistakes.TABLE_NAME, info[i].getId(),
-					isTag));
+					isTag, isGrade));
 			if (isGrade) {
 				info[i].setSubCount(getSubjectAmountOfGrade(info[i].getId()));
 			}
@@ -232,25 +233,32 @@ public class DatabaseHelper {
 		return info;
 	}
 
-	private int getItemCount(String tableName, int itemId, boolean isTag) {
-		String columnName = (tableName.equals(Tags.TABLE_NAME) ? Mistakes.KEY_STRING_TAG_IDS
-				: (tableName.equals(Grades.TABLE_NAME) ? Mistakes.KEY_INT_GRADE_ID
-						: Mistakes.KEY_INT_SUBJECT_ID));
+	private int getItemCount(String tableName, int itemId, boolean isTag,
+			boolean isGrade) {
+		// 话说同学你用个表名在这里判断什么呢?
+		/*
+		 * String columnName = (tableName.equals(Tags.TABLE_NAME) ?
+		 * Mistakes.KEY_STRING_TAG_IDS : (tableName.equals(Grades.TABLE_NAME) ?
+		 * Mistakes.KEY_INT_GRADE_ID : Mistakes.KEY_INT_SUBJECT_ID));
+		 */
+		String columnName = isTag ? Mistakes.KEY_STRING_TAG_IDS
+				: (isGrade ? Mistakes.KEY_INT_GRADE_ID
+						: Mistakes.KEY_INT_SUBJECT_ID);
 		return getItemCount(tableName, columnName, itemId, isTag);
 	}
 
 	private int getItemCount(String tableName, String itemColumnName,
 			int itemId, boolean isTag) {
-		Cursor cursor;
+		String query;
 		if (!isTag) {
-			cursor = mDatabase.rawQuery("SELECT COUNT(" + itemColumnName
-					+ ") FROM " + tableName + " WHERE " + itemColumnName + "='"
-					+ itemId + "'", null);
+			query = "SELECT COUNT(" + itemColumnName + ") FROM " + tableName
+					+ " WHERE " + itemColumnName + "='" + itemId + "'";
 		} else {
-			cursor = mDatabase.rawQuery("SELECT COUNT(" + itemColumnName
-					+ ") FROM " + tableName + " WHERE " + itemColumnName
-					+ " LIKE '%" + itemId + "%'", null);
+			query = "SELECT COUNT(" + itemColumnName + ") FROM " + tableName
+					+ " WHERE " + itemColumnName + " LIKE '%" + itemId + "%'";
 		}
+		Log.d(TAG, "getItemCount执行的查询为" + query);
+		Cursor cursor = mDatabase.rawQuery(query, null);
 		cursor.moveToNext();
 		int count = cursor.getInt(0);
 		cursor.close();
@@ -322,7 +330,7 @@ public class DatabaseHelper {
 				}
 			}
 			int length = sb.length();
-			sb.delete(length - 3, length - 1);// 删除最后一个OR
+			sb.delete(length - 3, length);// 删除最后一个OR
 			return true;
 		} else {
 			return false;
@@ -355,9 +363,10 @@ public class DatabaseHelper {
 
 	private int[] convertStringTagIdsToArray(String ids) {
 		mTokenizer = new StringTokenizer(ids, ",");
-		int tagIds[] = new int[mTokenizer.countTokens()], i = 0;
-		while (mTokenizer.hasMoreTokens()) {
-			tagIds[i++] = Integer.valueOf(mTokenizer.nextToken());
+		int tokenCount = mTokenizer.countTokens() - 1;
+		int tagIds[] = new int[tokenCount];
+		for (int i = 0; i < tokenCount; i++) {
+			tagIds[i] = Integer.valueOf(mTokenizer.nextToken().trim());
 		}
 		return tagIds;
 	}
