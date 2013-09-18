@@ -83,5 +83,8 @@
     <string name="photo_pick">选择图片</string>
     <string name="photo_capture">拍摄图片</string>
     <string name="photo_clear">清除图片</string>
-
+	<!-- 搜索 -->
+	<string name="no_match_title">请更换关键词</string>
+	<string name="no_match_category">找不到符合条件的类别</string>
+	<string name="no_match_mistake">找不到符合条件的题目</string>
 </resources>

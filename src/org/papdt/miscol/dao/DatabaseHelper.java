@@ -355,7 +355,9 @@ public class DatabaseHelper {
 		mistake.setCorrectRate(cursor.getDouble(12));
 		mistake.setSubjectId(cursor.getInt(13));
 		mistake.setGradeId(cursor.getInt(14));
-		mistake.setTagIds(convertStringTagIdsToArray(cursor.getString(15)));
+		//我现在只能暂且这样
+		if (cursor.getString(15) != null)
+			mistake.setTagIds(convertStringTagIdsToArray(cursor.getString(15)));
 		mistake.setStarred(cursor.getInt(16) == 1 ? true : false);
 		completeMistake(mistake);
 		return mistake;
@@ -385,11 +387,14 @@ public class DatabaseHelper {
 		mistake.setGradeName(getNameById(Grades.TABLE_NAME,
 				mistake.getGradeId(), Grades.KEY_STRING_NAME));
 		int ids[] = mistake.getTagIds(), i = 0;
-		String tags[] = new String[ids.length];
-		for (int id : ids) {
-			tags[i++] = getNameById(Tags.TABLE_NAME, id, Tags.KEY_STRING_NAME);
+		//同样是临时的补救措施
+		if(ids!=null){
+			String tags[] = new String[ids.length];
+			for (int id : ids) {
+				tags[i++] = getNameById(Tags.TABLE_NAME, id, Tags.KEY_STRING_NAME);
+			}
+			mistake.setTagNames(tags);
 		}
-		mistake.setTagNames(tags);
 	}
 
 	private String getNameById(String tableName, int id, String keyName) {

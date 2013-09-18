@@ -47,6 +47,10 @@ public class CategoryCard extends Card {
 		tvDescription.setText(description);
 		return mCardContent;
 	}
+	
+	public String getTitle(){
+		return mTitle;
+	}
 
 	@Override
 	protected int getCardLayout() {

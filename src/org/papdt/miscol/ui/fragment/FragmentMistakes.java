@@ -16,6 +16,10 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
+/**
+ * 用于显示某一分类中全部Mistake的Fragment
+ * 
+ */
 public class FragmentMistakes extends Fragment {
 	private CardUI mCardUI;
 	private SearchView mSearchView;
@@ -31,6 +35,7 @@ public class FragmentMistakes extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		// 重写
 		View v = inflater.inflate(R.layout.fragment_categories, null);
 		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
 		fillDatas();
@@ -63,7 +68,7 @@ public class FragmentMistakes extends Fragment {
 	}
 
 	private void fillDatas() {
-		mMistakes = (Mistake[]) getArguments().getParcelableArray(KEY); 
-		//TODO 展示查询到的Mistake
+		mMistakes = (Mistake[]) getArguments().getParcelableArray(KEY);
+		// TODO 展示查询到的Mistake
 	}
 }
