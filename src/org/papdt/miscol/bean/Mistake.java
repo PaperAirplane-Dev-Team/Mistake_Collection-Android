@@ -48,8 +48,8 @@ public class Mistake implements Cloneable, Serializable, Parcelable {
 		this.addTime = sDateFormat.format(new Date());
 	}
 
-	@Deprecated
 	public Mistake() {
+		this.addTime = sDateFormat.format(new Date());
 	}
 
 	@Override

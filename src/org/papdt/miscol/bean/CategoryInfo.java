@@ -3,10 +3,10 @@ package org.papdt.miscol.bean;
 public class CategoryInfo {
 
 	public static final int NULL = -1;
-		
+
 	private String name;
 	private int id, count, subCount = NULL;
-
+	
 	public String getName() {
 		return name;
 	}
@@ -37,5 +37,9 @@ public class CategoryInfo {
 
 	public void setSubCount(int subCount) {
 		this.subCount = subCount;
+	}
+
+	public void addCount() {
+		this.count++;
 	}
 }
