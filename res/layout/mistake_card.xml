@@ -33,6 +33,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.3"
             android:contentDescription="@null"
+            android:visibility="gone"
             android:scaleType="centerInside" />
 
         <TextView

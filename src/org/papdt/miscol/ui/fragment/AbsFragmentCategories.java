@@ -13,12 +13,12 @@ import android.app.Fragment;
 import android.util.Log;
 import android.view.View.OnClickListener;
 
-public abstract class AbsFragmentCategories extends Fragment implements OnClickListener {
+public abstract class AbsFragmentCategories extends Fragment implements OnClickListener,CategoryInfo.TYPE {
 	protected CardUI mCardUI;
 	protected CategoryCard[] mCategories;
 
 	public final static String TAG = "AbsFragmentCategories";
-	public static final int TAGS = 0, GRADES = 1;
+	public static final String KEY = "Mistakes";
 
 	protected ArrayList<CategoryCard> getCategoryCards(CategoryInfo[] info) {
 		if (info.length == 0 || info == null) {
@@ -61,7 +61,7 @@ public abstract class AbsFragmentCategories extends Fragment implements OnClickL
 			for (int i = 0; i < size; i++) {
 				cats[i] = allCats.get(i);
 				cats[i].setOnClickListener(this);
-				cats[i].setmBindedObject(new Object[] { info[i], TAGS });
+				cats[i].setmBindedObject(info[i]);
 			}
 		}
 		return cats;

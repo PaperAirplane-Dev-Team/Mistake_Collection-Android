@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,6 +65,13 @@ public class Mistake implements Cloneable, Serializable, Parcelable {
 			jobj.put("title", title);
 			jobj.put("questionText", questionText);//我说不加引号还重复是要干嘛？
 			jobj.put("answerText", answerText);
+			if(tagNames!=null){
+				JSONArray tags = new JSONArray();
+				for(String tag:tagNames){
+					tags.put(tag);
+				}
+				jobj.put("tagNames",tags);
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

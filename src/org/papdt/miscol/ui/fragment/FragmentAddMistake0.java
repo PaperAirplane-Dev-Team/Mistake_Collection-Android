@@ -8,9 +8,6 @@ import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.ui.dialog.SelectTagsDialog;
-import org.papdt.miscol.utils.Constants.Databases.Grades;
-import org.papdt.miscol.utils.Constants.Databases.Subjects;
-import org.papdt.miscol.utils.Constants.Databases.Tags;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -33,7 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
-		OnItemSelectedListener {
+		OnItemSelectedListener,CategoryInfo.TYPE {
 
 	private LinearLayout mLayout;
 	private EditText mEtTitle;
@@ -41,6 +38,7 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 	private TextView mTvTags;
 	private Mistake mMistake;
 	private DatabaseHelper mDbHelper;
+	private boolean mInitialized;
 	private ArrayAdapter<String> mGradeAdapter, mSubjectAdapter;
 	public HashSet<String> mTags = new HashSet<String>();
 	public HashSet<String> mAllTags = new HashSet<String>();
@@ -164,16 +162,16 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 		mGradeAdapter.clear();
 		mSubjectAdapter.clear();
 		mAllTags.clear();
-		CategoryInfo[] tagInfo = mDbHelper.getCategoryInfo(Tags.TABLE_NAME);
+		CategoryInfo[] tagInfo = mDbHelper.getCategoryInfo(TAGS);
 		if (tagInfo != null && tagInfo.length > 0) {
 			for (CategoryInfo ci : tagInfo) {
 				mAllTags.add(ci.getName());
 			}
 		}
 		mAllTags.addAll(mTags);
-		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(Grades.TABLE_NAME);
+		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(GRADES);
 		CategoryInfo[] subjectInfo = mDbHelper
-				.getCategoryInfo(Subjects.TABLE_NAME);
+				.getCategoryInfo(SUBJECTS);
 		addCategoryInfoToAdapter(gradeInfo, mGradeAdapter);
 		addCategoryInfoToAdapter(subjectInfo, mSubjectAdapter);
 		String addCat = getString(R.string.add_category);
@@ -196,6 +194,7 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 				mSpinnerSubject.setSelection(subjectIndex);
 			}
 		}
+		mInitialized = true;
 	}
 
 	private void addCategoryInfoToAdapter(CategoryInfo[] info,
@@ -370,14 +369,14 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 			switch (parent.getId()) {
 			case R.id.spinner_grade:
 				if (mGradeAdapter.getItem(position).equals(
-						getString(R.string.add_category))) {
+						getString(R.string.add_category))&&mInitialized) {
 					Log.d(TAG, "addGrade");
 					openAddGradeDialog();
 				}
 				break;
 			case R.id.spinner_subject:
 				if (mSubjectAdapter.getItem(position).equals(
-						getString(R.string.add_category))) {
+						getString(R.string.add_category))&&mInitialized) {
 					Log.d(TAG, "addSubject");
 					openAddSubjectDialog();
 				}

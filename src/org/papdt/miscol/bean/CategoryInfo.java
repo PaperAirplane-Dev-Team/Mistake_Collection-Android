@@ -4,9 +4,13 @@ public class CategoryInfo {
 
 	public static final int NULL = -1;
 
+	public static interface TYPE {
+		int TAGS = 0, GRADES = 1, SUBJECTS = 2;
+	}
+
 	private String name;
-	private int id, count, subCount = NULL;
-	
+	private int id, count, subCount = NULL,type;
+
 	public String getName() {
 		return name;
 	}
@@ -41,5 +45,13 @@ public class CategoryInfo {
 
 	public void addCount() {
 		this.count++;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 }

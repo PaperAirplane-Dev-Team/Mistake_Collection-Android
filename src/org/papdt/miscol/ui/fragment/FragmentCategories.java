@@ -5,8 +5,6 @@ import org.papdt.miscol.bean.CategoryInfo;
 import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.bean.QueryCondition;
 import org.papdt.miscol.dao.DatabaseHelper;
-import org.papdt.miscol.utils.Constants.Databases.Grades;
-import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.ui.CategoryCard;
 import org.papdt.miscol.ui.InfoCard;
@@ -33,12 +31,15 @@ import android.widget.SearchView.OnQueryTextListener;
  * 用于显示 [标签]、[年级/科目] 的全部分类的Fragment
  * 
  */
-public class FragmentCategories extends AbsFragmentCategories {
+public class FragmentCategories extends AbsFragmentCategories implements CategoryInfo.TYPE {
+
+	private final int NULL = -1;
+
 	private static FragmentCategories sInstance;
 	private Button mAddButton;
 	private SearchView mSearchView;
 	private DatabaseHelper mDbHelper;
-	private int mCurrentTab;
+	private int mCurrentTab = NULL;
 
 	private final static String TAG = "FragmentCategories";
 
@@ -67,6 +68,25 @@ public class FragmentCategories extends AbsFragmentCategories {
 
 		});
 		return v;
+	}
+
+	/**
+	 * 刷新
+	 */
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (mCurrentTab != NULL) {
+			switch (mCurrentTab) {
+			case TAGS:
+				fillContentAsTagIndex();
+				break;
+			case GRADES:
+				fillContentAsGradeIndex();
+				break;
+			}
+		}
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 	}
 
 	@Override
@@ -109,7 +129,6 @@ public class FragmentCategories extends AbsFragmentCategories {
 				return false;
 			}
 
-			
 		});
 		super.onPrepareOptionsMenu(menu);
 	}
@@ -119,13 +138,9 @@ public class FragmentCategories extends AbsFragmentCategories {
 		Log.d(TAG, TAG + "被初始化");
 	}
 
-	private String getTableName(int category) {
-		return (category == TAGS) ? Tags.TABLE_NAME : Grades.TABLE_NAME;
-	}
 
 	private CategoryCard[] queryCategoryCards(int category) {
-		String tableName = getTableName(category);
-		CategoryInfo[] info = mDbHelper.getCategoryInfo(tableName);
+		CategoryInfo[] info = mDbHelper.getCategoryInfo(category);
 		return processCategoryCard(info);
 	}
 
@@ -176,30 +191,27 @@ public class FragmentCategories extends AbsFragmentCategories {
 
 	@Override
 	public void onClick(View v) {
-		Object[] objs = (Object[]) v.getTag();
-		showMistakes((CategoryInfo) objs[0], (Integer) objs[1]);
+		showMistakes((CategoryInfo) v.getTag());
 	}
 
-	private void showMistakes(CategoryInfo info, int type) {
+	private void showMistakes(CategoryInfo info) {
 		QueryCondition c = new QueryCondition();
-		switch (type) {
+		switch (info.getType()) {
 		case TAGS:
 			c.setTagIds(new Integer[] { mDbHelper.convertItemNameToId(
-					info.getName(), Tags.TABLE_NAME) });
+					info.getName(), TAGS) });
 			break;
 		case GRADES:
 			c.setGradeIds(new Integer[] { mDbHelper.convertItemNameToId(
-					info.getName(), Grades.TABLE_NAME) });
+					info.getName(), GRADES) });
 			break;
 		}
-		Mistake[] m = mDbHelper.queryMistakesByCondition(c);
+		Mistake[] m = mDbHelper.queryMistakes(c);
 		Log.d(TAG, "查询到" + m.length + "个符合条件的Mistake");
-		//FIXME 点分类里的Grade，m居然是空的……另外数据库肯定有问题因为"高一"不知怎的也进Tag了而且题目数0
 		// 将同一分类中的Mistake封装到Fragment的Argument中，并切换至FragmentMistakes
-		// TODO 对于[年级/科目]下的分类，点击之后应进入[科目]划分的分类列表
 		Bundle b = new Bundle();
 		b.putParcelableArray(FragmentMistakes.KEY, m);
-		Fragment fragment = (type == TAGS) ? new FragmentMistakes()
+		Fragment fragment = (info.getType() == TAGS) ? new FragmentMistakes()
 				: new FragmentSubjects();
 		fragment.setArguments(b);
 		getActivity().getActionBar().setNavigationMode(

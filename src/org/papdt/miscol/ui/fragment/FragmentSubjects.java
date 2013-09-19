@@ -4,13 +4,17 @@ import java.util.HashMap;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.CategoryInfo;
+import org.papdt.miscol.bean.CategoryInfo.TYPE;
 import org.papdt.miscol.bean.Mistake;
+import org.papdt.miscol.bean.QueryCondition;
+import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.ui.CategoryCard;
 import org.papdt.miscol.ui.InfoCard;
 
 import com.fima.cardsui.views.CardUI;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -29,12 +33,11 @@ import android.widget.SearchView.OnQueryTextListener;
  * 用于显示某一Grade中全部Subject的Fragment
  * 
  */
-public class FragmentSubjects extends AbsFragmentCategories {
+public class FragmentSubjects extends AbsFragmentCategories implements TYPE {
 	private SearchView mSearchView;
 	private String mGradeName;
 
-	private static final String TAG = "FragmentMistakes";
-	public static final String KEY = "Mistakes";
+	private static final String TAG = "FragmentSubjects";
 
 	public FragmentSubjects() {
 		Log.d(TAG, TAG + "被初始化");
@@ -126,7 +129,16 @@ public class FragmentSubjects extends AbsFragmentCategories {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-
+		CategoryInfo info = (CategoryInfo) v.getTag();
+		QueryCondition c = new QueryCondition();
+		DatabaseHelper dbHelper = DatabaseHelper.getInstance(getActivity());
+		c.setGradeIds(new Integer[]{dbHelper.convertItemNameToId(info.getName(), SUBJECTS)});
+		Mistake[] m = dbHelper.queryMistakes(c);
+		Bundle b = new Bundle();
+		b.putParcelableArray(KEY, m);
+		Fragment fragment = new FragmentMistakes();
+		fragment.setArguments(b);
+		getFragmentManager().beginTransaction().addToBackStack(TAG)
+		.replace(R.id.fl_content, fragment).commit();
 	}
 }

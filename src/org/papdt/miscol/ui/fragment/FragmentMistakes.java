@@ -2,6 +2,11 @@ package org.papdt.miscol.ui.fragment;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.Mistake;
+import org.papdt.miscol.ui.InfoCard;
+import org.papdt.miscol.ui.MistakeCard;
+import org.papdt.miscol.utils.Constants.Preferences.FileNames;
+import org.papdt.miscol.utils.Constants.Preferences.Keys;
+import org.papdt.miscol.utils.SharedPreferencesOperator;
 
 import com.fima.cardsui.views.CardUI;
 
@@ -35,7 +40,6 @@ public class FragmentMistakes extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// 重写
 		View v = inflater.inflate(R.layout.fragment_categories, null);
 		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
 		fillDatas();
@@ -69,6 +73,25 @@ public class FragmentMistakes extends Fragment {
 
 	private void fillDatas() {
 		mMistakes = (Mistake[]) getArguments().getParcelableArray(KEY);
-		// TODO 展示查询到的Mistake
+		mCardUI.clearCards();
+		mCardUI.setSwipeable(true);
+		//FIXME 无法Swipe
+		if (!(Boolean) SharedPreferencesOperator.read(getActivity(),
+				FileNames.GENERAL, Keys.HAS_EVER_STARTED, false)) {
+			InfoCard tap = new InfoCard(getString(R.string.do_you_know),
+					getString(R.string.tap_to_see_answer));
+			InfoCard swipe = new InfoCard(getString(R.string.swipe_to_del),
+					getString(R.string.swipe_to_del_demo));
+			mCardUI.addCard(tap);
+			mCardUI.addCard(swipe);
+			SharedPreferencesOperator.write(getActivity(), FileNames.GENERAL,
+					Keys.HAS_EVER_STARTED, true);
+		}
+		for(Mistake m:mMistakes){
+			MistakeCard card = new MistakeCard(m);
+			mCardUI.addCard(card);
+			//TODO 翻面
+		}
+		mCardUI.refresh();
 	}
 }
