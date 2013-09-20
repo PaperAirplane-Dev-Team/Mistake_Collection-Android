@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
@@ -25,7 +26,7 @@ import android.widget.SearchView.OnQueryTextListener;
  * 用于显示某一分类中全部Mistake的Fragment
  * 
  */
-public class FragmentMistakes extends Fragment {
+public class FragmentMistakes extends Fragment implements OnClickListener{
 	private CardUI mCardUI;
 	private SearchView mSearchView;
 	private Mistake[] mMistakes;
@@ -89,9 +90,15 @@ public class FragmentMistakes extends Fragment {
 		}
 		for(Mistake m:mMistakes){
 			MistakeCard card = new MistakeCard(m);
+			card.setOnClickListener(this);
 			mCardUI.addCard(card);
 			//TODO 翻面
 		}
 		mCardUI.refresh();
+	}
+
+	@Override
+	public void onClick(View v) {
+		Mistake m = (Mistake) v.getTag();	
 	}
 }

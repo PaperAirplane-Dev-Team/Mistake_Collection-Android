@@ -19,6 +19,7 @@ public class MistakeCard extends Card {
 
 	public MistakeCard(Mistake m) {
 		mMistake = m;
+		setmBindedObject(mMistake);
 	}
 
 	@Override
@@ -28,8 +29,7 @@ public class MistakeCard extends Card {
 		mTvTitle = (TextView) v.findViewById(R.id.tv_card_title);
 		mTvDescription = (TextView) v.findViewById(R.id.tv_card_description);
 		mIvDescription = (ImageView) v.findViewById(R.id.iv_description);
-
-		mTvTitle.setText(String.format("[%s],%s", mMistake.getTypeName(),
+		mTvTitle.setText(String.format("[%s]%s", mMistake.getTypeName(),
 				mMistake.getTitle()));
 		// FIXME TypeName is null
 		mTvDescription.setText(mMistake.getQuestionText());

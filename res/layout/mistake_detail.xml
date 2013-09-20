@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fragment_background"
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp" >
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="14sp" />
+
+    <ViewStub
+        android:id="@+id/stub_sel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/stub_select" />
+
+    <ViewStub
+        android:id="@+id/stub_jud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/stub_judgement" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/divider"
+        android:dividerPadding="0dip"
+        android:layoutDirection="locale"
+        android:measureWithLargestChild="true"
+        android:orientation="horizontal"
+        android:showDividers="middle" >
+
+        <ImageView
+            android:id="@+id/btn_star"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="1"
+            android:contentDescription="@string/star" />
+
+        <ImageView
+            android:id="@+id/btn_edit"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_edit"
+            android:contentDescription="@string/edit" />
+
+        <ImageView
+            android:id="@+id/btn_delete"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_delete"
+            android:contentDescription="@string/delete" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -87,9 +87,13 @@
 	<string name="no_match_title">请更换关键词</string>
 	<string name="no_match_category">找不到符合条件的类别</string>
 	<string name="no_match_mistake">找不到符合条件的题目</string>
-	<!-- 详情界面 -->
+	<!-- 错题列表 -->
 	<string name="do_you_know">您知道吗</string>
 	<string name="tap_to_see_answer">请点错题卡片以查看答案</string>
 	<string name="swipe_to_del">滑动卡片以删除错题</string>
 	<string name="swipe_to_del_demo">现在请尝试滑动这张卡片</string>
+	<!-- 详情 -->
+	<string name="delete">删除</string>
+	<string name="edit">编辑</string>
+	<string name="star">标记</string>
 </resources>
