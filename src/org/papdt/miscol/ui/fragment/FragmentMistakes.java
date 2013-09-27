@@ -2,9 +2,10 @@ package org.papdt.miscol.ui.fragment;
 
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.Mistake;
+import org.papdt.miscol.bean.MistakeOperationException;
+import org.papdt.miscol.dao.DatabaseHelper;
 import org.papdt.miscol.ui.InfoCard;
 import org.papdt.miscol.ui.MistakeCard;
-import org.papdt.miscol.ui.dialog.DeleteMistakeDialog;
 import org.papdt.miscol.utils.Constants.Preferences.FileNames;
 import org.papdt.miscol.utils.Constants.Preferences.Keys;
 import org.papdt.miscol.utils.SharedPreferencesOperator;
@@ -12,8 +13,9 @@ import org.papdt.miscol.utils.SharedPreferencesOperator;
 import com.fima.cardsui.objects.Card.OnCardSwiped;
 import com.fima.cardsui.views.CardUI;
 
-import android.app.DialogFragment;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -91,12 +93,12 @@ public class FragmentMistakes extends Fragment implements OnClickListener {
 					Keys.HAS_EVER_STARTED, true);
 		}
 		for (final Mistake m : mMistakes) {
-			MistakeCard card = new MistakeCard(m);
+			final MistakeCard card = new MistakeCard(m);
 			card.setOnClickListener(this);
 			card.setOnCardSwipedListener(new OnCardSwiped() {
 				@Override
 				public void onCardSwiped() {
-					deleteMistake(m);
+					deleteMistake(card);
 				}
 			});
 			mCardUI.addCard(card);
@@ -104,12 +106,36 @@ public class FragmentMistakes extends Fragment implements OnClickListener {
 		mCardUI.refresh();
 	}
 
-	private void deleteMistake(Mistake m) {
-		Bundle b = new Bundle();
-		b.putParcelable(DeleteMistakeDialog.KEY, m);
-		DialogFragment dialog = new DeleteMistakeDialog();
-		dialog.setArguments(b);
-		dialog.show(getFragmentManager(), TAG);
+	private void deleteMistake(final MistakeCard card) {
+		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface view, int button) {
+				switch (button) {
+				case DialogInterface.BUTTON_POSITIVE:
+					DatabaseHelper dbHelper = DatabaseHelper.getInstance(null);
+					try {
+						dbHelper.deleteMistake((Mistake) card
+								.getmBindedObject());
+					} catch (MistakeOperationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					// TODO 独立在Thread
+					break;
+				case DialogInterface.BUTTON_NEGATIVE:
+					view.dismiss();
+					mCardUI.addCard(card);
+					break;
+				}
+
+			}
+		};
+		new AlertDialog.Builder(getActivity()).setTitle(R.string.del_title)
+				.setMessage(R.string.del_content)
+				.setIcon(android.R.drawable.ic_input_delete)
+				.setPositiveButton(android.R.string.yes, listener)
+				.setNegativeButton(android.R.string.cancel, listener).show();
 	}
 
 	@Override

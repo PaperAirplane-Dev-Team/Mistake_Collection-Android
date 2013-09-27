@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 public class FragmentMistakeDetail extends Fragment {
 	private final static String TAG = "FragmentMistakeDetail";
 	private final static String KEY = "Mistake";
-	
+
 	private Mistake mMistake;
 
 	@Override
@@ -28,3 +28,11 @@ public class FragmentMistakeDetail extends Fragment {
 
 	}
 }
+
+/*
+ * P.S.洗澡之后挖耳朵，湿湿一大坨。
+ * 
+ * 乱曰：
+ * 呜呼哀哉！感天之错勘贤愚，慨地之不分好歹。时运不齐，命途多舛。良辰未现，伊人难觅。感我痴人，良苦用心，苦待女神呵呵，殚精竭虑，空赢观者滔滔。失魂至此
+ * ，独怆然悲叹而已矣。
+ */
