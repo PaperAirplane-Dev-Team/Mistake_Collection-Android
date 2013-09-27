@@ -34,9 +34,7 @@
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@color/divider"
-        android:dividerPadding="0dip"
+        android:layout_height="30dp"
         android:layoutDirection="locale"
         android:measureWithLargestChild="true"
         android:orientation="horizontal"
@@ -49,7 +47,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_weight="1"
-            android:contentDescription="@string/star" />
+            android:contentDescription="@null"
+            android:src="@drawable/icn_star" />
 
         <ImageView
             android:id="@+id/btn_edit"
@@ -58,8 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_edit"
-            android:contentDescription="@string/edit" />
+            android:contentDescription="@null"
+            android:src="@drawable/icn_edit" />
 
         <ImageView
             android:id="@+id/btn_delete"
@@ -68,8 +67,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_delete"
-            android:contentDescription="@string/delete" />
+            android:contentDescription="@null"
+            android:src="@drawable/icn_delete" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:paddingTop="2dp"
+        android:background="@color/divider" />
 
 </LinearLayout>

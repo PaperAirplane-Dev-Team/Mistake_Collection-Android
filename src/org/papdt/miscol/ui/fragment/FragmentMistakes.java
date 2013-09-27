@@ -4,12 +4,15 @@ import org.papdt.miscol.R;
 import org.papdt.miscol.bean.Mistake;
 import org.papdt.miscol.ui.InfoCard;
 import org.papdt.miscol.ui.MistakeCard;
+import org.papdt.miscol.ui.dialog.DeleteMistakeDialog;
 import org.papdt.miscol.utils.Constants.Preferences.FileNames;
 import org.papdt.miscol.utils.Constants.Preferences.Keys;
 import org.papdt.miscol.utils.SharedPreferencesOperator;
 
+import com.fima.cardsui.objects.Card.OnCardSwiped;
 import com.fima.cardsui.views.CardUI;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,7 +29,7 @@ import android.widget.SearchView.OnQueryTextListener;
  * 用于显示某一分类中全部Mistake的Fragment
  * 
  */
-public class FragmentMistakes extends Fragment implements OnClickListener{
+public class FragmentMistakes extends Fragment implements OnClickListener {
 	private CardUI mCardUI;
 	private SearchView mSearchView;
 	private Mistake[] mMistakes;
@@ -76,7 +79,6 @@ public class FragmentMistakes extends Fragment implements OnClickListener{
 		mMistakes = (Mistake[]) getArguments().getParcelableArray(KEY);
 		mCardUI.clearCards();
 		mCardUI.setSwipeable(true);
-		//FIXME 无法Swipe
 		if (!(Boolean) SharedPreferencesOperator.read(getActivity(),
 				FileNames.GENERAL, Keys.HAS_EVER_STARTED, false)) {
 			InfoCard tap = new InfoCard(getString(R.string.do_you_know),
@@ -88,17 +90,31 @@ public class FragmentMistakes extends Fragment implements OnClickListener{
 			SharedPreferencesOperator.write(getActivity(), FileNames.GENERAL,
 					Keys.HAS_EVER_STARTED, true);
 		}
-		for(Mistake m:mMistakes){
+		for (final Mistake m : mMistakes) {
 			MistakeCard card = new MistakeCard(m);
 			card.setOnClickListener(this);
+			card.setOnCardSwipedListener(new OnCardSwiped() {
+				@Override
+				public void onCardSwiped() {
+					deleteMistake(m);
+				}
+			});
 			mCardUI.addCard(card);
-			//TODO 翻面
 		}
 		mCardUI.refresh();
 	}
 
+	private void deleteMistake(Mistake m) {
+		Bundle b = new Bundle();
+		b.putParcelable(DeleteMistakeDialog.KEY, m);
+		DialogFragment dialog = new DeleteMistakeDialog();
+		dialog.setArguments(b);
+		dialog.show(getFragmentManager(), TAG);
+	}
+
 	@Override
 	public void onClick(View v) {
-		Mistake m = (Mistake) v.getTag();	
+		Mistake m = (Mistake) v.getTag();
 	}
+
 }
