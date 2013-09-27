@@ -93,12 +93,12 @@ public class FragmentMistakes extends Fragment implements OnClickListener {
 					Keys.HAS_EVER_STARTED, true);
 		}
 		for (final Mistake m : mMistakes) {
-			final MistakeCard card = new MistakeCard(m);
+			MistakeCard card = new MistakeCard(m);
 			card.setOnClickListener(this);
 			card.setOnCardSwipedListener(new OnCardSwiped() {
 				@Override
 				public void onCardSwiped() {
-					deleteMistake(card);
+					deleteMistake(m);
 				}
 			});
 			mCardUI.addCard(card);
@@ -106,7 +106,7 @@ public class FragmentMistakes extends Fragment implements OnClickListener {
 		mCardUI.refresh();
 	}
 
-	private void deleteMistake(final MistakeCard card) {
+	private void deleteMistake(final Mistake mistake) {
 		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
 
 			@Override
@@ -115,8 +115,7 @@ public class FragmentMistakes extends Fragment implements OnClickListener {
 				case DialogInterface.BUTTON_POSITIVE:
 					DatabaseHelper dbHelper = DatabaseHelper.getInstance(null);
 					try {
-						dbHelper.deleteMistake((Mistake) card
-								.getmBindedObject());
+						dbHelper.deleteMistake(mistake);
 					} catch (MistakeOperationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -125,7 +124,7 @@ public class FragmentMistakes extends Fragment implements OnClickListener {
 					break;
 				case DialogInterface.BUTTON_NEGATIVE:
 					view.dismiss();
-					mCardUI.addCard(card);
+					fillDatas();
 					break;
 				}
 
@@ -140,7 +139,7 @@ public class FragmentMistakes extends Fragment implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		Mistake m = (Mistake) v.getTag();
+//		Mistake m = (Mistake) v.getTag();
 	}
 
 }
