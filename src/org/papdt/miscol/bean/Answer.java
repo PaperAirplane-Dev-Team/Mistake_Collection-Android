@@ -80,7 +80,7 @@ public class Answer {
 	public void setDescription(String description) {
 		mDescription = description;
 	}
-
+	
 	public static Answer createAnswerFromJson(String json, int type) {
 		if (type > 2 || type < 0) {
 			throw new IllegalArgumentException("invalid type id");

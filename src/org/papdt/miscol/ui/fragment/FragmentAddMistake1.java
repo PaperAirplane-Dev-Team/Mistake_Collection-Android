@@ -99,11 +99,7 @@ public class FragmentAddMistake1 extends AbsFragmentAddMistake implements
 		mEtDescription = (EditText) mLayout.findViewById(R.id.et_answer);
 		if (mMistake.getAnswerPhotoPath() != null)
 			setPicture(mMistake.getAnswerPhotoPath());
-		String[] types = getResources().getStringArray(R.array.types);
-		String typeName = mMistake.getTypeName();
-		int type = (typeName.equals(types[0])) ? QUESTION_TYPES.SELECT
-				: ((typeName.equals(types[1]) ? QUESTION_TYPES.FILL
-						: QUESTION_TYPES.JUDGE));
+		int type = mMistake.getTypeId();
 		if (mMistake.getAnswerText() != null) {
 			mAnswer = Answer.createAnswerFromJson(mMistake.getAnswerText(),
 					type);

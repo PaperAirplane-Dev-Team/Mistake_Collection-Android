@@ -226,7 +226,7 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 		mMistake.setSubjectName((String) mSpinnerSubject.getSelectedItem());
 		mMistake.setGradeName((String) mSpinnerGrade.getSelectedItem());
 		mMistake.setTypeName((String) mSpinnerType.getSelectedItem());
-		
+		mMistake.setTypeId(mSpinnerType.getSelectedItemPosition());
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
 		FragmentAddMistake1 fragment = new FragmentAddMistake1();
