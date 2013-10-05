@@ -13,9 +13,10 @@
     <string-array name="drawer_items">
         <item>首页</item>
         <item>全部题目</item>
-        <item>Sample Page 0</item>
-        <item>Sample Page 1</item>
-        <item>Sample Page 2</item>
+        <item>自我评测</item>
+        <item>牛X的功能</item>
+        <item>牛X的功能</item>
+        <item>关于</item>
     </string-array>
     <!-- 版权信息 -->
     <string name="copy_right">哪错了？\n版本:Rolling Stone pre-ɑ\n2013 PaperAirplane Dev Team</string>

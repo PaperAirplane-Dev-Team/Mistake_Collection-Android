@@ -19,7 +19,7 @@ public class MistakeCard extends Card {
 
 	public MistakeCard(Mistake m) {
 		mMistake = m;
-		setmBindedObject(mMistake);
+		this.setmBindedObject(mMistake);
 	}
 
 	@Override

@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 public class FragmentMistakeDetail extends Fragment implements OnClickListener{
 	public final static String TAG = "FragmentMistakeDetail";
-	private final static String KEY = "Mistake";
+	public final static String KEY = "Mistake";
 
 	private Mistake mMistake;
 	private Answer mAnswer;

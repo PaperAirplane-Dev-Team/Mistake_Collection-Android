@@ -141,11 +141,11 @@ public class FragmentMistakes extends Fragment implements OnClickListener {
 	public void onClick(View v) {
 		Mistake m = (Mistake) v.getTag();
 		Bundle args = new Bundle();
-		args.putParcelable(KEY, m);
+		args.putParcelable(FragmentMistakeDetail.KEY, m);
 		Fragment fragment = new FragmentMistakeDetail();
 		fragment.setArguments(args);
 		getFragmentManager().beginTransaction().addToBackStack(TAG)
-		.replace(R.id.fl_content, fragment).commit();
+				.replace(R.id.fl_content, fragment).commit();
 	}
 
 }

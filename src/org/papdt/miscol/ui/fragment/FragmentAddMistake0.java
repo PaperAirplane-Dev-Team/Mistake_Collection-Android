@@ -30,7 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
-		OnItemSelectedListener,CategoryInfo.TYPE {
+		OnItemSelectedListener, CategoryInfo.TYPE {
 
 	private LinearLayout mLayout;
 	private EditText mEtTitle;
@@ -38,7 +38,6 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 	private TextView mTvTags;
 	private Mistake mMistake;
 	private DatabaseHelper mDbHelper;
-	private boolean mInitialized;
 	private ArrayAdapter<String> mGradeAdapter, mSubjectAdapter;
 	public HashSet<String> mTags = new HashSet<String>();
 	public HashSet<String> mAllTags = new HashSet<String>();
@@ -76,19 +75,23 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 		mTvTags = (TextView) mLayout.findViewById(R.id.tv_tags);
 		mSpinnerGrade = (Spinner) mLayout.findViewById(R.id.spinner_grade);
 		mSpinnerSubject = (Spinner) mLayout.findViewById(R.id.spinner_subject);
-		mSpinnerType = (Spinner)mLayout.findViewById(R.id.spinner_type);
-		
+		mSpinnerType = (Spinner) mLayout.findViewById(R.id.spinner_type);
+
 		mSpinnerGrade.setAdapter(mGradeAdapter);
 		mSpinnerSubject.setAdapter(mSubjectAdapter);
-		mSpinnerType.setAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,getResources().getStringArray(R.array.types)));
-		((ArrayAdapter<?>)mSpinnerType.getAdapter()).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
+		mSpinnerType.setAdapter(new ArrayAdapter<String>(getActivity(),
+				android.R.layout.simple_spinner_item, getResources()
+						.getStringArray(R.array.types)));
+		((ArrayAdapter<?>) mSpinnerType.getAdapter())
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
 		mSpinnerGrade.setOnItemSelectedListener(this);
 		mSpinnerSubject.setOnItemSelectedListener(this);
 		fillDatas();
+		assert (mSpinnerGrade.getOnItemSelectedListener() == this);
 		return mLayout;
 	}
-	
+
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
@@ -170,8 +173,7 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 		}
 		mAllTags.addAll(mTags);
 		CategoryInfo[] gradeInfo = mDbHelper.getCategoryInfo(GRADES);
-		CategoryInfo[] subjectInfo = mDbHelper
-				.getCategoryInfo(SUBJECTS);
+		CategoryInfo[] subjectInfo = mDbHelper.getCategoryInfo(SUBJECTS);
 		addCategoryInfoToAdapter(gradeInfo, mGradeAdapter);
 		addCategoryInfoToAdapter(subjectInfo, mSubjectAdapter);
 		String addCat = getString(R.string.add_category);
@@ -194,12 +196,11 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 				mSpinnerSubject.setSelection(subjectIndex);
 			}
 		}
-		mInitialized = true;
 	}
 
 	private void addCategoryInfoToAdapter(CategoryInfo[] info,
 			ArrayAdapter<String> adapter) {
-		if (info != null) {
+		if (info.length > 0) {
 			for (CategoryInfo ci : info) {
 				adapter.add(ci.getName());
 			}
@@ -364,22 +365,23 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		Log.d(TAG, "onItemSelected position: " + position);
+		// FIXME 根本不工作
+		Log.d(TAG, "onItemSelected");
 		try {
 			switch (parent.getId()) {
 			case R.id.spinner_grade:
+				Log.d(TAG, "mSpinnerGrade onItemSelected position: " + position);
+				Log.d(TAG, mGradeAdapter.getItem(position));
 				if (mGradeAdapter.getItem(position).equals(
-						getString(R.string.add_category))&&mInitialized) {
-					Log.d(TAG, "addGrade");
+						getString(R.string.add_category)))
 					openAddGradeDialog();
-				}
 				break;
 			case R.id.spinner_subject:
+				Log.d(TAG, "mSpinnerSubject onItemSelected position: "
+						+ position);
 				if (mSubjectAdapter.getItem(position).equals(
-						getString(R.string.add_category))&&mInitialized) {
-					Log.d(TAG, "addSubject");
+						getString(R.string.add_category)))
 					openAddSubjectDialog();
-				}
 				break;
 			}
 		} catch (NullPointerException e) {
@@ -389,9 +391,7 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
-
+		Log.d(TAG, "onNothingSelected.");
 	}
 
 }
-
-

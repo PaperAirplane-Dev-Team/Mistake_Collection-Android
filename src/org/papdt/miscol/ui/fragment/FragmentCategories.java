@@ -31,7 +31,8 @@ import android.widget.SearchView.OnQueryTextListener;
  * 用于显示 [标签]、[年级/科目] 的全部分类的Fragment
  * 
  */
-public class FragmentCategories extends AbsFragmentCategories implements CategoryInfo.TYPE {
+public class FragmentCategories extends AbsFragmentCategories implements
+		CategoryInfo.TYPE {
 
 	private final int NULL = -1;
 
@@ -67,15 +68,6 @@ public class FragmentCategories extends AbsFragmentCategories implements Categor
 			}
 
 		});
-		return v;
-	}
-
-	/**
-	 * 刷新
-	 */
-	@Override
-	public void onResume() {
-		super.onResume();
 		if (mCurrentTab != NULL) {
 			switch (mCurrentTab) {
 			case TAGS:
@@ -86,7 +78,9 @@ public class FragmentCategories extends AbsFragmentCategories implements Categor
 				break;
 			}
 		}
-		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_TABS);
+		return v;
 	}
 
 	@Override
@@ -137,7 +131,6 @@ public class FragmentCategories extends AbsFragmentCategories implements Categor
 	public FragmentCategories() {
 		Log.d(TAG, TAG + "被初始化");
 	}
-
 
 	private CategoryCard[] queryCategoryCards(int category) {
 		CategoryInfo[] info = mDbHelper.getCategoryInfo(category);
