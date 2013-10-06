@@ -23,7 +23,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-public class DatabaseHelper {
+public class DatabaseHelper implements CategoryInfo.TYPE {
 
 	private static DatabaseHelper sInstance;
 	private DbOpenHelper mDbOpenHelper;
@@ -50,56 +50,14 @@ public class DatabaseHelper {
 		return sInstance;
 	}
 
-	public CategoryInfo[] getCategoryInfo(String tableName) {
-		return getCategoryInfo(tableName, tableName.equals(Tags.TABLE_NAME),
-				tableName.equals(Grades.TABLE_NAME));
+	public int convertItemNameToId(String itemName, int type) {
+		String tableName = convertTypeToTableName(type);
+		return DataItemProcessor.convertItemIntoId(itemName, mDatabase,
+				tableName);
 	}
 
-	/**
-	 * 返回表中所有id-name的映射以及计数
-	 * 
-	 * @param tableName
-	 *            查询的表名
-	 * @return 分类信息数组
-	 */
-	private CategoryInfo[] getCategoryInfo(String tableName, boolean isTag,
-			boolean isGrade) {
-		Log.d(TAG, "从表" + tableName + "获取信息" + (isTag ? ",是标签" : ",不是标签"));
-		Cursor cursor = mDatabase
-				.rawQuery("SELECT " + IDbWithIdAndName.KEY_INT_ID + ","
-						+ IDbWithIdAndName.KEY_STRING_NAME + " FROM "
-						+ tableName, null);
-		if (cursor.getCount() == 0) {
-			Log.d(TAG, "未能查询到有关信息");
-			return new CategoryInfo[0]; // OK
-		}
-		CategoryInfo info[] = new CategoryInfo[cursor.getCount()];
-		Log.d(TAG, "获取到" + info.length + "条记录");
-		int i = 0;
-		while (cursor.moveToNext()) {
-			info[i] = new CategoryInfo();
-			// 不初始化永远是个痛,调试半小时
-			info[i].setId(cursor.getInt(0));
-			info[i].setName(cursor.getString(1).trim());
-			info[i].setCount(getItemCount(Mistakes.TABLE_NAME, info[i].getId(),
-					isTag));
-			if (isGrade) {
-				info[i].setSubCount(getSubjectAmountOfGrade(info[i].getId()));
-			}
-			i++;
-		}
-		cursor.close();
-		return info;
-	}
-
-	private int getSubjectAmountOfGrade(int gradeId) {
-		Cursor cursor = mDatabase.rawQuery("SELECT COUNT(DISTINCT "
-				+ Mistakes.KEY_INT_SUBJECT_ID + ") FROM " + Mistakes.TABLE_NAME
-				+ " WHERE " + Mistakes.KEY_INT_GRADE_ID + "=" + gradeId, null);
-		cursor.moveToNext();
-		int count = cursor.getInt(0);
-		cursor.close();
-		return count;
+	public CategoryInfo[] getCategoryInfo(int type) {
+		return getCategoryInfo(type, type == TAGS, type == GRADES);
 	}
 
 	/**
@@ -138,13 +96,13 @@ public class DatabaseHelper {
 	 *            查询条件(至少有一项)
 	 * @return 返回的符合条件的错题(可能为null)
 	 */
-	public Mistake[] queryMistakesByCondition(QueryCondition condition) {
+	public Mistake[] queryMistakes(QueryCondition condition) {
 		String query = "SELECT " + SqlStatements.SELECT_ALL_ITEM + " FROM "
 				+ Mistakes.TABLE_NAME + " WHERE "
 				+ generateWhereClause(condition);
 		Cursor cursor = mDatabase.rawQuery(query, null);
 		if (cursor.getCount() == 0)
-			return null;
+			return new Mistake[0];
 		int i = 0;
 		Mistake results[] = new Mistake[cursor.getCount()];
 		while (cursor.moveToNext()) {
@@ -227,25 +185,95 @@ public class DatabaseHelper {
 		return true;
 	}
 
-	private int getItemCount(String tableName, int itemId, boolean isTag) {
-		String columnName = (tableName.equals(Tags.TABLE_NAME) ? Mistakes.KEY_STRING_TAG_IDS
-				: (tableName.equals(Grades.TABLE_NAME) ? Mistakes.KEY_INT_GRADE_ID
-						: Mistakes.KEY_INT_SUBJECT_ID));
+	private String convertTypeToTableName(int type) {
+		switch (type) {
+		case TAGS:
+			return Tags.TABLE_NAME;
+		case GRADES:
+			return Grades.TABLE_NAME;
+		case SUBJECTS:
+			return Subjects.TABLE_NAME;
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
+
+	private int getSubjectAmountOfGrade(int gradeId) {
+		Cursor cursor = mDatabase.rawQuery("SELECT COUNT(DISTINCT "
+				+ Mistakes.KEY_INT_SUBJECT_ID + ") FROM " + Mistakes.TABLE_NAME
+				+ " WHERE " + Mistakes.KEY_INT_GRADE_ID + "=" + gradeId, null);
+		cursor.moveToNext();
+		int count = cursor.getInt(0);
+		cursor.close();
+		return count;
+	}
+
+	/**
+	 * 返回表中所有id-name的映射以及计数
+	 * 
+	 * @param tableName
+	 *            查询的表名
+	 * @return 分类信息数组
+	 */
+	private CategoryInfo[] getCategoryInfo(int type, boolean isTag,
+			boolean isGrade) {
+		String tableName = convertTypeToTableName(type);
+		Log.d(TAG, "从表" + tableName + "获取信息" + (isTag ? ",是标签" : ",不是标签"));
+		Cursor cursor = mDatabase
+				.rawQuery("SELECT " + IDbWithIdAndName.KEY_INT_ID + ","
+						+ IDbWithIdAndName.KEY_STRING_NAME + " FROM "
+						+ tableName, null);
+		if (cursor.getCount() == 0) {
+			Log.d(TAG, "未能查询到有关信息");
+			return new CategoryInfo[0]; // OK
+		}
+		CategoryInfo info[] = new CategoryInfo[cursor.getCount()];
+		Log.d(TAG, "获取到" + info.length + "条记录");
+		int i = 0;
+		while (cursor.moveToNext()) {
+			info[i] = new CategoryInfo();
+			// 不初始化永远是个痛,调试半小时
+			info[i].setId(cursor.getInt(0));
+			Log.d(TAG, "Tag ID为" + cursor.getInt(0));
+			info[i].setName(cursor.getString(1).trim());
+			info[i].setCount(getItemCount(Mistakes.TABLE_NAME, info[i].getId(),
+					isTag, isGrade));
+			info[i].setType(type);
+			if (isGrade) {
+				info[i].setSubCount(getSubjectAmountOfGrade(info[i].getId()));
+			}
+			i++;
+		}
+		cursor.close();
+		return info;
+	}
+
+	private int getItemCount(String tableName, int itemId, boolean isTag,
+			boolean isGrade) {
+		// 话说同学你用个表名在这里判断什么呢?
+		/*
+		 * String columnName = (tableName.equals(Tags.TABLE_NAME) ?
+		 * Mistakes.KEY_STRING_TAG_IDS : (tableName.equals(Grades.TABLE_NAME) ?
+		 * Mistakes.KEY_INT_GRADE_ID : Mistakes.KEY_INT_SUBJECT_ID));
+		 */
+		String columnName = isTag ? Mistakes.KEY_STRING_TAG_IDS
+				: (isGrade ? Mistakes.KEY_INT_GRADE_ID
+						: Mistakes.KEY_INT_SUBJECT_ID);
 		return getItemCount(tableName, columnName, itemId, isTag);
 	}
 
 	private int getItemCount(String tableName, String itemColumnName,
 			int itemId, boolean isTag) {
-		Cursor cursor;
+		String query;
 		if (!isTag) {
-			cursor = mDatabase.rawQuery("SELECT COUNT(" + itemColumnName
-					+ ") FROM " + tableName + " WHERE " + itemColumnName + "='"
-					+ itemId + "'", null);
+			query = "SELECT COUNT(" + itemColumnName + ") FROM " + tableName
+					+ " WHERE " + itemColumnName + "='" + itemId + "'";
 		} else {
-			cursor = mDatabase.rawQuery("SELECT COUNT(" + itemColumnName
-					+ ") FROM " + tableName + " WHERE " + itemColumnName
-					+ " LIKE '%" + itemId + "%'", null);
+			query = "SELECT COUNT(" + itemColumnName + ") FROM " + tableName
+					+ " WHERE " + itemColumnName + " LIKE '%" + itemId + "%'";
 		}
+		Log.d(TAG, "getItemCount执行的查询为" + query);
+		Cursor cursor = mDatabase.rawQuery(query, null);
 		cursor.moveToNext();
 		int count = cursor.getInt(0);
 		cursor.close();
@@ -317,7 +345,7 @@ public class DatabaseHelper {
 				}
 			}
 			int length = sb.length();
-			sb.delete(length - 3, length - 1);// 删除最后一个OR
+			sb.delete(length - 3, length);// 删除最后一个OR
 			return true;
 		} else {
 			return false;
@@ -325,7 +353,6 @@ public class DatabaseHelper {
 	}
 
 	private Mistake generateMistakeWithCursor(Cursor cursor) {
-		@SuppressWarnings("deprecation")
 		Mistake mistake = new Mistake();
 		mistake.setId(cursor.getInt(0));
 		mistake.setAddTime(cursor.getString(1));
@@ -342,7 +369,9 @@ public class DatabaseHelper {
 		mistake.setCorrectRate(cursor.getDouble(12));
 		mistake.setSubjectId(cursor.getInt(13));
 		mistake.setGradeId(cursor.getInt(14));
-		mistake.setTagIds(convertStringTagIdsToArray(cursor.getString(15)));
+		// 我现在只能暂且这样
+		if (cursor.getString(15) != null)
+			mistake.setTagIds(convertStringTagIdsToArray(cursor.getString(15)));
 		mistake.setStarred(cursor.getInt(16) == 1 ? true : false);
 		completeMistake(mistake);
 		return mistake;
@@ -350,9 +379,10 @@ public class DatabaseHelper {
 
 	private int[] convertStringTagIdsToArray(String ids) {
 		mTokenizer = new StringTokenizer(ids, ",");
-		int tagIds[] = new int[mTokenizer.countTokens()], i = 0;
-		while (mTokenizer.hasMoreTokens()) {
-			tagIds[i++] = Integer.valueOf(mTokenizer.nextToken());
+		int tokenCount = mTokenizer.countTokens() - 1;
+		int tagIds[] = new int[tokenCount];
+		for (int i = 0; i < tokenCount; i++) {
+			tagIds[i] = Integer.valueOf(mTokenizer.nextToken().trim());
 		}
 		return tagIds;
 	}
@@ -371,11 +401,15 @@ public class DatabaseHelper {
 		mistake.setGradeName(getNameById(Grades.TABLE_NAME,
 				mistake.getGradeId(), Grades.KEY_STRING_NAME));
 		int ids[] = mistake.getTagIds(), i = 0;
-		String tags[] = new String[ids.length];
-		for (int id : ids) {
-			tags[i++] = getNameById(Tags.TABLE_NAME, id, Tags.KEY_STRING_NAME);
+		// 同样是临时的补救措施
+		if (ids != null) {
+			String tags[] = new String[ids.length];
+			for (int id : ids) {
+				tags[i++] = getNameById(Tags.TABLE_NAME, id,
+						Tags.KEY_STRING_NAME);
+			}
+			mistake.setTagNames(tags);
 		}
-		mistake.setTagNames(tags);
 	}
 
 	private String getNameById(String tableName, int id, String keyName) {
@@ -411,8 +445,10 @@ public class DatabaseHelper {
 		values.put(Mistakes.KEY_REAL_CORRECT_RATE, mistake.getCorrectRate());
 		values.put(Mistakes.KEY_INT_SUBJECT_ID, mistake.getSubjectId());
 		values.put(Mistakes.KEY_INT_GRADE_ID, mistake.getGradeId());
-		values.put(Mistakes.KEY_STRING_TAG_IDS,
-				DataItemProcessor.convertTagsIntoString(mistake, mDatabase));
+		if (mistake.getTagNames() != null) {
+			values.put(Mistakes.KEY_STRING_TAG_IDS,
+					DataItemProcessor.convertTagsIntoString(mistake, mDatabase));
+		}
 		values.put(Mistakes.KEY_INT_IS_ISTARRED, mistake.isStarred() ? 1 : 0);
 		return values;
 	}

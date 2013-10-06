@@ -1,22 +1,21 @@
 package org.papdt.miscol.ui.fragment;
 
-import java.util.ArrayList;
-
 import org.papdt.miscol.R;
 import org.papdt.miscol.bean.CategoryInfo;
 import org.papdt.miscol.bean.Mistake;
-import org.papdt.miscol.bean.MistakeOperationException;
+import org.papdt.miscol.bean.QueryCondition;
 import org.papdt.miscol.dao.DatabaseHelper;
-import org.papdt.miscol.utils.Constants.Databases.Grades;
-import org.papdt.miscol.utils.Constants.Databases.Tags;
 import org.papdt.miscol.ui.ActivityAddMistake;
 import org.papdt.miscol.ui.CategoryCard;
+import org.papdt.miscol.ui.InfoCard;
 
 import com.fima.cardsui.views.CardUI;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,43 +27,34 @@ import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
 
-public class FragmentCategories extends Fragment {
+/**
+ * 用于显示 [标签]、[年级/科目] 的全部分类的Fragment
+ * 
+ */
+public class FragmentCategories extends AbsFragmentCategories implements
+		CategoryInfo.TYPE {
+
+	private final int NULL = -1;
+
 	private static FragmentCategories sInstance;
-	private CardUI mCardUI;
 	private Button mAddButton;
 	private SearchView mSearchView;
-	private CategoryCard[] mCategories;
 	private DatabaseHelper mDbHelper;
+	private int mCurrentTab = NULL;
 
-	private final static String TAG = "FragmentMistakes";
+	private final static String TAG = "FragmentCategories";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		this.setHasOptionsMenu(true);
 		this.mDbHelper = DatabaseHelper.getInstance(getActivity());
 		super.onCreate(savedInstanceState);
-		addSampleData(); // Tested
-	}
-
-	private void addSampleData() {
-		Log.d(TAG, "添加测试数据");
-		Mistake m = new Mistake("测试", "呵呵呵呵呵");
-		m.setGradeName("高一");
-		m.setSubjectName("节操");
-		m.setTagNames(new String[] { "Demo" });
-		m.setTypeName("填空题");
-		m.setAnswerText("Xavier");
-		try {
-			mDbHelper.insertMistake(m);
-		} catch (MistakeOperationException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.fragment_mistakes, null);
+		View v = inflater.inflate(R.layout.fragment_categories, null);
 		mCardUI = (CardUI) v.findViewById(R.id.view_cardui);
 		mAddButton = (Button) v.findViewById(R.id.btn_add);
 		mAddButton.setOnClickListener(new OnClickListener() {
@@ -78,6 +68,18 @@ public class FragmentCategories extends Fragment {
 			}
 
 		});
+		if (mCurrentTab != NULL) {
+			switch (mCurrentTab) {
+			case TAGS:
+				fillContentAsTagIndex();
+				break;
+			case GRADES:
+				fillContentAsGradeIndex();
+				break;
+			}
+		}
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_TABS);
 		return v;
 	}
 
@@ -90,15 +92,34 @@ public class FragmentCategories extends Fragment {
 		mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
 
 			@Override
-			public boolean onQueryTextChange(String arg0) {
-				// TODO Auto-generated method stub
-				return false;
+			public boolean onQueryTextChange(String newText) {
+				return onQueryTextSubmit(newText);
 			}
 
 			@Override
-			public boolean onQueryTextSubmit(String arg0) {
-				// TODO 完善搜索功能
-				Log.i(TAG, "用户搜索关键词: " + arg0);
+			public boolean onQueryTextSubmit(String query) {
+				if (TextUtils.isEmpty(query)) {
+					if ((mCurrentTab == TAGS)) {
+						fillContentAsTagIndex();
+					} else {
+						fillContentAsGradeIndex();
+					}
+					return true;
+				}
+
+				Log.i(TAG, "用户搜索关键词: " + query);
+				CategoryCard[] cards = filtCategory(mCategories, query.trim());
+				if (cards.length > 0) {
+					mCategories = cards;
+					fillContentsToView();
+					return true;
+					// 不确定要不要return true.
+				}
+				InfoCard c = new InfoCard(getString(R.string.no_match_title),
+						getString(R.string.no_match_category));
+				mCardUI.clearCards();
+				mCardUI.addCard(c);
+				mCardUI.refresh();
 				return false;
 			}
 
@@ -111,54 +132,47 @@ public class FragmentCategories extends Fragment {
 		Log.d(TAG, TAG + "被初始化");
 	}
 
+	private CategoryCard[] queryCategoryCards(int category) {
+		CategoryInfo[] info = mDbHelper.getCategoryInfo(category);
+		return processCategoryCard(info);
+	}
+
+	/**
+	 * Called when TAGS tab is selected.
+	 */
 	public void fillContentAsTagIndex() {
-		ArrayList<CategoryCard> allTags = getCategoryCards(mDbHelper
-				.getCategoryInfo(Tags.TABLE_NAME));
-		if (allTags != null) {
-			int size = allTags.size();
-			Log.d(TAG, "获取到list长度为" + size);
-			mCategories = new CategoryCard[size];
-			// 初始化数组我求你了...亏我还去掉了迭代器原来是这个坑爹东西
-			for (int i = 0; i < size; i++) {
-				mCategories[i] = allTags.get(i);
-				// FIXED
-			}
+		mCurrentTab = TAGS;
+		CategoryCard[] tags = queryCategoryCards(TAGS);
+		if (tags.length > 0) {
+			mCategories = tags;
+			fillContentsToView();
 		} else {
-			mCategories = new CategoryCard[3];
-			mCategories[0] = new CategoryCard("#第一次月考", 3);
-			mCategories[1] = new CategoryCard("#语文测验", 4);
-			mCategories[2] = new CategoryCard("#数学第三次周测", 2);
+			InfoCard card = new InfoCard(
+					getString(R.string.no_category_hint_title),
+					getString(R.string.no_tag_hint));
+			mCardUI.clearCards();
+			mCardUI.addCard(card);
+			mCardUI.refresh();
 		}
-		fillContentsToView();
 	}
 
+	/**
+	 * Called when GRADE tab is selected.
+	 */
 	public void fillContentAsGradeIndex() {
-		ArrayList<CategoryCard> allGrades = getCategoryCards(mDbHelper
-				.getCategoryInfo(Grades.TABLE_NAME));
-		if (allGrades != null) {
-			int size = allGrades.size();
-			Log.d(TAG, "获取到list长度为" + size);
-			mCategories = new CategoryCard[size];
-			for (int i = 0; i < size; i++) {
-				mCategories[i] = allGrades.get(i);
-			}
+		mCurrentTab = GRADES;
+		CategoryCard[] grades = queryCategoryCards(GRADES);
+		if (grades.length > 0) {
+			mCategories = grades;
+			fillContentsToView();
 		} else {
-			mCategories = new CategoryCard[3];
-			mCategories[0] = new CategoryCard("初二", 3, 2);
-			mCategories[1] = new CategoryCard("初三", 10, 2);
-			mCategories[2] = new CategoryCard("高一", 8, 3);
+			InfoCard card = new InfoCard(
+					getString(R.string.no_category_hint_title),
+					getString(R.string.no_subject_hint));
+			mCardUI.clearCards();
+			mCardUI.addCard(card);
+			mCardUI.refresh();
 		}
-		fillContentsToView();
-	}
-
-	private void fillContentsToView() {
-		mCardUI.clearCards();
-		if (mCategories != null) {
-			for (CategoryCard cs : mCategories) {
-				mCardUI.addCard(cs);
-			}
-		}
-		mCardUI.refresh();
 	}
 
 	public static FragmentCategories getInstance() {
@@ -168,24 +182,35 @@ public class FragmentCategories extends Fragment {
 		return sInstance;
 	}
 
-	private ArrayList<CategoryCard> getCategoryCards(CategoryInfo[] info) {
-		if (info.length == 0 || info == null) {
-			return null;
+	@Override
+	public void onClick(View v) {
+		showMistakes((CategoryInfo) v.getTag());
+	}
+
+	private void showMistakes(CategoryInfo info) {
+		QueryCondition c = new QueryCondition();
+		switch (info.getType()) {
+		case TAGS:
+			c.setTagIds(new Integer[] { mDbHelper.convertItemNameToId(
+					info.getName(), TAGS) });
+			break;
+		case GRADES:
+			c.setGradeIds(new Integer[] { mDbHelper.convertItemNameToId(
+					info.getName(), GRADES) });
+			break;
 		}
-		ArrayList<CategoryCard> tags = new ArrayList<CategoryCard>();
-		for (CategoryInfo temp : info) {
-			if (temp.getSubCount() == CategoryInfo.NULL) {
-				Log.d(TAG, "添加CategoryCard, 名称:" + temp.getName() + ",数量"
-						+ temp.getCount());
-				tags.add(new CategoryCard(temp.getName(), temp.getCount()));
-			} else {
-				Log.d(TAG, "添加CategoryCard, 名称:" + temp.getName() + ",数量"
-						+ temp.getCount() + ",科目数量" + temp.getSubCount());
-				tags.add(new CategoryCard(temp.getName(), temp.getCount(), temp
-						.getSubCount()));
-			}
-		}
-		return tags;
+		Mistake[] m = mDbHelper.queryMistakes(c);
+		Log.d(TAG, "查询到" + m.length + "个符合条件的Mistake");
+		// 将同一分类中的Mistake封装到Fragment的Argument中，并切换至FragmentMistakes
+		Bundle b = new Bundle();
+		b.putParcelableArray(FragmentMistakes.KEY, m);
+		Fragment fragment = (info.getType() == TAGS) ? new FragmentMistakes()
+				: new FragmentSubjects();
+		fragment.setArguments(b);
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_STANDARD);
+		getFragmentManager().beginTransaction().addToBackStack(TAG)
+				.replace(R.id.fl_content, fragment).commit();
 	}
 
 }

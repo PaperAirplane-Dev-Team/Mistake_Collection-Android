@@ -3,6 +3,8 @@ package org.papdt.miscol.ui;
 import org.papdt.miscol.R;
 import org.papdt.miscol.ui.adapter.DrawerAdapter;
 import org.papdt.miscol.ui.adapter.DrawerAdapter.IDrawerNames;
+import org.papdt.miscol.ui.fragment.FragmentAbout;
+import org.papdt.miscol.ui.fragment.FragmentConstruction;
 import org.papdt.miscol.ui.fragment.FragmentMain;
 import org.papdt.miscol.ui.fragment.FragmentCategories;
 
@@ -113,8 +115,11 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			case MISTAKES:
 				mFragments[position] = FragmentCategories.getInstance();
 				break;
+			case ABOUT:
+				mFragments[position] = new FragmentAbout();
+				break;
 			default:
-				mFragments[position] = new Fragment();
+				mFragments[position] = new FragmentConstruction();
 				// TODO 初始化各Fragment
 				break;
 			}
@@ -240,6 +245,7 @@ public class ActivityMain extends Activity implements IDrawerNames {
 			mTabListener = new MistakesTabListener(
 					(FragmentCategories) mFragments[MISTAKES]);
 		}
+		//FIXME 横屏模式下ActionBar Tab颜色问题
 		actionBar.removeAllTabs();
 		Tab tagTab = actionBar.newTab().setText(R.string.tag)
 				.setTag(MistakesTabListener.TAGS).setTabListener(mTabListener);
