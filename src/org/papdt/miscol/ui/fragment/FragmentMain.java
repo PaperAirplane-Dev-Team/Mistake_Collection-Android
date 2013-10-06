@@ -1,8 +1,7 @@
 package org.papdt.miscol.ui.fragment;
 
 import org.papdt.miscol.R;
-import org.papdt.miscol.ui.MistakeCard;
-import com.fima.cardsui.objects.Card.OnCardSwiped;
+import org.papdt.miscol.ui.InfoCard;
 import com.fima.cardsui.views.CardUI;
 
 import android.app.Activity;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 public class FragmentMain extends Fragment {
 
@@ -52,22 +50,11 @@ public class FragmentMain extends Fragment {
 		showHint();
 		// 添加介绍卡片
 		mCardUI = (CardUI) mCardsLayout.findViewById(R.id.view_cardui);
-		mCardUI.setSwipeable(true);
-		MistakeCard cardWelcome = new MistakeCard(
+		InfoCard cardWelcome = new InfoCard(
 				mActivity.getString(R.string.welcome),
 				mActivity.getString(R.string.welcome_content));
-		cardWelcome.setOnCardSwipedListener(new OnCardSwiped() {
-			@Override
-			public void onCardSwiped() {
-				Toast.makeText(getActivity(), "I'm being swiped!",
-						Toast.LENGTH_SHORT).show();
-				Log.d(TAG, "being swiped");
-				// XXX 不知道为什么没有用于移除Card的相关方法
-			}
-		});
 		mCardUI.addCard(cardWelcome);
 		mCardUI.refresh();
-		Log.d(TAG, "Card已添加");
 		return mCardsLayout;
 	}
 

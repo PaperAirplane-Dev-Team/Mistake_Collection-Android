@@ -56,12 +56,12 @@ public class DataItemProcessor {
 		StringBuilder sb = new StringBuilder();
 		for (String tag : mistake.getTagNames()) {
 			int tagId = convertItemIntoId(tag, db, Tags.TABLE_NAME);
-			sb.append(tagId + ", ");
+			sb.append(tagId + ",");
 		}
 		return sb.toString();
 	}
 
-	private static int convertItemIntoId(String itemName, SQLiteDatabase db,
+	public static int convertItemIntoId(String itemName, SQLiteDatabase db,
 			String tableName) {
 		return convertItemIntoId(itemName, db, tableName,
 				IDbWithIdAndName.KEY_STRING_NAME);

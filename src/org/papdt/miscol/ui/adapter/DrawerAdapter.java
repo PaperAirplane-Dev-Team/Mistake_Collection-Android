@@ -17,10 +17,12 @@ public class DrawerAdapter extends BaseAdapter {
 	public interface IDrawerNames {
 		int MAIN = 0; // 要不以后这么样,常量不要那么多,用接口
 		int MISTAKES = 1; // fython : 嗯!
-		int THIRD = 2;
+		int TEST = 2;
 		int FORTH = 3;
 		int FIFTH = 4;
-		String[] TAGS = { "Welcome", "Mistakes", "Third", "Forth", "Fifth" };
+		int ABOUT = 5;
+		String[] TAGS = { "Welcome", "Mistakes", "Test", "Forth", "Fifth",
+				"About" };
 	}
 
 	public DrawerAdapter(String[] datas, Context ctx) {
