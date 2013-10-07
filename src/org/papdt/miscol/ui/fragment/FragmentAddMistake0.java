@@ -365,8 +365,6 @@ public class FragmentAddMistake0 extends AbsFragmentAddMistake implements
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		// FIXME 根本不工作
-		Log.d(TAG, "onItemSelected");
 		try {
 			switch (parent.getId()) {
 			case R.id.spinner_grade:

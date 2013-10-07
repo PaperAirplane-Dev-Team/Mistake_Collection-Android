@@ -16,6 +16,7 @@
             style="@style/CardTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:maxLines="8"
             android:layout_weight="1" />
     </LinearLayout>
 
@@ -26,7 +27,6 @@
         android:gravity="center_vertical"
         android:padding="4dp" >
 
-        <!-- 下面的内容以后替换 -->
         <TextView
             android:id="@+id/tv_card_description"
             style="@style/CardText"
@@ -34,7 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:ellipsize="end"
-            android:maxLines="4"
              />
     </LinearLayout>
 
